@@ -1,0 +1,65 @@
+# gitignore-template
+#
+# Drop this content at $HOME/.gitignore (or merge into an existing one) so
+# `dotfiles status` and `dotfiles add` skip files you never want tracked.
+# This is in addition to status.showUntrackedFiles=no — that hides them from
+# `status`, this prevents accidental adds and explicit-path checks.
+#
+# The bare-git pattern recommends being conservative: only commit dotfiles
+# you actively maintain. Everything else is implicitly ignored because you
+# never `dotfiles add` it.
+
+# Caches and runtime state
+.cache/
+.local/state/
+.local/share/Trash/
+.npm/
+.cargo/registry/
+.rustup/
+.gem/
+.bundle/
+.gradle/
+.m2/
+.ivy2/
+
+# Editor/IDE local state
+.vim/.netrwhist
+.viminfo
+.lesshst
+.bash_history
+.zsh_history
+.python_history
+.node_repl_history
+.psql_history
+.sqlite_history
+.wget-hsts
+
+# Browser profiles, mail spools, app data
+.mozilla/
+.config/google-chrome/
+.config/chromium/
+Maildir/
+.thunderbird/
+
+# OS clutter
+.DS_Store
+Thumbs.db
+
+# Secrets — never track these even by accident
+.ssh/id_*
+.ssh/*.pem
+.aws/credentials
+.gnupg/
+*.kdbx
+.netrc
+
+# Common project directories under $HOME
+src/
+projects/
+work/
+Downloads/
+Desktop/
+Documents/
+Pictures/
+Videos/
+Music/
