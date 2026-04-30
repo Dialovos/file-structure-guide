@@ -1,0 +1,16 @@
+MIT License — STUB FOR TEMPLATE PURPOSES ONLY
+
+This file demonstrates that `LICENSE` (UPPERCASE, no extension) is one of
+the canonical meta-files. It is NOT a real license assignment; it is a
+placeholder so that copying this template produces a layout that matches
+the policy.
+
+When you adopt this template:
+
+1. Replace this file with a real license (or delete and re-add via your
+   tooling, e.g. `npx mit-license`, `cargo new`, etc.).
+2. Keep the filename as `LICENSE` (or `LICENSE.md` / `LICENSE.txt` if your
+   ecosystem prefers an extension; pick one and be consistent).
+3. Do not commit this stub as the actual license of any real project.
+
+See `template/README.md` for the full capitalization policy explanation.
