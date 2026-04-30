@@ -1,0 +1,57 @@
+# ── Dependencies ────────────────────────────────────────────────────────────
+# Package manager output. Always regenerable from manifests; never commit.
+node_modules/
+vendor/
+.pnpm-store/
+
+# ── Build output ────────────────────────────────────────────────────────────
+# Anything produced from source. Reproducible; would only cause merge noise.
+dist/
+build/
+target/
+out/
+.next/
+__pycache__/
+*.pyc
+*.egg-info/
+*.class
+
+# ── Secrets — never commit these ────────────────────────────────────────────
+# `.env` holds credentials. The `!.env.example` exception lets you ship a
+# template (with placeholder values) so collaborators know which keys exist.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+credentials.json
+
+# ── OS files ────────────────────────────────────────────────────────────────
+# Operating-system metadata that has no business in your repo.
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor / IDE ────────────────────────────────────────────────────────────
+# Per-developer editor state. If a settings file is meant to be team-shared,
+# negate it explicitly: `.vscode/` then `!.vscode/settings.json`.
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs and temp ───────────────────────────────────────────────────────────
+# Runtime output. Recreated on every run; safe to ignore.
+*.log
+logs/
+tmp/
+coverage/
+.cache/
+.nyc_output/
+
+# ── Test / coverage artifacts ───────────────────────────────────────────────
+.pytest_cache/
+.tox/
+htmlcov/
+.coverage
