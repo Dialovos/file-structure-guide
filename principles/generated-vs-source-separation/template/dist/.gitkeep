@@ -1,0 +1,15 @@
+# dist/ — illustrative only.
+#
+# In a real project this directory would be GITIGNORED and would never
+# contain a tracked file. We're tracking this `.gitkeep` solely so the
+# template ships the *layout* (showing readers where compiled output
+# lives next to `src/`).
+#
+# When you adopt this template:
+#   1. Delete this `.gitkeep`.
+#   2. Make sure `dist/` is matched by your `.gitignore`.
+#   3. Let your build (`tsc`, `vite build`, `rollup -c`, etc.) populate
+#      it locally; never commit the result.
+#
+# See ../README.md and the project-level .gitignore for the full layout
+# the policy expects.
