@@ -1,0 +1,29 @@
+# dot_bashrc — minimal example showing chezmoi naming.
+#
+# Source path: ~/.local/share/chezmoi/dot_bashrc
+# Target path: ~/.bashrc       (the dot_ prefix renders as a leading dot)
+#
+# Edit via:    chezmoi edit ~/.bashrc
+# Apply via:   chezmoi apply
+#
+# This is a literal (non-templated) file. Add a .tmpl suffix and rename to
+# dot_bashrc.tmpl if you want to use chezmoi data placeholders below.
+
+# Non-interactive shells exit early
+[[ $- != *i* ]] && return
+
+# History
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoredups:erasedups
+
+# Prompt — replace with your own
+PS1='\u@\h:\w\$ '
+
+# Aliases (the bare-git pattern's `dotfiles` alias is unnecessary here —
+# chezmoi manages the source tree separately)
+alias ll='ls -lah'
+alias gs='git status'
+
+# PATH additions — keep ~/.local/bin first so user binaries override system
+export PATH="$HOME/.local/bin:$PATH"

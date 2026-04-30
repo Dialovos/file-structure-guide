@@ -1,0 +1,54 @@
+# dot_config/git/config.tmpl — templated git config example.
+#
+# Source path: ~/.local/share/chezmoi/dot_config/git/config.tmpl
+# Target path: ~/.config/git/config
+#
+# Templating notes:
+#   - {{ .name }} and {{ .email }} pull from chezmoi data, set via
+#     `chezmoi edit-config` (~/.config/chezmoi/chezmoi.toml):
+#       [data]
+#       name  = "Your Name"
+#       email = "you@example.com"
+#   - {{ .chezmoi.hostname }} and {{ .chezmoi.os }} are auto-supplied.
+#   - The `if` block conditionally adds a signing key only on machines
+#     where `data.signingkey` is set.
+
+[user]
+    name  = {{ .name | quote }}
+    email = {{ .email | quote }}
+{{- if .signingkey }}
+    signingkey = {{ .signingkey | quote }}
+{{- end }}
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor    = nvim
+    pager     = less -FRX
+    autocrlf  = input
+
+[pull]
+    rebase = true
+
+[push]
+    default      = simple
+    autoSetupRemote = true
+
+[diff]
+    algorithm = histogram
+    colorMoved = default
+
+[alias]
+    s   = status -sb
+    co  = checkout
+    br  = branch
+    lg  = log --oneline --graph --decorate
+
+{{- if eq .chezmoi.os "darwin" }}
+[credential]
+    helper = osxkeychain
+{{- else if eq .chezmoi.os "linux" }}
+[credential]
+    helper = cache --timeout=3600
+{{- end }}

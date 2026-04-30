@@ -1,0 +1,38 @@
+# private_dot_ssh/config.tmpl — SSH config example.
+#
+# Source path: ~/.local/share/chezmoi/private_dot_ssh/config.tmpl
+# Target path: ~/.ssh/config
+#
+# The private_ prefix makes chezmoi apply mode 0600 to the rendered file
+# (and 0700 to the parent directory). The .tmpl suffix enables Go templates.
+#
+# This template references secrets via chezmoi's secret helpers. Replace
+# with whatever secret manager you use (or remove and inline the values
+# if you don't need secret references).
+
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    UseKeychain         {{ if eq .chezmoi.os "darwin" }}yes{{ else }}no{{ end }}
+    AddKeysToAgent      yes
+    IdentitiesOnly      yes
+
+Host github.com
+    HostName  github.com
+    User      git
+    IdentityFile ~/.ssh/id_ed25519
+
+Host gitlab.com
+    HostName  gitlab.com
+    User      git
+    IdentityFile ~/.ssh/id_ed25519
+
+# Per-host work bastion — only included when running on a "work" profile.
+{{- if eq .profile "work" }}
+Host bastion
+    HostName  bastion.example.internal
+    User      {{ .name | lower }}
+    Port      2222
+    # Pull a token from 1Password at apply time.
+    # ProxyCommand pulls dynamic value: {{ onepasswordRead "op://Work/bastion/token" }}
+{{- end }}

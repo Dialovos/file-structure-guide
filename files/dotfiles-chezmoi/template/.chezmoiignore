@@ -1,0 +1,34 @@
+# .chezmoiignore — files that should NOT be applied to the target.
+#
+# Lives at: ~/.local/share/chezmoi/.chezmoiignore
+# Syntax:   gitignore-style patterns, also Go-template-aware (lines can be
+#           wrapped in {{ }} to apply conditionally).
+#
+# Common uses:
+#   - Skip platform-specific files on the wrong platform.
+#   - Skip secrets that shouldn't sync to a particular host.
+#   - Skip the README that lives in the source tree but isn't a dotfile.
+
+README.md
+LICENSE
+CHANGELOG.md
+*.swp
+*.bak
+.DS_Store
+
+# Skip macOS-only files when running on Linux
+{{- if ne .chezmoi.os "darwin" }}
+dot_config/iterm2/
+Library/
+{{- end }}
+
+# Skip Linux-only files when running on macOS
+{{- if ne .chezmoi.os "linux" }}
+dot_config/i3/
+dot_config/sway/
+{{- end }}
+
+# Skip work-only configs on personal machines
+{{- if not (eq .profile "work") }}
+dot_config/work-vpn/
+{{- end }}
