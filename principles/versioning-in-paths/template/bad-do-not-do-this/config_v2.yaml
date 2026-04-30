@@ -1,0 +1,38 @@
+# DO NOT DO THIS.
+#
+# This file is here as a *negative example*. Filename-versioning (`config_v2`,
+# `config_v3_final`, `config_FINAL_USE_THIS`) is an anti-pattern.
+#
+# The canonical config in this template lives at ../good/config.yaml — that is
+# the file your editor opens, your CI loads, your service reads. When it
+# changes, you commit. When you need an older shape, you run:
+#
+#   git log -p good/config.yaml
+#   git show <commit-sha>:good/config.yaml
+#
+# Reasons not to do what this file is doing:
+#
+#   1. Two files named "config" force every reader to ask which is real.
+#   2. Greps and linters match both. CI can't tell which one to deploy.
+#   3. The next change creates `config_v3.yaml`, then `config_v3_FINAL.yaml`,
+#      then `config_v3_FINAL_USE_THIS.yaml`. There is no end to this dance.
+#   4. Git already tracks every version of `config.yaml` losslessly.
+#
+# If you found this file in your repo: delete it. The right move is `git mv`
+# the *current* version to `config.yaml` and `git rm` the rest.
+#
+# See ../../GUIDE.md, especially the "Anti-patterns" and "Migration" sections.
+
+app:
+  name: example-service
+  port: 9090   # someone bumped this in v2; the change is now opaque outside git
+  environment: production
+
+logging:
+  level: debug
+  format: json
+
+database:
+  host: db.internal
+  port: 5432
+  pool_size: 50
