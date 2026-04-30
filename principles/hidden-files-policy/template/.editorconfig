@@ -1,0 +1,26 @@
+# .editorconfig — hidden by convention; editors discover this file
+# automatically by walking up the directory tree from the file being
+# edited. The dotfile name is mandated by the EditorConfig spec.
+#
+# This is the canonical "tool config a developer rarely edits" file:
+# you set it up once at project start and it does its job invisibly
+# from then on.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{py,rs}]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false   # trailing spaces are line breaks in md

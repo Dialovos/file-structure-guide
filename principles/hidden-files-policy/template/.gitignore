@@ -1,0 +1,41 @@
+# .gitignore — hidden by convention; Git itself looks for this exact name.
+#
+# The leading dot is mandated by Git: renaming this file would break
+# discovery. That's the strongest case for a dotfile — the tool owns the
+# name and you don't have a choice. The rule of thumb still applies:
+# contributors rarely *edit* this file by hand; they edit it once when a
+# new ignore pattern is needed, then forget it exists.
+#
+# Realistic patterns below illustrate what typically lives here.
+
+# --- Environment & secrets ---------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# --- Build outputs (regeneratable) -------------------------------------
+dist/
+build/
+out/
+target/
+_site/
+public/
+
+# --- Dependency caches -------------------------------------------------
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Editor / IDE state ------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*~
+
+# --- OS noise ----------------------------------------------------------
+.DS_Store
+Thumbs.db
