@@ -1,0 +1,33 @@
+{
+  "name": "my-workspace",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "lint": "nx run-many -t lint",
+    "serve": "nx serve web",
+    "graph": "nx graph",
+    "affected:build": "nx affected -t build",
+    "affected:test": "nx affected -t test",
+    "affected:lint": "nx affected -t lint",
+    "format": "nx format:write",
+    "format:check": "nx format:check"
+  },
+  "devDependencies": {
+    "@nx/eslint": "^19.0.0",
+    "@nx/eslint-plugin": "^19.0.0",
+    "@nx/jest": "^19.0.0",
+    "@nx/js": "^19.0.0",
+    "@nx/workspace": "^19.0.0",
+    "nx": "^19.0.0",
+    "typescript": "~5.4.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

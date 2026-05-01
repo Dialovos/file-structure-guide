@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Nx cache and workspace artifacts
+.nx/
+tmp/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Test coverage
+coverage/
+
+# Editor / OS noise
+.DS_Store
+*.log
+*.swp
+
+# IDE
+.idea/
+.vscode/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# TypeScript build info
+*.tsbuildinfo
