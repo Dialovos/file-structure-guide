@@ -1,0 +1,31 @@
+# Nuxt build output
+.nuxt/
+.output/
+.nitro/
+.cache/
+
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# Test coverage
+coverage/
+
+# Editor / OS noise
+.DS_Store
+*.log
+*.swp
+
+# IDE
+.idea/
+.vscode/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# TypeScript build info
+*.tsbuildinfo
