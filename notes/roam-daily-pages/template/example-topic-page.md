@@ -1,0 +1,15 @@
+- **deep work** — topical page (auto-created from `[[deep work]]` in [[2026-04-30]])
+- **What is it**
+    - Cal Newport's framing: cognitively demanding work performed in a state of distraction-free [[attention]].
+    - The complement is "shallow work" — logistically necessary tasks that don't compound.
+- **Why it matters here**
+    - Most of my output worth keeping happens in 60–120 minute uninterrupted blocks.
+    - When I let the day fill with shallow work, [[attention]] residue accumulates and I produce less even with more hours.
+- **Practices I'm trying**
+    - One deep-work block per morning, calendar-blocked, phone in another room.
+    - End-of-day review: did I protect the block? If not, what stole it?
+- **Linked references**
+    - Every block elsewhere that wrote `[[deep work]]` shows up here automatically — Roam's bidirectional-backlinks model. So this page accretes mentions over time without me filing anything.
+- **Open questions**
+    - Does the deep/shallow split break down for collaborative creative work? See [[creative collaboration]].
+    - What's the right cadence — daily, weekly, project-based?
