@@ -1,0 +1,39 @@
+title: HelloThere
+tags: Welcome Index
+created: 20260430120000000
+modified: 20260430120000000
+
+! Welcome to your TiddlyWiki
+
+This is a sample tiddler. The metadata header above (everything before
+the first blank line) is parsed by TiddlyWiki; the body below it is
+the tiddler's content in WikiText (TiddlyWiki's native markup).
+
+! What's a tiddler?
+
+A tiddler is the smallest unit of content. Think of it as a card with
+a title, tags, and a body. Tiddlers link to and transclude each other.
+
+! Try linking
+
+Click [[2026-04-30]] to jump to today's journal tiddler.
+
+! Try transclusion
+
+Embed a whole tiddler inline by writing two open-curly-braces, the
+tiddler title, two close-curly-braces (without the spaces):
+
+{ { 2026-04-30 } }
+
+! WikiText quick reference
+
+* Lists start with `*` (unordered) or `#` (ordered)
+* `''bold''` for bold, `//italic//` for italic
+* `! Heading` for h1, `!! Heading` for h2, etc.
+* `[[Link Title]]` for an internal link
+* `[ext[https://tiddlywiki.com]]` for an external link
+
+! See also
+
+* [[$:/AdvancedSearch]] — TiddlyWiki's search UI
+* The official docs at tiddlywiki.com
