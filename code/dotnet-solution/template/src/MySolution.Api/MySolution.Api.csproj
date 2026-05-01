@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!--
+    The Web API project. Uses the Web SDK so ASP.NET Core targets are
+    available. References Core for shared domain logic.
+  -->
+  <PropertyGroup>
+    <RootNamespace>MySolution.Api</RootNamespace>
+    <AssemblyName>MySolution.Api</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>mysolution-api-dev</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MySolution.Core\MySolution.Core.csproj" />
+  </ItemGroup>
+</Project>
