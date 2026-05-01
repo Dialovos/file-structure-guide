@@ -1,0 +1,13 @@
+include: package:flutter_lints/flutter.yaml
+
+# Tighten the linter beyond the flutter_lints baseline. Uncomment as you go.
+# linter:
+#   rules:
+#     prefer_single_quotes: true
+#     avoid_print: true
+#     require_trailing_commas: true
+
+# analyzer:
+#   exclude:
+#     - "**/*.g.dart"
+#     - "**/*.freezed.dart"

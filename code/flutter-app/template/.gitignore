@@ -1,0 +1,32 @@
+# Dart / Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# IDEs
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# OS
+.DS_Store
+
+# Lockfile policy:
+#   - Apps (this template): commit pubspec.lock so builds are reproducible.
+#   - Libraries / packages: gitignore pubspec.lock so consumers resolve fresh.
+# This template is an app, so the line below is commented out — keep it that way
+# for app projects, uncomment it if you turn this into a Dart package.
+# pubspec.lock
+
+# Coverage
+coverage/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
