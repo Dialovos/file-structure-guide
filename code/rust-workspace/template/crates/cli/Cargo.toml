@@ -1,0 +1,18 @@
+[package]
+name = "myworkspace-cli"
+description = "Command-line frontend for the myworkspace project."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[[bin]]
+name = "myworkspace"
+path = "src/main.rs"
+
+[dependencies]
+myworkspace-core = { workspace = true }
+clap = { workspace = true }

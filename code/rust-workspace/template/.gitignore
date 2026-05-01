@@ -1,0 +1,18 @@
+# Rust workspace — gitignore.
+#
+# `target/` is ignored — Cargo writes all build output here at the
+# workspace root, shared by every member.
+# `Cargo.lock` IS committed because this workspace has a binary
+# (myworkspace-cli). For an all-library workspace, gitignore it
+# instead.
+
+# Build output (one shared dir at the workspace root)
+/target/
+
+# Editor / OS noise
+*.swp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
