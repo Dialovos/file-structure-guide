@@ -1,0 +1,12 @@
+[versions]
+junit = "5.10.2"
+slf4j = "2.0.13"
+
+[libraries]
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+[plugins]
+# Add plugin coordinates here, e.g.:
+# spring-boot = { id = "org.springframework.boot", version = "3.3.0" }

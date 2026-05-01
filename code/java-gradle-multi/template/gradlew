@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# Placeholder: run `gradle wrapper --gradle-version 8.10.2` in this
+# directory to populate the real gradlew script and gradle-wrapper.jar.
+echo "gradlew placeholder. Run: gradle wrapper --gradle-version 8.10.2" >&2
+exit 1

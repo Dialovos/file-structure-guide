@@ -1,0 +1,30 @@
+# Gradle build output and caches
+.gradle/
+build/
+
+# Keep the wrapper JAR in version control — it's signed and small.
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local properties (machine-specific)
+local.properties
