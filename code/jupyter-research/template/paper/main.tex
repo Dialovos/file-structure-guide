@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
+\usepackage[round]{natbib}
+
+\graphicspath{{../figures/}}
+
+\title{Research project title}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+One-paragraph abstract. Replace with the real one.
+\end{abstract}
+
+\section{Introduction}
+Write the introduction. Cite with \citep{example}.
+
+\section{Methods}
+Reference figures by date-prefixed filename, e.g.
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.8\linewidth]{2026-04-30-eda-distributions.png}
+%   \caption{Caption.}
+%   \label{fig:eda}
+% \end{figure}
+
+\section{Results}
+Discuss results.
+
+\section{Conclusion}
+Wrap up.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
