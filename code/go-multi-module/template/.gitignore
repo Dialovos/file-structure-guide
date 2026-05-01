@@ -1,0 +1,36 @@
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries and coverage
+*.test
+*.out
+coverage.out
+
+# Build / dist directories
+dist/
+bin/
+
+# Vendored deps (most multi-module repos don't vendor; uncomment if you do).
+# vendor/
+
+# Go workspace lock — debate: commit go.work but ignore go.work.sum,
+# since go.work is intended for local dev. If you want fully
+# reproducible workspaces, commit both.
+go.work.sum
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
