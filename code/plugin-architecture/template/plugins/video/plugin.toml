@@ -1,0 +1,7 @@
+# Plugin manifest for the bundled video plugin.
+[plugin]
+name = "video"
+version = "0.1.0"
+entry_point = "plugins.video.video_plugin:VideoPlugin"
+capabilities = ["decode", "encode", "transcode"]
+api_version = "1.0"

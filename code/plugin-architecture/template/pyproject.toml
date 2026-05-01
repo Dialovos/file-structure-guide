@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "myhost"
+version = "0.1.0"
+description = "Extensible host application with a plugin architecture."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "{{NAME}}" }]
+dependencies = [
+  "tomli>=2.0; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+# External plugin distributions register themselves under this group:
+#
+#   [project.entry-points."myhost.plugins"]
+#   markdown = "myhost_markdown.plugin:MarkdownPlugin"
+#
+# The registry in core/registry.py loads any entry point in this
+# group at runtime. Plugins shipped inside this repo (under plugins/)
+# are picked up by the in-tree fallback.
+[project.entry-points."myhost.plugins"]
+# Bundled plugins exposed as entry points so packagers see a complete picture.
+audio = "plugins.audio.audio_plugin:AudioPlugin"
+video = "plugins.video.video_plugin:VideoPlugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["core", "plugins"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

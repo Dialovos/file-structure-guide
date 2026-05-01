@@ -1,0 +1,12 @@
+# Plugin manifest for the bundled audio plugin.
+#
+# The host's registry reads this file to know what plugins exist
+# without importing their Python modules. Keep it static and
+# machine-readable; descriptions and longer prose belong in the
+# plugin's own README.
+[plugin]
+name = "audio"
+version = "0.1.0"
+entry_point = "plugins.audio.audio_plugin:AudioPlugin"
+capabilities = ["decode", "encode"]
+api_version = "1.0"
