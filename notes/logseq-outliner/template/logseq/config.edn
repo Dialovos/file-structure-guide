@@ -1,0 +1,33 @@
+;; Logseq config — minimal sample.
+;; Full reference: https://docs.logseq.com/#/page/config.edn
+;;
+;; Logseq stores config as EDN (Clojure data format), not JSON or YAML.
+
+{
+ ;; Preferred file format for new pages: :markdown or :org
+ :preferred-format :markdown
+
+ ;; The default journal page format. Underscores are required for
+ ;; Logseq to treat the file as a journal page.
+ :journal/page-title-format "yyyy-MM-dd"
+ :journal/file-name-format  "yyyy_MM_dd"
+
+ ;; Workflow: simple TODO/DONE, or full TODO/DOING/DONE/WAITING/CANCELED
+ :preferred-workflow :now
+
+ ;; Default home — :journals opens to today; :first-page opens the
+ ;; most-recently-edited page.
+ :default-home {:page :journals}
+
+ ;; Where assets live (relative to the graph root).
+ :assets/directory "assets"
+
+ ;; Whether to create empty journal pages on calendar navigation.
+ :feature/enable-journals? true
+
+ ;; Block embedding helpers — leave on for normal use.
+ :feature/enable-block-timestamps? false
+
+ ;; Hidden directories — Logseq will not parse Markdown inside these.
+ :hidden ["./logseq/bak" "./logseq/version-files"]
+}

@@ -1,0 +1,15 @@
+# Logseq writes auto-backups and version files on every edit.
+# These are huge, machine-local, and should never be committed.
+logseq/bak/
+logseq/version-files/
+
+# The Logseq cache (rebuilt on open).
+logseq/.recycle/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# If you use a published-graph build, ignore the build output.
+# (Uncomment if you publish.)
+# www/
