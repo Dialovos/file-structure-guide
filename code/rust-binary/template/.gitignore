@@ -1,0 +1,16 @@
+# Rust binary crate — gitignore.
+#
+# `target/` is always ignored: it's the build output directory.
+# `Cargo.lock` IS committed for binary crates (this file). For libraries,
+# `Cargo.lock` is gitignored — see `code/rust-library/` for that case.
+
+# Build output
+/target/
+
+# Editor / OS noise
+*.swp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
