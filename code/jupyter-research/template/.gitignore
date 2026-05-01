@@ -1,0 +1,43 @@
+# --- Notebooks ---
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# --- Data ---
+# Track the directories with .gitkeep, ignore everything else inside them.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Environments ---
+.venv/
+venv/
+env/
+.env
+
+# --- LaTeX (paper/) ---
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+paper/*.pdf
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.DS_Store
