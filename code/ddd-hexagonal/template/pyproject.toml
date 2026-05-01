@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "myservice"
+version = "0.1.0"
+description = "DDD + hexagonal architecture service template."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "{{NAME}}" }]
+dependencies = [
+  "fastapi>=0.110",
+  "pydantic>=2.0",
+  "sqlalchemy>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "uvicorn>=0.29",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/myservice"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
