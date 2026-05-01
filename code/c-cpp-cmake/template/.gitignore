@@ -1,0 +1,37 @@
+# Out-of-source CMake build dirs
+build/
+cmake-build-*/
+
+# Compile artifacts
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.lib
+*.exp
+*.pdb
+
+# Compile commands (handy for clangd; produced inside build/, but
+# sometimes copied to the project root by editors).
+compile_commands.json
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage / profiling
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+*.profdata
