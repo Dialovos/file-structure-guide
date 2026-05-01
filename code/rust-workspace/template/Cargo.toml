@@ -1,0 +1,28 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+# Shared package metadata. Members inherit via `version.workspace = true`,
+# `edition.workspace = true`, etc. Bump the version here, every member
+# follows.
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+license = "MIT"
+authors = ["Your Name <you@example.com>"]
+repository = "https://example.com/myworkspace"
+homepage = "https://example.com/myworkspace"
+
+# Shared deps. Members opt in via `serde = { workspace = true }`.
+# Pinning deps once at the workspace level prevents version drift between
+# members.
+[workspace.dependencies]
+clap = { version = "4", features = ["derive"] }
+thiserror = "1"
+myworkspace-core = { path = "crates/core" }
+
+# Profile tweaks apply to every member. Tune here, not per-crate.
+[profile.release]
+lto = "thin"
+codegen-units = 1
