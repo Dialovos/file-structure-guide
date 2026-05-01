@@ -1,0 +1,51 @@
+# Gradle
+.gradle/
+build/
+
+# IDE
+.idea/
+!.idea/codeStyles
+!.idea/inspectionProfiles
+*.iml
+*.ipr
+*.iws
+.kotlin/
+
+# Android Studio captures and profiling
+captures/
+
+# Local config (SDK path, sometimes API keys — never commit)
+local.properties
+
+# Build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+output.json
+release/
+
+# Native build
+.cxx/
+
+# Keystore signing
+*.jks
+*.keystore
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*~
+
+# Coverage / lint reports
+**/lint-results-*
+**/test-results
+**/jacoco
