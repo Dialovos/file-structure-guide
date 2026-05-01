@@ -1,0 +1,21 @@
+# Rust library crate — gitignore.
+#
+# `target/` is always ignored (build output).
+# `Cargo.lock` IS gitignored for libraries: downstream consumers resolve
+# their own deps. Committing the lockfile of a library only pins the
+# *test* environment and produces noisy merge conflicts.
+# For binary crates the rule is reversed; see `code/rust-binary/`.
+
+# Build output
+/target/
+
+# Library lockfile is not committed
+Cargo.lock
+
+# Editor / OS noise
+*.swp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/

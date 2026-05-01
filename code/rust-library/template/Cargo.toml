@@ -1,0 +1,32 @@
+[package]
+name = "mylib"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Replace this with a one-line summary of what the crate does."
+readme = "README.md"
+repository = "https://example.com/mylib"
+documentation = "https://docs.rs/mylib"
+homepage = "https://example.com/mylib"
+license = "MIT OR Apache-2.0"
+keywords = []
+categories = []
+authors = ["Your Name <you@example.com>"]
+
+[lib]
+name = "mylib"
+path = "src/lib.rs"
+
+[dependencies]
+thiserror = "1"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "core_bench"
+harness = false
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
