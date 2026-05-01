@@ -1,6 +1,6 @@
 # Code project layouts
 
-25 starter layouts for software projects, grouped by ecosystem. Each layout is opinionated — pick the one whose "When to use" section best describes you.
+28 starter layouts for software projects, grouped by ecosystem. Each layout is opinionated — pick the one whose "When to use" section best describes you.
 
 ## Python (4)
 
