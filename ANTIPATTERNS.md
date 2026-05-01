@@ -62,6 +62,26 @@ A non-dotfile holding your auth token. Hiding by convention only.
 
 **Fix:** secrets in dotfile-named files (`.env.local`) explicitly listed in `.gitignore`. See [`principles/hidden-files-policy/`](principles/hidden-files-policy/).
 
----
+## 11. The "shared/" black hole
 
-*Phase 7 of the build will append 3–5 more anti-patterns surfaced while writing the 79 guidelines.*
+`shared/`, `common/`, `lib/` as a top-level kitchen-sink that grows whatever doesn't fit a feature. Even disciplined versions (`shared/ui/`, `shared/utils/`) decay once the bar for "is this shared?" drops below 100%.
+
+**Fix:** be ruthless about what enters `shared/` — only put code there once two real consumers exist, never speculatively. Delete unused entries during refactors. See [`code/feature-based-frontend/`](code/feature-based-frontend/) and [`principles/one-purpose-per-directory/`](principles/one-purpose-per-directory/).
+
+## 12. Mismatched depth across siblings
+
+`notes/2026/04/30/meeting.md` next to `notes/quick-thought.md`. One sibling is four levels deep, the other is one — readers can't predict where anything lives. Either flat or nested, never both.
+
+**Fix:** pick a depth rule per category and apply it everywhere; if some content needs more nesting, lift it into its own peer subtree rather than deepening selectively. See [`principles/depth-vs-breadth/`](principles/depth-vs-breadth/).
+
+## 13. Forever-temporary scaffolding
+
+`playground/`, `experimental/`, `draft/`, `new/` directories that were going to be cleaned up next sprint and are now four years old, full of unrelated shrapnel.
+
+**Fix:** if a name signals "provisional," set a calendar reminder to revisit it. Either give it a real name once stable, or delete it. Provisional names must not outlive the sprint that created them. See [`principles/status-based-organization/`](principles/status-based-organization/).
+
+## 14. Generated files committed by accident
+
+`dist/`, `target/`, `build/`, `node_modules/`, `.venv/` slipping into git history because the `.gitignore` was wrong, missing, or added too late. The repo balloons; clones get slow; reviewers wade through generated noise.
+
+**Fix:** write `.gitignore` before the first build runs; for ecosystems with strong defaults, copy the GitHub `gitignore` template and trim. Audit with `git ls-files | xargs -I{} grep -l '...'` before tagging a release. See [`principles/generated-vs-source-separation/`](principles/generated-vs-source-separation/) and [`principles/gitignore-and-keep-files/`](principles/gitignore-and-keep-files/).
