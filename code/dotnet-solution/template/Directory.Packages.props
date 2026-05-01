@@ -1,0 +1,28 @@
+<Project>
+  <!--
+    Central Package Management. Every <PackageReference> in the solution
+    references a version declared here, not in the individual .csproj.
+    Adding a NuGet dep:
+      1. Add a <PackageVersion Include="X" Version="..." /> here.
+      2. Add a <PackageReference Include="X" /> (no Version) in the csproj.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Test frameworks -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageVersion Include="xunit" Version="2.9.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+
+    <!-- Logging / DI / hosting (used by Api project) -->
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+
+    <!-- CLI parsing (used by Cli project) -->
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+</Project>

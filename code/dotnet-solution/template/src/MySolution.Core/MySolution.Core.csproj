@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The core library. No external dependencies in the template; add
+    <PackageReference Include="X" /> entries (no Version) and declare
+    the version in /Directory.Packages.props.
+  -->
+  <PropertyGroup>
+    <RootNamespace>MySolution.Core</RootNamespace>
+    <AssemblyName>MySolution.Core</AssemblyName>
+    <IsPackable>true</IsPackable>
+    <PackageId>MySolution.Core</PackageId>
+    <Description>MySolution shared core library.</Description>
+  </PropertyGroup>
+</Project>

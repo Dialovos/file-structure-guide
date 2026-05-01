@@ -1,0 +1,43 @@
+# Build outputs
+bin/
+obj/
+out/
+publish/
+
+# IDE / editor state
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userprefs
+
+# Resharper / Rider
+_ReSharper.Caches/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Test results
+TestResults/
+coverage*.xml
+*.coverage
+*.coveragexml
+
+# Rider / VS local env
+.config/dotnet-tools.json.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+*.pfx
+*.snk
+appsettings.Development.json
+appsettings.*.local.json
+.env
+.env.local
