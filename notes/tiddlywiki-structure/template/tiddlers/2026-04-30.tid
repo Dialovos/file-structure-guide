@@ -1,0 +1,29 @@
+title: 2026-04-30
+tags: Journal Daily
+created: 20260430080000000
+modified: 20260430080000000
+
+! Today
+
+A sample journal tiddler. The convention is ISO-format date as title;
+the `Journal` tag groups every daily entry.
+
+!! Did
+
+* Set up a TiddlyWiki Node.js workspace
+* Captured a few atomic tiddlers under the [[Index]] tag
+
+!! Linked
+
+* [[HelloThere]] — the welcome tiddler
+* [[Journal]] — the index of all daily tiddlers (auto-built from this tag)
+
+!! Tomorrow
+
+* Read the WikiText macro reference on tiddlywiki.com
+* Try the `<<list-links>>` macro to render an index of `Journal`-tagged
+  tiddlers, e.g.:
+
+```
+<<list-links "[tag[Journal]]">>
+```
