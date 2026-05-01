@@ -1,0 +1,25 @@
+# Build artifacts
+/mytool
+mytool
+mytool.exe
+/dist/
+/bin/
+
+# Go
+*.test
+*.out
+coverage.out
+coverage.txt
+*.prof
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Environment
+.env
+.envrc
+
+# goreleaser
+dist/

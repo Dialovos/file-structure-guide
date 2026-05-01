@@ -1,0 +1,21 @@
+#compdef mytool
+# zsh completion for mytool.
+#
+# Regenerate from the binary:
+#     mytool completion zsh > completions/_mytool
+#
+# Install for the current user:
+#     mkdir -p "${fpath[1]}"  # or: mkdir -p ~/.zfunc
+#     cp completions/_mytool "${fpath[1]}/"
+#     # ensure your ~/.zshrc has:
+#     #     fpath=(~/.zfunc $fpath)
+#     #     autoload -U compinit && compinit
+#
+# This stub is replaced at release time by the real cobra-generated
+# script. Keeping a placeholder in the repo means downstream
+# packagers can install the file path even before the first release.
+_mytool() {
+  _message 'run `mytool completion zsh > completions/_mytool` to regenerate'
+}
+
+_mytool "$@"
