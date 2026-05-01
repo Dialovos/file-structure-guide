@@ -1,0 +1,27 @@
+# Node library — gitignore.
+
+# Dependencies (large, regenerable from package.json + lockfile)
+node_modules/
+
+# Build output: gitignored locally, npm-published via "files": ["dist"]
+# in package.json. The prepublishOnly script regenerates dist/ before
+# every npm publish.
+dist/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Editor / OS noise
+.DS_Store
+*.log
+*.swp
+
+# IDE
+.idea/
+.vscode/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
