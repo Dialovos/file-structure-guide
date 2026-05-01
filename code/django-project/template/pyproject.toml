@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mysite"
+version = "0.0.1"
+description = "Replace this with a one-line summary of the Django site."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [
+    { name = "Your Name", email = "you@example.com" },
+]
+classifiers = [
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "Django>=5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.8",
+    "django-debug-toolbar>=4.4",
+]
+prod = [
+    "gunicorn>=22",
+    "psycopg[binary]>=3.2",
+]
+
+[tool.setuptools.packages.find]
+include = ["mysite*", "apps*"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "mysite.settings.dev"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
