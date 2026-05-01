@@ -1,0 +1,20 @@
+/* Global styles. Imported once from app/layout.tsx.
+   Add Tailwind's @tailwind directives here if you wire up Tailwind. */
+
+:root {
+  --foreground: #111;
+  --background: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
