@@ -1,0 +1,6 @@
+# pnpm tells which directories are workspaces. Glob patterns; matches any
+# package.json inside the listed directories. Add more entries as the
+# monorepo grows.
+packages:
+  - "apps/*"
+  - "packages/*"
