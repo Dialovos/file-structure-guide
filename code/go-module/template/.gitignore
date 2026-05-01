@@ -1,0 +1,33 @@
+# Compiled binaries (the binary's name is the cmd/ subdir name; pick
+# specific names if you want, or rely on `go build ./cmd/...` to put
+# them in dist/).
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries and coverage
+*.test
+*.out
+coverage.out
+
+# Build / dist directories (if you script your own builds)
+dist/
+bin/
+
+# Optional: vendored deps. Most modules don't vendor; uncomment if you do.
+# vendor/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
