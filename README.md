@@ -1,13 +1,13 @@
 # file-structure-guide
 
-A reference of **79 in-depth guidelines** for organizing files and folders cleanly.
+A reference of **82 in-depth guidelines** for organizing files and folders cleanly.
 
 ## What this is
 
 Three domains, plus cross-cutting principles:
 
 - **[principles/](principles/)** — 16 cross-cutting principles (naming, ISO dates, depth-vs-breadth, ...)
-- **[code/](code/)** — 25 software project layouts (Python, Rust, JS/TS, JVM, systems, mobile, research, architecture patterns)
+- **[code/](code/)** — 28 software project layouts (Python, Rust, JS/TS, JVM, systems, mobile, research, architecture patterns)
 - **[notes/](notes/)** — 20 knowledge & note-taking systems (PARA, Johnny.Decimal, Zettelkasten, Evergreen, LYT, ...)
 - **[files/](files/)** — 18 general personal-files layouts (XDG, FHS, photos, dotfiles, media libraries, ...)
 
