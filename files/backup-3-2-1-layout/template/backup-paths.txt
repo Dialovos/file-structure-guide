@@ -1,0 +1,5 @@
+# One path per line, relative to your home directory. Lines starting with # are ignored.
+documents
+photos
+projects
+.config

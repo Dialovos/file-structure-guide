@@ -1,0 +1,4 @@
+# One line per directory; later matches win.
+/apps/web/       @acme/web-team
+/apps/api/       @acme/api-team
+/packages/       @acme/platform-team

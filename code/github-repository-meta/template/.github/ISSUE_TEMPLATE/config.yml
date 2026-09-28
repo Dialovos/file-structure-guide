@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://example.com/your-org/your-project/discussions
+    about: Ask questions or float ideas here before opening an issue.

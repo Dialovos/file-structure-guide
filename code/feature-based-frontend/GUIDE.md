@@ -133,4 +133,4 @@ Deleting a feature is deleting one folder, plus its route entry.
   - **T3 docs** (`create.t3.gg`) — the layout adopted by the T3 community.
   - Kent C. Dodds' "Co-locate" essays (`kentcdodds.com/blog/colocation`) — the principle behind the feature folder.
   - Brad Frost's *Atomic Design* — the contrasting horizontal model; useful to read for what feature-based is *not*.
-  - Sibling guides: `code/nextjs-app/` (the routing layer this guide composes with), `code/atomic-design/` (when you're building a component library, not an app), `code/turborepo-monorepo/` (graduating features into packages), `principles/colocation/`.
+  - Sibling guides: `code/nextjs-app/` (the routing layer this guide composes with), `code/atomic-design/` (when you're building a component library, not an app), `code/turborepo-monorepo/` (graduating features into packages), `principles/naming-by-purpose-not-type/`.

@@ -1,9 +1,10 @@
 # Code project layouts
 
-28 starter layouts for software projects, grouped by ecosystem. Each layout is opinionated — pick the one whose "When to use" section best describes you.
+36 starter layouts for software projects, grouped by ecosystem. Each layout is opinionated — pick the one whose "When to use" section best describes you.
 
-## Python (4)
+## Python (5)
 
+- [`python-uv-workspace/`](python-uv-workspace/) — several packages, one `uv.lock`, workspace-linked
 - [`python-src-layout/`](python-src-layout/) — `src/<pkg>/` for libraries you publish
 - [`python-flat-layout/`](python-flat-layout/) — `<pkg>/` at root for apps and small projects
 - [`django-project/`](django-project/) — Django apps, settings split, URLs
@@ -41,8 +42,9 @@
 - [`kotlin-android/`](kotlin-android/) — multi-module Android (Now-in-Android-style)
 - [`flutter-app/`](flutter-app/) — `lib/`, `test/`, `pubspec.yaml`
 
-## Research / specialized (4)
+## Research / specialized (5)
 
+- [`ml-experiment-project/`](ml-experiment-project/) — config-driven training with immutable run records
 - [`cookiecutter-data-science/`](cookiecutter-data-science/) — Drivendata's CCDS template
 - [`jupyter-research/`](jupyter-research/) — notebooks-first research repo
 - [`cli-tool/`](cli-tool/) — single-binary CLI conventions
@@ -53,6 +55,18 @@
 - [`ddd-hexagonal/`](ddd-hexagonal/) — domain / application / infrastructure / ports&adapters
 - [`feature-based-frontend/`](feature-based-frontend/) — `features/<feature>/{components,api,types}`
 - [`atomic-design/`](atomic-design/) — atoms / molecules / organisms / templates / pages
+
+## Desktop and browser apps (2)
+
+- [`tauri-desktop-app/`](tauri-desktop-app/) — web frontend + `src-tauri/` native Rust, explicit capabilities
+- [`browser-extension/`](browser-extension/) — Manifest V3 organized by execution context
+
+## Infrastructure and delivery (4)
+
+- [`terraform-infrastructure/`](terraform-infrastructure/) — `modules/` + one root module per environment
+- [`docker-compose-services/`](docker-compose-services/) — base file, dev/prod overrides, per-service Dockerfiles
+- [`github-repository-meta/`](github-repository-meta/) — `.github/` workflows, templates, `CODEOWNERS`
+- [`docs-as-code-site/`](docs-as-code-site/) — Markdown docs by reader intent, strict CI build
 
 ## How to pick
 

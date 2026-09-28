@@ -1,0 +1,4 @@
+# Later matches win. Replace with real teams or users.
+*            @your-org/maintainers
+/docs/       @your-org/docs-team
+/.github/    @your-org/maintainers

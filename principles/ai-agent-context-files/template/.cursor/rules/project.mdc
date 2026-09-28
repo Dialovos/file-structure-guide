@@ -1,0 +1,6 @@
+---
+description: Project rules
+alwaysApply: true
+---
+
+Follow the shared rules in `AGENTS.md` at the repository root. Add only Cursor-specific notes here.

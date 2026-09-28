@@ -1,0 +1,8 @@
+runs/
+checkpoints/
+data/*
+!data/.gitkeep
+!data/*.dvc
+__pycache__/
+*.egg-info/
+.venv/

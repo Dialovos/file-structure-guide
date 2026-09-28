@@ -7,7 +7,7 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - Code → §2
 - Notes & knowledge → §3
 - General personal files → §4
-- Looking for a cross-cutting principle → browse [`principles/`](principles/)
+- Looking for a cross-cutting principle → §5, or browse [`principles/`](principles/)
 
 ## §2. CODE — What language/stack?
 
@@ -19,10 +19,13 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - .NET / Mobile → §2.6
 - Research / specialized → §2.7
 - Architecture pattern (cross-language) → §2.8
+- Desktop apps, browser extensions, infrastructure, containers, repo metadata, docs sites → §2.9
 
 ### §2.1 Python — what kind of project?
 
 - Library you'll publish to PyPI → [`code/python-src-layout/`](code/python-src-layout/)
+- Several related packages in one repository sharing one lockfile → [`code/python-uv-workspace/`](code/python-uv-workspace/)
+- Model training with many runs to compare and reproduce → [`code/ml-experiment-project/`](code/ml-experiment-project/)
 - App, internal tool, or unpublished project → [`code/python-flat-layout/`](code/python-flat-layout/)
 - Django web app → [`code/django-project/`](code/django-project/)
 - FastAPI service → [`code/fastapi-project/`](code/fastapi-project/)
@@ -82,6 +85,15 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - Component library with composition gradient → [`code/atomic-design/`](code/atomic-design/)
 - Stable host + open plugin set → [`code/plugin-architecture/`](code/plugin-architecture/)
 
+### §2.9 Apps, infrastructure, and delivery
+
+- Desktop app with a web UI and a native Rust backend → [`code/tauri-desktop-app/`](code/tauri-desktop-app/)
+- Browser extension (Manifest V3) → [`code/browser-extension/`](code/browser-extension/)
+- Cloud infrastructure as code (Terraform) → [`code/terraform-infrastructure/`](code/terraform-infrastructure/)
+- Multi-service local stack with Docker Compose → [`code/docker-compose-services/`](code/docker-compose-services/)
+- GitHub workflows, issue and PR templates, code owners → [`code/github-repository-meta/`](code/github-repository-meta/)
+- Documentation site built from Markdown in the repo → [`code/docs-as-code-site/`](code/docs-as-code-site/)
+
 ## §3. NOTES — What's your style?
 
 - Project-driven knowledge work → §3.1
@@ -90,6 +102,7 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - Daily/journal-driven → §3.4
 - Tool-specific (Obsidian, Logseq, Roam, TiddlyWiki) → §3.5
 - Public-facing notes → §3.6
+- Work, study, and research records → §3.7
 
 ### §3.1 Project-driven knowledge work
 
@@ -134,6 +147,12 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - MOC-driven public vault → [`notes/lyt-linking-your-thinking/`](notes/lyt-linking-your-thinking/)
 - Maps of Content as published indexes → [`notes/maps-of-content/`](notes/maps-of-content/)
 
+### §3.7 Work, study, and research records
+
+- Coursework: notes, homework, quizzes, exams per course → [`notes/course-notes-structure/`](notes/course-notes-structure/)
+- Experiments with hypotheses, protocols, and results → [`notes/research-lab-notebook/`](notes/research-lab-notebook/)
+- Daily work log, weekly review, wins for performance reviews → [`notes/engineering-work-log/`](notes/engineering-work-log/)
+
 ## §4. FILES — What kind of personal files?
 
 - Application config & data → §4.1
@@ -142,6 +161,7 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - Mail → §4.4
 - Dotfiles → §4.5
 - Cloud sync / removable / desktop hygiene → §4.6
+- Workspaces, business documents, worktrees, backups → §4.7
 
 ### §4.1 Application config & data
 
@@ -178,3 +198,19 @@ Decision tree. Start at §1 and answer each question to land on a guideline.
 - USB / SD / external-drive imports with provenance → [`files/removable-media-layout/`](files/removable-media-layout/)
 - `~/Desktop/` empty-by-policy → [`files/desktop-zero-policy/`](files/desktop-zero-policy/)
 - `~/Downloads/` as triaged inbox → [`files/downloads-triage/`](files/downloads-triage/)
+
+### §4.7 Workspaces, business documents, worktrees, backups
+
+- One root folder for all projects, business, school, and an inbox → [`files/workspace-root-layout/`](files/workspace-root-layout/)
+- Several branches of one repository checked out at once → [`files/git-worktrees-layout/`](files/git-worktrees-layout/)
+- Clients, contracts, invoices, and legal documents for a business → [`files/business-documents-layout/`](files/business-documents-layout/)
+- Backups you can actually restore (3-2-1) → [`files/backup-3-2-1-layout/`](files/backup-3-2-1-layout/)
+
+## §5. PRINCIPLES — Which cross-cutting question are you facing?
+
+- One repository or many? → [`principles/monorepo-vs-polyrepo/`](principles/monorepo-vs-polyrepo/)
+- Where do config values and secrets go? → [`principles/config-and-secrets-placement/`](principles/config-and-secrets-placement/)
+- How do I instruct AI coding assistants consistently? → [`principles/ai-agent-context-files/`](principles/ai-agent-context-files/)
+- Big or binary files are bloating git → [`principles/large-files-and-binary-assets/`](principles/large-files-and-binary-assets/)
+- How do I record why we chose X? → [`principles/decision-records-adr/`](principles/decision-records-adr/)
+- Naming, dates, depth, READMEs, tests, ignores → browse [`principles/`](principles/) for the other sixteen.

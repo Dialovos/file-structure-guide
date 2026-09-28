@@ -1,6 +1,6 @@
 # Personal-files layouts
 
-18 conventions for the everyday content that lives outside any project — config, photos, music, mail, scanned documents, downloads, and so on.
+22 conventions for the everyday content that lives outside any project — config, photos, music, mail, scanned documents, downloads, and so on.
 
 ## OS-level baselines
 
@@ -37,6 +37,13 @@
 - [`desktop-zero-policy/`](desktop-zero-policy/) — desktop must stay empty
 - [`cloud-sync-structure/`](cloud-sync-structure/) — `~/cloud/<sync-name>/` namespacing
 - [`removable-media-layout/`](removable-media-layout/) — labels + `IMPORT-<date>/`
+
+## Workspaces, work, and safety
+
+- [`workspace-root-layout/`](workspace-root-layout/) — one root for projects, business, school, and inbox
+- [`git-worktrees-layout/`](git-worktrees-layout/) — one branch per directory in `<repo>.worktrees/`
+- [`business-documents-layout/`](business-documents-layout/) — client-first folders, separate `finance/` and `legal/`
+- [`backup-3-2-1-layout/`](backup-3-2-1-layout/) — three copies, two media, one off-site, tested restores
 
 ## How to pick
 

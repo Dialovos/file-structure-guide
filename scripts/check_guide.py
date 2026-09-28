@@ -47,6 +47,10 @@ def check_guide() -> None:
         headings = re.findall(r"^## (.+?)\s*$", body, re.M)
         require(headings[: len(SECTIONS)] == SECTIONS, f"{name}/GUIDE.md sections differ from the standard order")
         require(f"({guide.parent.parent.name}/{name}/" in catalog, f"INDEX.md does not list {name}")
+        require((guide.parent / "template" / "README.md").is_file(), f"Missing template README for {name}")
+        refs = body.split("## Migration & references", 1)[1]
+        for ref in re.findall(r"`((?:principles|code|notes|files)/[a-z0-9-]+)/`", refs):
+            require((root / ref / "GUIDE.md").is_file(), f"{name} references missing guide {ref}")
     readme = (root / "README.md").read_text(encoding="utf-8")
     total = re.search(r"\*\*(\d+) in-depth guidelines\*\*", readme)
     require(total is not None and int(total.group(1)) == len(guides), "README total differs from the guide count")
@@ -55,7 +59,11 @@ def check_guide() -> None:
         stated = re.search(rf"\[{domain}/\]\({domain}/\)\*\* — (\d+)", readme)
         require(stated is not None, f"README must state the {domain} count")
         require(int(stated.group(1)) == actual, f"README {domain} count differs from the folder")
-    pages = [root / name for name in ("README.md", "INDEX.md", "CHOOSE.md")]
+    choose = (root / "CHOOSE.md").read_text(encoding="utf-8")
+    for guide in guides:
+        if guide.parent.parent.name != "principles":
+            require(guide.parent.name in choose, f"CHOOSE.md does not mention {guide.parent.name}")
+    pages = [root / name for name in ("README.md", "INDEX.md", "CHOOSE.md", "GLOSSARY.md")]
     pages += [root / domain / "README.md" for domain in domains]
     checked = 0
     for page in pages:

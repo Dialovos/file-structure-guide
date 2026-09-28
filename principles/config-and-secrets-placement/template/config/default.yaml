@@ -1,0 +1,4 @@
+# Non-secret defaults. Secrets come from the environment, never from this file.
+log_level: info
+request_timeout_seconds: 10
+retry_attempts: 3

@@ -1,30 +1,40 @@
 # Index
 
-Alphabetical catalog of all 82 guidelines. Use Ctrl+F.
+Alphabetical catalog of all 102 guidelines. Use Ctrl+F.
 
 | Guideline | Category | One-liner |
 |---|---|---|
 | `access-framework` | notes | Six-folder vault for outgrown PARA: Action / Categories / Concepts / Entries / Search / Sources. [Read](notes/access-framework/) |
+| `ai-agent-context-files` | principles | One shared `AGENTS.md` as source of truth; tool files (`CLAUDE.md`, Copilot, Cursor) stay thin pointers. [Read](principles/ai-agent-context-files/) |
 | `atomic-design` | code | Component hierarchy: atoms / molecules / organisms / templates / pages — for design systems. [Read](code/atomic-design/) |
 | `atomic-notes` | notes | One note = one idea, small enough to embed inline elsewhere — tool-neutral discipline. [Read](notes/atomic-notes/) |
+| `backup-3-2-1-layout` | files | Three copies, two media, one off-site: path lists, encrypted repository, manifest, logged restore tests. [Read](files/backup-3-2-1-layout/) |
+| `browser-extension` | code | Manifest V3 organized by execution context: `background/`, `content/`, `popup/`, `options/`, `shared/`. [Read](code/browser-extension/) |
 | `bullet-journal-digital` | notes | Ryder Carroll's BuJo in markdown: Future / Monthly / Daily logs + Index, rapid logging. [Read](notes/bullet-journal-digital/) |
+| `business-documents-layout` | files | One root per business; client-first folders with signed and sent copies; separate `finance/` and `legal/`. [Read](files/business-documents-layout/) |
 | `c-cpp-cmake` | code | Modern CMake (3.20+) with `src/`, `include/<project>/`, `tests/`, target-centric config. [Read](code/c-cpp-cmake/) |
 | `capitalization-policy` | principles | UPPERCASE is a closed set of canonical meta-files; everything else lowercase kebab-case. [Read](principles/capitalization-policy/) |
 | `cli-tool` | code | Subcommand CLI shape (cobra-style) with completions, manpage, modular `internal/commands/`. [Read](code/cli-tool/) |
 | `cloud-sync-structure` | files | Namespace cloud sync under `~/cloud/<provider>/<purpose>/` so providers stop scattering. [Read](files/cloud-sync-structure/) |
+| `config-and-secrets-placement` | principles | Committed defaults, gitignored `.env`, committed `.env.example`; secrets never enter git. [Read](principles/config-and-secrets-placement/) |
 | `cookiecutter-data-science` | code | Drivendata's CCDS: `data/{raw,interim,processed}/`, numbered notebooks, installable `src/`. [Read](code/cookiecutter-data-science/) |
+| `course-notes-structure` | notes | One folder per course with the same shape every term: notes, homework, quizzes, exams, study. [Read](notes/course-notes-structure/) |
 | `daily-weekly-notes` | notes | Canonical files per day (`daily/2026-04-30.md`) and ISO week (`weekly/2026-W18.md`). [Read](notes/daily-weekly-notes/) |
 | `date-archive` | files | Two-level `archive/YYYY/YYYY-MM/<YYYY-MM-DD>-<slug>.<ext>` for any append-only stream. [Read](files/date-archive/) |
 | `ddd-hexagonal` | code | Concentric domain / application / infrastructure layers; ports in domain, adapters outside. [Read](code/ddd-hexagonal/) |
+| `decision-records-adr` | principles | One short, dated, append-only record per significant decision in `docs/adr/NNNN-title.md`. [Read](principles/decision-records-adr/) |
 | `depth-vs-breadth` | principles | Aim for ≤3 levels root-to-leaf; 4 is warning, 5+ almost always wrong. [Read](principles/depth-vs-breadth/) |
 | `desktop-zero-policy` | files | `~/Desktop/` is empty wallpaper, not a workspace — 24h move-or-delete rule. [Read](files/desktop-zero-policy/) |
 | `digital-garden` | notes | Public notes by status: `seedlings/` then `budding/` then `evergreen/`, work-in-progress visible. [Read](notes/digital-garden/) |
 | `django-project` | code | Two Scoops layout: `apps/<feature>/`, split `settings/`, split `requirements/`. [Read](code/django-project/) |
+| `docker-compose-services` | code | Base `compose.yaml` plus dev/prod overrides; `services/<name>/Dockerfile`, health-gated startup, named volumes. [Read](code/docker-compose-services/) |
+| `docs-as-code-site` | code | Markdown docs in the repo organized by reader intent (tutorials / how-to / reference / explanation), strict CI build. [Read](code/docs-as-code-site/) |
 | `dotfiles-bare-git` | files | Manage `$HOME` as a git work-tree with bare `.git` at `~/.dotfiles/`, no symlinks. [Read](files/dotfiles-bare-git/) |
 | `dotfiles-chezmoi` | files | Source tree at `~/.local/share/chezmoi/` with `dot_`/`private_`/`*.tmpl` filename encoding. [Read](files/dotfiles-chezmoi/) |
 | `dotnet-solution` | code | `.sln` + `src/<Project>/` + `tests/<Project>.Tests/`, PascalCase, central package management. [Read](code/dotnet-solution/) |
 | `downloads-triage` | files | `~/Downloads/` is an inbox: `inbox/`, `archive/`, `_to-process/`, weekly triage. [Read](files/downloads-triage/) |
 | `ebook-library-calibre` | files | Calibre's `Author/Title (Series N)/Title - Author.{epub,jpg,opf}` triple, auto-managed. [Read](files/ebook-library-calibre/) |
+| `engineering-work-log` | notes | Private daily log, weekly review, wins document with evidence, plus meetings, incidents, projects. [Read](notes/engineering-work-log/) |
 | `evergreen-notes` | notes | Andy Matuschak's atomic + concept-oriented + declarative-title + densely-linked rule. [Read](notes/evergreen-notes/) |
 | `fastapi-project` | code | Layered `app/{api,schemas,models,services,db,core}/` + Alembic — thin routers, fat services. [Read](code/fastapi-project/) |
 | `feature-based-frontend` | code | `src/features/<name>/{components,api,types,hooks,index.ts}` — deletable feature slices. [Read](code/feature-based-frontend/) |
@@ -32,6 +42,8 @@ Alphabetical catalog of all 82 guidelines. Use Ctrl+F.
 | `flutter-app` | code | Standard `lib/`, `test/`, `pubspec.yaml`; inside `lib/` use feature folders not screen dump. [Read](code/flutter-app/) |
 | `folgezettel` | notes | Luhmann's branching alphanumeric IDs (`1a`, `1a1`, `1b`) — IDs *are* the navigation. [Read](notes/folgezettel/) |
 | `generated-vs-source-separation` | principles | Build outputs (`dist/`, `target/`, `build/`) live in dedicated gitignored dirs, never mixed. [Read](principles/generated-vs-source-separation/) |
+| `git-worktrees-layout` | files | One branch per directory in a sibling `<repo>.worktrees/`; create and remove with `git worktree`. [Read](files/git-worktrees-layout/) |
+| `github-repository-meta` | code | `.github/` workflows, issue and PR templates, `CODEOWNERS`, Dependabot; least-privilege CI with SHA-pinned actions. [Read](code/github-repository-meta/) |
 | `gitignore-and-keep-files` | principles | `.gitignore` excludes; `.gitkeep` preserves empty dirs — both mandatory past toy size. [Read](principles/gitignore-and-keep-files/) |
 | `go-module` | code | Single `go.mod` + `cmd/<binary>/` + language-enforced `internal/` + optional `pkg/`. [Read](code/go-module/) |
 | `go-multi-module` | code | Multiple `go.mod` per subtree for independent release cadences and dep isolation. [Read](code/go-multi-module/) |
@@ -44,11 +56,14 @@ Alphabetical catalog of all 82 guidelines. Use Ctrl+F.
 | `johnny-decimal` | notes | Hard-capped IDs: 10 areas × 10 categories × 100 items, every file has a unique `AC.NN`. [Read](notes/johnny-decimal/) |
 | `jupyter-research` | code | Notebooks-first repo: numbered `notebooks/`, light `data/{raw,processed}/`, optional paper. [Read](code/jupyter-research/) |
 | `kotlin-android` | code | Now-in-Android: `app/` + `feature/` + `core/`, version catalog, build-logic convention plugins. [Read](code/kotlin-android/) |
+| `large-files-and-binary-assets` | principles | Keep big or changing binaries out of git history: LFS/DVC/object storage with pointers and checksums. [Read](principles/large-files-and-binary-assets/) |
 | `literature-review-structure` | notes | `papers/` + `summaries/` + `bib/` + `themes/` with `<year>-<author>-<title>` filenames. [Read](notes/literature-review-structure/) |
 | `logseq-outliner` | notes | Outliner-first: `journals/YYYY_MM_DD.md` (note the underscores) + emergent `pages/`. [Read](notes/logseq-outliner/) |
 | `lyt-linking-your-thinking` | notes | Nick Milo's MOC-driven vault: `+ Spaces/` (MOCs) / `Calendar/` / `Notes/` / `Resources/`. [Read](notes/lyt-linking-your-thinking/) |
 | `maildir` | files | Bernstein's per-message-file format: `new/` / `cur/` / `tmp/`, lock-free and NFS-safe. [Read](files/maildir/) |
 | `maps-of-content` | notes | First-class hub notes (`MOCs/`) — self-curated indexes that turn a graph into navigation. [Read](notes/maps-of-content/) |
+| `ml-experiment-project` | code | Config-driven training: `configs/`, `src/`, immutable `runs/<run-id>/` records with commit, seed, and data version. [Read](code/ml-experiment-project/) |
+| `monorepo-vs-polyrepo` | principles | Choose repository boundaries by what changes and ships together; write the placement rule down. [Read](principles/monorepo-vs-polyrepo/) |
 | `music-library` | files | `Artist/Year - Album/NN Track Name.flac` — Beets/Picard/Plex/Jellyfin de-facto standard. [Read](files/music-library/) |
 | `naming-by-purpose-not-type` | principles | Group by what files *do*, not what they *are* — `customer-onboarding/` beats `forms/`+`api/`. [Read](principles/naming-by-purpose-not-type/) |
 | `naming-conventions` | principles | Use `kebab-case` everywhere except where ecosystems mandate otherwise (Python, Java, .NET). [Read](principles/naming-conventions/) |
@@ -63,9 +78,11 @@ Alphabetical catalog of all 82 guidelines. Use Ctrl+F.
 | `project-archive` | files | Split projects into `active/<project>/` and `archive/<YYYY>/<project>/` — moving is a ritual. [Read](files/project-archive/) |
 | `python-flat-layout` | code | `<package>/` at repo root — for apps/services not published to PyPI. [Read](code/python-flat-layout/) |
 | `python-src-layout` | code | `src/<package>/` — PyPA-recommended for libraries; tests can't accidentally import working tree. [Read](code/python-src-layout/) |
+| `python-uv-workspace` | code | uv workspace: one `uv.lock`, `packages/*` members linked with `{ workspace = true }` sources. [Read](code/python-uv-workspace/) |
 | `readme-placement` | principles | A `README.md` at every navigational junction — five lines beat zero. [Read](principles/readme-placement/) |
 | `receipts-and-finance` | files | `finance/YYYY/YYYY-MM/YYYY-MM-DD <vendor> $<amount> <description>.pdf` — grep-tally-able. [Read](files/receipts-and-finance/) |
 | `removable-media-layout` | files | Physical-label every USB/SD; import to `~/imports/<label>-<YYYY-MM-DD>/` to preserve provenance. [Read](files/removable-media-layout/) |
+| `research-lab-notebook` | notes | Dated notebook plus numbered experiments that start with a hypothesis; immutable raw data. [Read](notes/research-lab-notebook/) |
 | `roam-daily-pages` | notes | Flat: every day a page, topical pages emerge from inline `[[bracket links]]`, no folders. [Read](notes/roam-daily-pages/) |
 | `rust-binary` | code | `cargo new --bin` + main-with-lib split; `Cargo.lock` committed for reproducible builds. [Read](code/rust-binary/) |
 | `rust-library` | code | `src/lib.rs` + dual MIT/Apache-2.0; `Cargo.lock` gitignored; publishing metadata in `Cargo.toml`. [Read](code/rust-library/) |
@@ -76,6 +93,8 @@ Alphabetical catalog of all 82 guidelines. Use Ctrl+F.
 | `stable-vs-volatile-separation` | principles | Don't mix daily-changing volatile content with stable source — separate dirs, different backup. [Read](principles/stable-vs-volatile-separation/) |
 | `status-based-organization` | principles | Top-level `active/` / `archive/` / `someday/` — directory *is* status, not a `_done` suffix. [Read](principles/status-based-organization/) |
 | `swift-package` | code | SwiftPM: `Package.swift` + `Sources/<Target>/` + `Tests/<Target>Tests/`, PascalCase modules. [Read](code/swift-package/) |
+| `tauri-desktop-app` | code | Web frontend at the root, native Rust in `src-tauri/`, thin typed commands, explicit `capabilities/`. [Read](code/tauri-desktop-app/) |
+| `terraform-infrastructure` | code | Reusable `modules/` plus one root module per environment, each with its own remote state; pinned versions. [Read](code/terraform-infrastructure/) |
 | `test-colocation-vs-separation` | principles | Pick one: separated `tests/` mirror or `*.test.ts` co-location — never both in one repo. [Read](principles/test-colocation-vs-separation/) |
 | `tiddlywiki-structure` | notes | Single-file `wiki.html` or Node.js `tiddlers/*.tid` with text-header metadata. [Read](notes/tiddlywiki-structure/) |
 | `topic-vs-date-organization` | notes | Intentional split: `daily/` for time-driven capture + `topics/` for subject-driven knowledge. [Read](notes/topic-vs-date-organization/) |
@@ -84,5 +103,6 @@ Alphabetical catalog of all 82 guidelines. Use Ctrl+F.
 | `versioning-in-paths` | principles | No `_v2`/`-old`/`-final` in paths — git tags carry version; filesystem is a bad VCS. [Read](principles/versioning-in-paths/) |
 | `video-library` | files | Plex's `Movies/Title (Year)/` and `TV Shows/Show/Season XX/Show - sXXeYY.ext` standard. [Read](files/video-library/) |
 | `vue-nuxt-app` | code | Nuxt 3 convention: `pages/` router + auto-imported `components/` + `composables/` + `server/api/`. [Read](code/vue-nuxt-app/) |
+| `workspace-root-layout` | files | One workspace root of kind-of-work folders; each project its own Git repo, split public/private. [Read](files/workspace-root-layout/) |
 | `xdg-base-directory` | files | XDG Base Directory: `$XDG_CONFIG_HOME` / `$XDG_DATA_HOME` / `$XDG_CACHE_HOME` / `$XDG_STATE_HOME`. [Read](files/xdg-base-directory/) |
 | `zettelkasten-classic` | notes | Luhmann's slip-box in markdown: `inbox/` / `permanent/` / `literature/` + `references.bib`. [Read](notes/zettelkasten-classic/) |

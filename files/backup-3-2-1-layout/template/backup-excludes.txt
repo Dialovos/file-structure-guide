@@ -1,0 +1,6 @@
+# Patterns that can be regenerated. Edit to match your projects.
+**/node_modules
+**/.venv
+**/target
+**/__pycache__
+.cache
