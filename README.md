@@ -1,15 +1,15 @@
 # file-structure-guide
 
-A reference of **82 in-depth guidelines** for organizing files and folders cleanly.
+A reference of **102 in-depth guidelines** for organizing files and folders cleanly.
 
 ## What this is
 
 Three domains, plus cross-cutting principles:
 
-- **[principles/](principles/)** — 16 cross-cutting principles (naming, ISO dates, depth-vs-breadth, ...)
-- **[code/](code/)** — 28 software project layouts (Python, Rust, JS/TS, JVM, systems, mobile, research, architecture patterns)
-- **[notes/](notes/)** — 20 knowledge & note-taking systems (PARA, Johnny.Decimal, Zettelkasten, Evergreen, LYT, ...)
-- **[files/](files/)** — 18 general personal-files layouts (XDG, FHS, photos, dotfiles, media libraries, ...)
+- **[principles/](principles/)** — 21 cross-cutting principles (naming, ISO dates, secrets, decision records, monorepo-vs-polyrepo, ...)
+- **[code/](code/)** — 36 software project layouts (Python, Rust, JS/TS, JVM, systems, mobile, infrastructure, research, architecture patterns)
+- **[notes/](notes/)** — 23 knowledge & note-taking systems (PARA, Johnny.Decimal, Zettelkasten, Evergreen, LYT, coursework, lab notebooks, ...)
+- **[files/](files/)** — 22 general personal-files layouts (XDG, FHS, photos, dotfiles, backups, workspaces, media libraries, ...)
 
 ## How to use it
 
@@ -24,6 +24,7 @@ Three access paths:
 ## Repo conventions
 
 - Every guideline lives in its own dir with `GUIDE.md`, `tree.md`, and a `template/` you can `cp -r`.
+- Every `GUIDE.md` has the same 13 sections, from TL;DR through a worked example, scaling and failure modes, and an adoption checklist (checked by `scripts/check_guide.py`).
 - Directory names use kebab-case. UPPERCASE is reserved for canonical files (`README`, `GUIDE`, `INDEX`, `CHOOSE`, `PHILOSOPHY`, `ANTIPATTERNS`, `GLOSSARY`) — see [`principles/capitalization-policy/`](principles/capitalization-policy/).
 - Maximum 3 levels deep (`category/guideline/template/`) — see [`principles/depth-vs-breadth/`](principles/depth-vs-breadth/).
 

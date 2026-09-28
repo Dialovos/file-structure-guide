@@ -1,0 +1,5 @@
+# Development-only conveniences. Loaded automatically by `docker compose up`.
+services:
+  web:
+    volumes:
+      - ./services/web/app:/app

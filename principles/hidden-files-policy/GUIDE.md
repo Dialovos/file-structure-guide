@@ -58,6 +58,18 @@ project/
 5. **Hidden and gitignored** is the other common pattern: `.env`, `.venv/`, `.idea/`, `.vscode/settings.json` (in some teams). The dot signals "plumbing"; gitignore signals "local-only."
 6. **Don't invent a non-standard dotfile** to make a file feel "private." If the file is project-relevant, leave it visible; if it's purely local state, gitignore the whole pattern.
 
+## Worked example
+
+A repo's root lists 24 entries, half of them tool configs, so the README is hard to spot in `ls -A`.
+
+1. Sort each root entry into two piles: **knowledge** (README, `pyproject.toml`, `docs/`) stays visible; **plumbing** (`.editorconfig`, `.prettierrc`, `.github/`) is hidden.
+2. Where a tool allows it, rename a visible config to its dotfile form, or move it into a single `.config/` or tool directory (`.vscode/` is already hidden).
+3. Leave `pyproject.toml`, `package.json`, and `Cargo.toml` visible; they are load-bearing knowledge.
+4. Keep `.env.example` tracked and visible-by-name in the README; hide only the real `.env`.
+5. Check `ls` (no `-A`): what remains should read like a table of contents.
+
+The visible root shrinks to about 8 entries and a newcomer sees the shape of the project first.
+
 ## Anti-patterns
 
 - **Hiding the `Makefile`** as `.makefile` — Make won't find it by default and contributors won't either. Make is a developer-edited build file; visible.
@@ -67,6 +79,13 @@ project/
 - **`.config/` at the project root holding things the user must edit** — XDG-style `.config/` is for *user-level* config in `$HOME`. At a project root, use `config/` (visible) or named tool dotfiles.
 - **Inconsistent dotting** — `eslintrc.json` next to `.prettierrc` looks like a mistake. Match the ecosystem default for each tool; don't invent one.
 
+## Scaling & failure modes
+
+- **Hidden doesn't mean secret.** Dotfiles are still in git and still searchable. Real secrets need to be gitignored or in a keyring.
+- **Tool-imposed names** (`.github/`, `.gitlab-ci.yml`, `.dockerignore`) settle the question; follow the tool.
+- **Windows** treats the leading dot as an ordinary name, so the hiding effect is weaker there; the convention still communicates intent.
+- **Too many dot-directories** turn the hidden layer into its own junk drawer. Prefer one tool directory per tool.
+
 ## Variants
 
 - **Strict (this repo's choice)** — only files the user almost never edits get a leading dot; everything else is visible. Easiest to teach, easiest to enforce.
@@ -74,6 +93,13 @@ project/
 - **All-visible** — some teams (especially in scientific/educational codebases) prefer no hidden files at all so newcomers can see everything. Costs you the noise tradeoff but can be appropriate for didactic projects.
 - **All-XDG** — point every tool at `$XDG_CONFIG_HOME` (typically `~/.config/`) instead of project-local dotfiles. Cleans up the project root but moves config out-of-tree where it's harder to version with the project. Sensible for personal dotfiles repos, rarely sensible for application projects.
 - **Underscore-prefixed alternative** — some Windows-leaning projects use `_config/`, `_build/` to sort first/last alphabetically and avoid Unix-only conventions. Loses the broad cross-tool dotfile semantics; only worth it if Windows-first is a hard constraint.
+
+## Adoption checklist
+
+- [ ] Everything a contributor must read to understand the project is visible in a plain `ls`.
+- [ ] Tool configuration that people rarely edit is hidden or grouped under one directory.
+- [ ] Nothing secret relies on being hidden for its protection.
+- [ ] The README names the hidden files a new contributor will actually need (`.env`, pre-commit config).
 
 ## Real-world projects using this
 

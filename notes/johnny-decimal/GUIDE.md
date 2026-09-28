@@ -56,6 +56,19 @@ vault/
 6. **Short names use lowercase, hyphens for spaces.** `21.04 q4-tax-return.pdf`, not `21.04 Q4 Tax Return.pdf`. Whitespace between the ID and the name is allowed by convention but optional — pick one and be consistent.
 7. **IDs are immutable.** When you rename the human suffix, keep the ID. When you move a file, update its ID — and that move should be rare.
 
+## Worked example
+
+A shared drive has 300 top-level folders and nobody knows where taxes are.
+
+1. List everything at the top level and group into at most 10 areas; write them as ranges: `10-19 life`, `20-29 work`, and so on; reserve `00-09 system` for the index.
+2. Under each area, create up to 10 categories, numbered within the range: `11 home`, `12 health`.
+3. Inside a category, give each item the next number: `11.01 lease.pdf`, `11.02 utility-bills/`.
+4. Write `00.00 index.md` listing every category and notable items with their IDs.
+5. Refer to things by ID in chat and notes ("see 12.03"); put the ID in the file name.
+6. If a category exceeds 100 items, split the category, never the numbering scheme.
+
+Any file can be found by ID in seconds and the system can't grow into a maze because the caps are hard.
+
 ## Anti-patterns
 
 - **Nesting a third level.** `11 home/01 utilities/11.01 electric.md` breaks the two-level rule. Either promote `01 utilities/` into its own category at the area level, or accept that all utility files share `11.0X` IDs.
@@ -65,6 +78,13 @@ vault/
 - **Skipping the index.** `00.00 index.md` is what makes JD navigable without filename tools. A JD vault without a maintained index is just a numerically-prefixed folder dump.
 - **Decimal over-precision.** `11.01.03.a` style sub-IDs are not part of canonical JD; they show up in homemade variants and tend to spiral. If you find yourself wanting them, see the `with-decimals` variant or reconsider whether JD is the right system.
 
+## Scaling & failure modes
+
+- **Hard caps feel constraining** at first; that's the mechanism. When something doesn't fit, it's a prompt to reconsider categories, not to extend them.
+- **Assigning the first IDs** takes effort; do it once, in an afternoon, and put the index first.
+- **Cross-cutting content** doesn't fit a single place; put it where you'd look first and link from the index.
+- **Team use** needs one person to own the index, or IDs collide.
+
 ## Variants
 
 - **strict-3-digit (this guide).** `XX YY.MM` two-level only. The reference implementation at johnnydecimal.com.
@@ -72,6 +92,14 @@ vault/
 - **Johnny-Decimal-XL / 4-digit.** Extends to `XX-YY.NNN` for very large archives (legal practice, multi-decade research). Adds capacity at the cost of speakability.
 - **JD-with-tags.** JD provides the address; tags or wikilinks provide cross-cutting views. Common when JD lives inside Obsidian.
 - **JD-for-projects.** A short-lived JD slice (one area, one or two categories) for a single big project. Drops the "whole life" framing in exchange for the speakable IDs.
+
+## Adoption checklist
+
+- [ ] No more than 10 areas and 10 categories per area.
+- [ ] Every item has a unique `AC.NN` ID, and IDs are in file names.
+- [ ] `00.00` index exists and is current.
+- [ ] Categories over 100 items are split.
+- [ ] One person owns index changes if shared.
 
 ## Real-world projects using this
 

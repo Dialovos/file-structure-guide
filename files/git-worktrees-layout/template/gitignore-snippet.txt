@@ -1,0 +1,2 @@
+# Only needed for the in-repository layout (worktrees under .worktrees/).
+.worktrees/

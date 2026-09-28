@@ -61,6 +61,20 @@ vault/
 6. Per-note filenames follow the conventions of whatever tool you use (Obsidian wikilinks, Bear titles, Apple Notes — irrelevant to PARA).
 7. Don't nest a fifth bucket. If you find yourself wanting `5-someday/`, that's an inbox; either fold it into `1-projects/someday/` or use [`gtd-digital`](../gtd-digital/) where a "someday" list is canonical.
 
+## Worked example
+
+A `Documents/` folder is organized by file type and projects get lost in it.
+
+1. Create `1-projects/`, `2-areas/`, `3-resources/`, `4-archive/`.
+2. List everything with a finish line and a deadline as a project: `1-projects/q2-redesign/`. Limit yourself to what you're actually working on.
+3. Move ongoing responsibilities without an end date into areas: `2-areas/health/`, `2-areas/finance/`.
+4. Move reference material to `3-resources/`, by topic.
+5. Move finished or dormant items to `4-archive/2025/`.
+6. Test each project against the question: what does "done" look like? If you can't say, it's an area.
+7. Review weekly: finished projects go to the archive, new commitments get folders.
+
+You can list active work with `ls 1-projects` and everything else stays out of the way.
+
 ## Anti-patterns
 
 - **Topical sub-buckets inside Projects.** Putting `1-projects/work/` and `1-projects/personal/` undoes PARA's flatness. The whole point is that every project is one click from the root. Use tags or a status emoji on the folder name if you need a split.
@@ -70,6 +84,13 @@ vault/
 - **Putting the inbox at the root.** PARA has only four siblings. If you need a capture inbox, use the [`PARA-with-inbox`](../para/) variant with an explicit `0-inbox/` rather than dumping into `1-projects/inbox/`.
 - **Renumbering on whim.** Once you've used `1-`, `2-`, `3-`, `4-` for a year, your shell aliases, search filters, and muscle memory all assume them. Renaming costs more than the aesthetic upgrade is worth.
 
+## Scaling & failure modes
+
+- **Project vs area confusion** is the classic failure; apply the "finish line" test, and move things when they change type.
+- **Resources as junk drawer**: without a topic name and an occasional prune, resources becomes the new Downloads.
+- **Deep nesting**: keep each bucket's tree to one or two levels and use search for the rest.
+- **Cross-tool consistency**: the same four buckets across notes, files, and email reduce lookup cost; sync the structure, not the content.
+
 ## Variants
 
 - **classic-PARA (this guide).** Four numbered buckets. Works in any tool with no extra moving parts.
@@ -78,6 +99,14 @@ vault/
 - **PARA-by-year.** Sub-organise `4-archive/` by year (`2024/`, `2025/`) rather than mirroring source buckets. Most popular variant; lets you say "show me everything I shipped in 2024".
 - **PARA-with-MOC.** Add a top-level `0-INDEX.md` (Map of Content) that links into the four buckets. Bridges PARA with [`maps-of-content`](../maps-of-content/) practice.
 - **shared-PARA.** A household or team uses the same four buckets at the root of a shared drive. Personal PARA vaults sit beneath, and the four-bucket vocabulary is shared across team and individual.
+
+## Adoption checklist
+
+- [ ] Every project has a definition of done.
+- [ ] `1-projects/` contains only active work with an end.
+- [ ] Finished projects move to `4-archive/<year>/` at review time.
+- [ ] Resources have topic names, not "misc".
+- [ ] A weekly review updates the buckets.
 
 ## Real-world projects using this
 

@@ -56,6 +56,24 @@ my-pkg/
 - **Test files**: `<thing>.test.ts` (or `<thing>.spec.ts`). Vitest auto-discovers both.
 - **Type-only files**: `<thing>.types.ts` if you want to separate type definitions, but most libraries inline types in the file that uses them.
 
+## Worked example
+
+A package works locally but consumers get "cannot find module" or missing types after install.
+
+1. Build to `dist/` with `tsc` (`"outDir": "dist"`, `"declaration": true`, `"module": "NodeNext"`).
+2. Define the public surface in `package.json`:
+```
+"type": "module",
+"exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+"files": ["dist"]
+```
+3. Check what will be published: `npm pack --dry-run` should list only `dist/`, `package.json`, `README.md`, and `LICENSE`.
+4. Test the packed artifact in a scratch project: `npm pack && npm install ./mypkg-1.0.0.tgz`.
+5. Add `publint` and `arethetypeswrong` (`attw`) to CI to catch export-map mistakes.
+6. Publish with provenance from CI (`npm publish --provenance`).
+
+Consumers get correct imports and types because the same tarball you tested is what you ship.
+
 ## Anti-patterns
 
 - **Using `"main": "src/index.ts"`.** Pointing `"main"` at TypeScript source means consumers must transpile your code themselves. Always point `"main"`/`"exports"` at compiled output (`dist/index.js`) and ship the `.d.ts` files alongside.
@@ -67,6 +85,13 @@ my-pkg/
 - **Targeting `ES5` or `CommonJS` for new libraries.** Modern Node and modern bundlers handle ESM and `ES2022`+ natively. Targeting `ES5` for a library shipped today is needless bloat.
 - **`engines` field absent.** Without `"engines": { "node": ">=18" }` (or whatever you actually support), npm has no way to warn users on incompatible Node versions. Set it; pick honestly.
 
+## Scaling & failure modes
+
+- **Dual ESM/CJS support** multiplies the surface for mistakes; ship ESM-only unless real consumers need CJS, and test both if you do.
+- **Deep imports** (`pkg/dist/internal/x`) become public API by accident; the `exports` map blocks them.
+- **Dependencies vs peerDependencies**: frameworks you extend belong in `peerDependencies`.
+- **Breaking changes** need a major version and a changelog; automate with changesets or release-please.
+
 ## Variants
 
 - **tsc-only** (this guide) — TypeScript compiler is the only build tool. Simplest setup, slowest builds at scale, perfectly fine for libraries up to ~50 source files.
@@ -75,6 +100,14 @@ my-pkg/
 - **unbuild** — preset rollup configuration from the unjs ecosystem. Less config than rollup, more flexibility than tsup.
 - **pkgroll** — minimalist library bundler from the `tsx` author; growing in popularity for small libraries.
 - **esbuild + tsc** — esbuild for the JS, tsc only for `.d.ts` emission. Fast; common in larger libraries.
+
+## Adoption checklist
+
+- [ ] `npm pack --dry-run` lists only intended files.
+- [ ] A scratch project can import the packed tarball with working types.
+- [ ] `publint` and `attw` pass in CI.
+- [ ] `exports` defines every supported entry point and nothing else.
+- [ ] Releases are made from CI, with a changelog.
 
 ## Real-world projects using this
 

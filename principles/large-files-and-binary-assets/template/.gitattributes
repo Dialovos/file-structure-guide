@@ -1,0 +1,2 @@
+# Large files handled by Git LFS. Run `git lfs install` once per machine.
+assets/media/** filter=lfs diff=lfs merge=lfs -text

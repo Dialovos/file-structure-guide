@@ -62,6 +62,18 @@ project-root/
 5. Cross-link siblings and parent: a junction README that doesn't tell you where to go next isn't doing its job.
 6. Don't repeat the parent's README. Each level adds *its own* orientation, not a recap of the level above.
 
+## Worked example
+
+A repo has one long root README and none of `src/`, `docs/`, or `scripts/` explain themselves.
+
+1. List the navigational points: directories a newcomer enters with a question. `find . -maxdepth 2 -type d -not -path './.git*'`.
+2. Add a five-line `README.md` to each junction: what lives here, how it relates to its neighbors, one command to run or test it.
+3. Trim the root README to summary, quick start, and a map of links to the sub-READMEs.
+4. Link sibling READMEs to each other so there are no dead ends.
+5. Check that every README opens with a one-sentence summary, which is what previews and search results display.
+
+Result: a stranger can open any junction and know where they are in under 10 seconds.
+
 ## Anti-patterns
 
 - **README missing at the repo root** — every package manager, code host, and search index treats this as the project's front door. Skipping it here is malpractice.
@@ -71,6 +83,13 @@ project-root/
 - **README as the only docs** — a 2,000-line README hides itself. Move detail to `docs/` and keep README short.
 - **Different `README.md` casings** — `Readme.md`, `readme.md`, `README.markdown`. Some renderers don't pick them up; pick exactly one (`README.md`) and stick to it.
 
+## Scaling & failure modes
+
+- **Every-directory READMEs** rot fastest. Skip small self-evident directories (`auth/` with two files).
+- **Duplication** between the root README and sub-READMEs drifts; link instead of copying.
+- **Generated docs** may replace a hand-written README at deep levels; state that in the parent README.
+- **Monorepos** need a README per package plus a root README that maps packages to owners.
+
 ## Variants
 
 - **Strict-everywhere** — every directory, even single-purpose leaves, gets a README. Common in regulated projects where "no undocumented directory" is an audit rule.
@@ -78,6 +97,13 @@ project-root/
 - **Index-only-at-roots** — only repo root and top-level category dirs (`src/`, `docs/`) get READMEs; everything below relies on naming. Fast to maintain, weak for newcomers.
 - **MOC-style** — one large `INDEX.md` or `MOC.md` at the root replaces the per-dir READMEs. Works for note vaults; brittle for code.
 - **Auto-generated READMEs** — tools like `doctoc`, `markdown-toc`, or custom scripts emit READMEs from front-matter. Keeps content fresh but requires the generator step in CI.
+
+## Adoption checklist
+
+- [ ] The root and each top-level directory have a README that starts with a one-line summary.
+- [ ] Each README states how to run or test what is in that directory, if applicable.
+- [ ] READMEs link to neighbors and to the root, so there are no dead ends.
+- [ ] Setup commands in READMEs are run from a clean clone at least once a quarter.
 
 ## Real-world projects using this
 

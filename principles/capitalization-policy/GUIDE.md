@@ -61,6 +61,18 @@ bad/
 5. The `LICENSE` file is canonical with or without `.md` / `.txt` — both are recognised by GitHub. Pick one and be consistent within a project.
 6. Markdown files outside the canonical set go in `docs/` (or a topical subdir) lowercase, or are sections inside `README.md`.
 
+## Worked example
+
+A repo has grown three spellings of the same idea: `Readme.md`, `docs/Architecture.MD`, and `Assets/Logo.PNG`. On a case-insensitive laptop this all works; on the Linux CI runner a link to `docs/architecture.md` returns 404.
+
+1. List the offenders: `git ls-files | grep '[A-Z]'`.
+2. Keep only the closed canonical set in UPPERCASE (`README.md`, `LICENSE`, `CHANGELOG.md`, ...). Everything else becomes lowercase kebab-case.
+3. Rename in two steps so git records the change on case-insensitive filesystems: `git mv Assets assets-tmp && git mv assets-tmp assets`.
+4. Grep for links to the old names (`grep -rn "Architecture.md" .`) and fix them in the same commit.
+5. Add a CI step that fails on new uppercase names outside the allow-list.
+
+The rename commit touches many paths but changes no content, which keeps `git blame` usable with `--follow`.
+
 ## Anti-patterns
 
 - **`readme.md` in lowercase** — GitHub still renders it, but readers used to scanning for the SHOUTING `README.md` miss it. Use the canonical case.
@@ -70,6 +82,12 @@ bad/
 - **`Readme.md`** (Title Case) — looks like a typo of either canonical UPPERCASE or pragmatic lowercase. Pick one.
 - **`Config.toml`** for `pyproject.toml` — config files are tool-defined; don't impose UPPERCASE on them.
 
+## Scaling & failure modes
+
+- **Case-insensitive filesystems (macOS, Windows) hide the bug.** Two files that differ only by case can't coexist on those systems, so a checkout of a repo that contains both silently loses one. This is the main practical reason to keep the rule strict.
+- **Ecosystem-mandated uppercase** (`Dockerfile`, `Makefile`, `Cargo.toml`, `Gemfile`, `CMakeLists.txt`) is a fixed exception list per tool; add to it deliberately, never by habit.
+- **Growth of the canonical set.** Every new UPPERCASE name dilutes the signal that UPPERCASE means "read me first". If the set passes roughly a dozen names, fold some into `docs/`.
+
 ## Variants
 
 - **Strict** (this repo's choice) — only the closed canonical set is UPPERCASE; every other file is lowercase. Easiest to enforce, easiest to read.
@@ -77,6 +95,13 @@ bad/
 - **All-lowercase** — even `readme.md` is lowercase. Common in some Go projects. Loses the GitHub-special-rendering contract for nothing in return; only sensible if you genuinely don't render on GitHub.
 - **PascalCase ecosystem variant** — .NET, Java: file names mirror exported class names. Different rule set entirely; don't mix it with the canonical UPPERCASE policy.
 - **GNU/Make convention** — PascalCase filenames where tooling expects them (`Makefile`, `Dockerfile`); treat as a separate closed set distinct from the meta-doc set.
+
+## Adoption checklist
+
+- [ ] `git ls-files | grep '[A-Z]'` shows only the allow-listed names and tool-mandated files.
+- [ ] No two tracked paths differ only by case (`git ls-files | tr A-Z a-z | sort | uniq -d` is empty).
+- [ ] The allow-list is written down (in `CONTRIBUTING.md` or the CI script), not implied.
+- [ ] Ecosystem exceptions are listed next to the rule that grants them.
 
 ## Real-world projects using this
 

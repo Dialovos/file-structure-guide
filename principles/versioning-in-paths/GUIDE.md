@@ -63,6 +63,18 @@ bad/
 5. Don't reuse `v` for non-version meanings (`v_data/` for "verified data"). The convention is too entrenched; pick another letter.
 6. Never write `_FINAL`, `_REAL`, `_USE_THIS`, `_NEW`, `-good`, `-correct`. These betray a missing VCS workflow, not a real disambiguator.
 
+## Worked example
+
+A config directory contains `config_v1.yaml`, `config_v2.yaml`, and `config_v2_FINAL_USE_THIS.yaml`.
+
+1. Decide which file is current by checking what the code loads: `grep -rn "config_v" src/`.
+2. Keep that file under the canonical name `config.yaml`; the old versions already live in git history if they were committed.
+3. If any old version was never committed, commit it first with a message like "record config v1 before removal", then delete it.
+4. Tag the release that used each version: `git tag config-v1 <commit>`.
+5. Replace the "which file?" question with `git log -p config.yaml` and `git show config-v1:config.yaml`.
+
+One canonical path remains, and the history is one command away.
+
 ## Anti-patterns
 
 - **The death spiral**: `report.md` → `report_v2.md` → `report_v2_final.md` → `report_v2_final_FINAL.md` → `report_v2_USE_THIS_ONE.md`. The classic. Solve with `git mv` and `git log`.
@@ -73,6 +85,13 @@ bad/
 - **Path versions inside a versioned namespace**: `api/v1/users_v2.ts`. The path's outer `v1` is the namespace; you don't get a second version inside it. Use the namespace's own version bump.
 - **Major-version namespaces with a single version**: creating `api/v1/` "in anticipation" before there's ever been a v2. Adds nesting without value.
 
+## Scaling & failure modes
+
+- **Public APIs** legitimately version in paths (`/v1/`, `api/v2/`) because multiple versions run at once. Keep them to a small number and remove old ones on a schedule.
+- **Data schemas** may need versioned directories when old readers must keep working; put the version in the schema, not the filename of a working copy.
+- **Binary or large artifacts** that git can't diff well can carry a version in the release asset name, but not in the working tree.
+- **Docs for multiple releases** use tags or a versioned docs site rather than copies of the file.
+
 ## Variants
 
 - **strict-no-version-in-path** (this repo's recommendation) — never. Every working file has a canonical name; git handles history. Public APIs use *URL* versioning, not source-tree versioning.
@@ -80,6 +99,13 @@ bad/
 - **release-artifacts-only** — strict for sources and configs, but artifacts (`*.tar.gz`, `*.whl`, `*.deb`) include semver in their filename. Universal in package ecosystems.
 - **edition-based** — Rust's `edition = "2021"` model: source files unversioned, but the toolchain reads a single edition declaration that selects compatibility. Single-version-at-a-time, declared once.
 - **Date-stamped migrations** — for schema and data migrations specifically, prefer ISO dates over `_v` suffixes (`2026-04-30-add-users.sql`). Same idea: external ordering signal, no VCS reinvention.
+
+## Adoption checklist
+
+- [ ] No tracked file has `_v2`, `-old`, `-final`, `-copy`, or `-backup` in its name.
+- [ ] Every past state worth keeping is reachable through a tag or commit.
+- [ ] Deliberate path versions (API namespaces) are listed with their removal dates.
+- [ ] Contributors know the command to see a file's older state.
 
 ## Real-world projects using this
 

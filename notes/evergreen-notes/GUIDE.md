@@ -54,6 +54,19 @@ Titles are **declarative claims**, not topics. `attention-residue-tax-from-task-
 6. **Source notes are separate** — keep a `literature/` or `sources/` folder if you want to retain raw extracts, distinct from evergreen claims. The evergreen note *cites* the source note, not vice versa.
 7. **Refinement marks aren't in the filename.** Don't append `-v2` or `-final`. The note's age and refinement live in the file's modification history, not in its name.
 
+## Worked example
+
+A note titled `attention.md` collects quotes, thoughts, and a to-do list.
+
+1. Write the claim you actually believe: "Task switching leaves attention residue that lowers the next task's quality".
+2. Make it the title: `attention-residue-tax-from-task-switching.md`. A stranger should get the point from the title.
+3. Rewrite the body in your own words around that claim, and cite the source with a link.
+4. Add links to two notes it supports or contradicts, each with a sentence on the relationship.
+5. Look for notes that should link back (search the vault for "residue" and "switching") and add those links.
+6. Revisit it when you learn something that changes the claim; edit the note instead of creating another.
+
+The note becomes an asset that improves each time you touch it, not a dated capture.
+
 ## Anti-patterns
 
 - **Topic-only titles.** `attention.md`, `productivity.md`, `databases.md` are dumping grounds masquerading as notes. They accumulate disjoint claims and become unlinkable. Replace with declarative titles.
@@ -64,6 +77,13 @@ Titles are **declarative claims**, not topics. `attention-residue-tax-from-task-
 - **Treating notes as "done".** Evergreen notes are *never* finished — they reach stability through years of small edits. The rule is: every time you cite a note, consider tightening it.
 - **Confusing length with quality.** A great evergreen note is often short — one screen, three links, a clear claim. Length without refinement is sludge.
 
+## Scaling & failure modes
+
+- **Title discipline** slows capture at first; keep a separate inbox for raw material and evergreen only what you've processed.
+- **Link density** can turn into link spam; each link needs a reason a reader would follow it.
+- **Flat folders** scale to thousands of notes only with search and hubs; add MOCs when browsing breaks.
+- **Project material** (meeting notes, to-dos) isn't evergreen; keep it elsewhere so it doesn't dilute the collection.
+
 ## Variants
 
 - **strict-Matuschak (this guide).** Flat directory, declarative titles, no folders, optional `INDEX.md`.
@@ -71,6 +91,14 @@ Titles are **declarative claims**, not topics. `attention-residue-tax-from-task-
 - **evergreen-with-MOC-folder.** Splits MOCs into their own `mocs/` folder so the main evergreen folder stays purely claim-shaped. Slight friction, slight clarity gain.
 - **evergreen-plus-fleeting.** Pairs a separate `fleeting/` folder for raw capture with the strict evergreen folder; entries either graduate or rot. Bridges Zettelkasten's inbox with evergreen's discipline.
 - **evergreen-public.** A subset of notes is published as a digital garden ([`digital-garden`](../digital-garden/)). The publishing pressure tightens the writing further, at the cost of not all notes being shareable.
+
+## Adoption checklist
+
+- [ ] Every note title is a full claim, not a topic word.
+- [ ] Every note is atomic and written in your own words.
+- [ ] Each note links out and has at least one backlink.
+- [ ] Notes are edited as understanding changes; duplicates are merged.
+- [ ] Project and journal material is kept out of the evergreen folder.
 
 ## Real-world projects using this
 

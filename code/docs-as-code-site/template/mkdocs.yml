@@ -1,0 +1,15 @@
+site_name: Project documentation
+repo_url: https://example.com/your-org/your-project
+docs_dir: docs
+strict: true
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - Getting started: tutorials/getting-started.md
+  - How-to guides:
+      - Configure logging: how-to/configure-logging.md
+  - Reference:
+      - Configuration: reference/configuration.md
+  - Explanation:
+      - Architecture: explanation/architecture.md

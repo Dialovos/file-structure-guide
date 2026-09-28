@@ -66,6 +66,20 @@ my-app/
 - **Plugins**: in `plugins/`, `kebab-case.ts`. They auto-run on app start.
 - **Middleware**: in `middleware/`, `kebab-case.ts`. Apply per-page with `definePageMeta({ middleware: "auth" })`.
 
+## Worked example
+
+A Vue SPA with manual router config and imports at the top of every file moves to Nuxt 3.
+
+1. Move views to `pages/`; the file names produce routes (`pages/users/[id].vue` gives `/users/:id`).
+2. Move shared components to `components/` and drop their explicit imports (they are auto-imported by name).
+3. Extract logic into `composables/useAuth.ts` and call `useAuth()` anywhere without importing.
+4. Add server endpoints under `server/api/` (`hello.get.ts` with `defineEventHandler`), replacing a separate backend proxy.
+5. Use `useFetch` or `useAsyncData` for data so it runs on the server and hydrates without a second request.
+6. Configure `nuxt.config.ts` runtime config: private values in `runtimeConfig`, browser-exposed values in `runtimeConfig.public`.
+7. Verify with `npx nuxi typecheck` and `nuxt build`.
+
+The wiring code disappears and data loads during server rendering.
+
 ## Anti-patterns
 
 - **Manual `import` statements for auto-imported things.** `import BaseButton from "~/components/BaseButton.vue"` plus auto-import on the same name will produce a duplicate-binding error or just be redundant. Trust the auto-import system; your editor's IntelliSense will pick it up via the generated `.nuxt/auto-imports.d.ts`.
@@ -77,6 +91,13 @@ my-app/
 - **Using `.nuxt/` files directly.** That's the build output — generated, gitignored, ephemeral. Treat it as opaque.
 - **Forgetting `definePageMeta` on a page that needs a non-default layout.** The page silently uses `default.vue` and your custom layout never runs.
 
+## Scaling & failure modes
+
+- **Auto-import ambiguity**: component names derive from paths; nested folders create long names, and duplicates collide. Keep names unique and prefer explicit folders.
+- **Hydration mismatches** come from browser-only code (`window`, random values) in render paths; wrap in `onMounted` or `<ClientOnly>`.
+- **Module sprawl**: each Nuxt module adds config surface; audit them on upgrade.
+- **Large apps** may adopt layers (`extends`) to share code across Nuxt projects.
+
 ## Variants
 
 - **Nuxt 3 default (this guide)** — the layout most new projects use; auto-imports, `server/`, Composition API.
@@ -85,6 +106,14 @@ my-app/
 - **Nuxt + Pinia** — replaces `useState` for global state. Add `@pinia/nuxt` module; create stores in `stores/`. Auto-imported alongside composables.
 - **Nuxt + content** — `@nuxt/content` module for Markdown-driven content. Adds a `content/` directory; pages query it with `queryContent()`.
 - **Nuxt as static site** — `nuxt generate` for SSG. Same layout; output is a folder of HTML files plus client-side hydration.
+
+## Adoption checklist
+
+- [ ] `nuxi typecheck` and `nuxt build` pass.
+- [ ] Private secrets are only in `runtimeConfig`, never `runtimeConfig.public`.
+- [ ] Data fetching uses `useFetch`/`useAsyncData`, not raw `fetch` in components.
+- [ ] Component names are unique and match their folder path.
+- [ ] Browser-only code is guarded against server rendering.
 
 ## Real-world projects using this
 

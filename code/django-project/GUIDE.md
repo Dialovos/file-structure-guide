@@ -75,6 +75,18 @@ mysite/
 - **Templates**: per-app templates live in `apps/<app>/templates/<app>/file.html` (the doubled name is a Django convention to avoid template-namespace collisions). Site-wide templates live in repo-root `templates/`.
 - **URL include names**: dotted path in `urls.py` — `path("accounts/", include("apps.accounts.urls"))`.
 
+## Worked example
+
+A single `settings.py` has `DEBUG = True` toggled by commenting, and one app named `core` holds 40 models.
+
+1. Split settings: `mysite/settings/base.py`, `dev.py`, `prod.py`. `dev.py` and `prod.py` start with `from .base import *`.
+2. Point `manage.py`, `wsgi.py`, and `asgi.py` at `mysite.settings.dev` by default and select `prod` with `DJANGO_SETTINGS_MODULE`.
+3. Read secrets from the environment (`SECRET_KEY = os.environ["SECRET_KEY"]`) and list variable names in `.env.example`.
+4. Split `core` into apps by feature under `apps/` (`accounts`, `billing`); update `INSTALLED_APPS` to `apps.accounts`, and set `name = "apps.accounts"` in each `apps.py`.
+5. Use `makemigrations --check --dry-run` in CI to catch missing migrations.
+
+Each app now owns its models, views, URLs, and tests, and environments differ in one small file.
+
 ## Anti-patterns
 
 - **A single `settings.py` with `if DEBUG:` branches.** Settings files should be flat data plus a small amount of import logic, not branching. Split into a package.
@@ -86,6 +98,13 @@ mysite/
 - **`media/` committed to git.** User uploads are not source. Gitignore them; back them up separately.
 - **`staticfiles/` committed.** That's `collectstatic` output, not source. Gitignore.
 
+## Scaling & failure modes
+
+- **Circular imports between apps** signal that apps are too fine-grained or coupled through models. Use string references (`"billing.Invoice"`) for foreign keys and signals or services for behavior.
+- **Migrations** accumulate. Squash after releases, and never edit an applied migration.
+- **Fat models and fat views**: move multi-model logic into `services.py` or `selectors.py` inside the app.
+- **Settings sprawl**: past three environments, consider `django-environ` or `pydantic-settings` over subclass files.
+
 ## Variants
 
 - **apps-flat** — apps at the repo root next to `mysite/`, no `apps/` container. Smaller projects can do this. The cost is a noisier root; the benefit is one fewer level of `apps.` dotted prefixes.
@@ -94,6 +113,14 @@ mysite/
 - **Django REST Framework layout** — same shape, plus `apps/<app>/serializers.py` and `apps/<app>/api.py`. Compatible with this guide.
 - **Wagtail / Mezzanine** — CMS-imposed layouts; usually a layer on top of this one.
 - **`src/` layout for Django** — uncommon but works; `manage.py` stays at the root, project package and apps go under `src/`. Adds the src-layout discipline (see `code/python-src-layout/`) at the cost of an extra directory level.
+
+## Adoption checklist
+
+- [ ] `python manage.py check --deploy --settings=mysite.settings.prod` passes with the production environment.
+- [ ] `makemigrations --check` is clean in CI.
+- [ ] No secrets in tracked settings; `.env.example` lists all variables.
+- [ ] Each app has its own `tests/` and does not import another app's private modules.
+- [ ] `media/` and collected static output are gitignored.
 
 ## Real-world projects using this
 

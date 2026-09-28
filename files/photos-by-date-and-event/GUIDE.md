@@ -52,6 +52,21 @@ photos/
 5. Don't rename camera filenames. Cameras emit unpredictable names (`IMG_4321.HEIC`, `DSC09134.ARW`); renaming risks duplicates and breaks raw-file pairing.
 6. The event slug is the title you'd type into search five years later — concrete nouns, not vibes. `2026-04-22-mom-birthday/` beats `2026-04-22-special-day/`.
 
+## Worked example
+
+Phone and camera dumps are in `DCIM/` folders with names like `IMG_0231.JPG`, and events can't be found.
+
+1. Import to a staging folder, then let EXIF decide the month bucket:
+```
+exiftool -r '-Directory<DateTimeOriginal' -d "photos/%Y/%Y-%m" incoming/
+```
+2. Give files unique names if needed: `exiftool '-FileName<DateTimeOriginal' -d '%Y-%m-%d_%H%M%S%%-c.%%le' photos/2026/2026-04`.
+3. Promote events: move the relevant shots into `photos/2026/2026-04-15-spring-walk/` (or `git mv`-style move; the date in the folder is the first day).
+4. Keep originals; apply edits as sidecars or in a separate `edited/` tree so the source of truth is untouched.
+5. Back up twice, and verify a random sample opens.
+
+Everyday shots are found by month, and events by name.
+
 ## Anti-patterns
 
 - **Flat dump under a single year** — `2026/IMG_4321.HEIC, IMG_4322.HEIC, ...` defeats both retrieval modes; you can't find events, can't find dates without opening files.
@@ -61,6 +76,13 @@ photos/
 - **Mixing month-only and event directories under one parent** without the year prefix — `04/`, `04-22-anniversary/` doesn't sort correctly when years pile up.
 - **Letting cloud sync flatten the structure** — many sync services lose subdirectories under "Camera Roll." Confirm your sync preserves directory shape before relying on it.
 
+## Scaling & failure modes
+
+- **Missing or wrong EXIF** (scans, screenshots, timezone-shifted cameras) misfile photos; check for files landing in `1970` or a far-future year.
+- **Duplicates** from several devices or repeated imports; detect with checksums (`fdupes`, `rmlint`) before deleting.
+- **Video and RAW pairs** should stay together; sidecar files (`.xmp`) must move with them.
+- **Scale**: tens of thousands of photos per year are fine on disk; use a photo manager (digiKam, Immich, PhotoPrism) for browsing, and keep the folder structure as the durable layer.
+
 ## Variants
 
 - **Date only** (`YYYY/YYYY-MM-DD/`) — pure date layout; loses event-name retrieval but is what most photo apps emit by default.
@@ -69,6 +91,14 @@ photos/
 - **Year quarter** (`2026/Q2/2026-04-22-anniversary/`) — extra grouping level; rarely worth it for personal libraries.
 - **Trip-rooted** (`trips/2026-07-04-rome/` outside the main `photos/` tree) — separates major-event photos from everyday flow; some photographers find this clearer.
 - **Year of capture vs. year of edit** — keep originals under capture-year directories; export edits to a parallel `edits/<year>/` tree to avoid re-processing churn.
+
+## Adoption checklist
+
+- [ ] No files in nonsensical year folders (`1970`, future years).
+- [ ] Events use `YYYY-MM-DD-name/` and are recorded in one place.
+- [ ] RAW files, sidecars, and videos move together.
+- [ ] Duplicates were detected by checksum before deletion.
+- [ ] Two backups exist and a restore was spot-checked.
 
 ## Real-world projects using this
 

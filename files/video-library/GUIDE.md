@@ -59,6 +59,19 @@ Video/
 7. Specials and pilots: `Season 00/` for pre-season specials; episode `s00e01` for the pilot if it's not part of a numbered season.
 8. Sidecar files (subtitles, posters, NFOs) sit next to the media file with matching base names: `Inception (2010).en.srt`, `Severance - s01e01.en.srt`. Posters as `poster.jpg`, banners as `banner.jpg`.
 
+## Worked example
+
+Movies and shows are scattered as `Movie.2010.1080p.x264.mkv` and `S01E01 - Pilot.mkv`, and the media server shows wrong matches.
+
+1. Create `Movies/` and `TV Shows/` at the library root.
+2. Rename each film into its own folder: `Movies/Inception (2010)/Inception (2010).mkv`. The year disambiguates remakes.
+3. For shows: `TV Shows/Severance/Season 01/Severance - s01e01.mkv`. Season folders are `Season 01`, `Season 02`, and specials go in `Season 00`.
+4. Keep extras and subtitles beside the file with matching names: `Inception (2010).en.srt`, `poster.jpg`.
+5. Add the library to Plex or Jellyfin and check the "unmatched" list; fix names, not the metadata, whenever possible.
+6. Automate renaming with `filebot` or the *arr tools if the volume is high.
+
+The server identifies every title on the first scan.
+
 ## Anti-patterns
 
 - **No year on movie directory** — `Movies/Dune/Dune.mkv` matches the wrong remake half the time. Always add `(Year)`.
@@ -70,6 +83,13 @@ Video/
 - **Storing extras inside season directories** — `Season 01/Behind the Scenes.mp4` triggers a "missing s01e02" warning. Plex's convention is a `Featurettes/` or `Extras/` sibling directory.
 - **Spaces vs dots in episode filenames** — `Show.Name.s01e01.mkv` works in some renamers but Plex docs prefer spaces and a dash separator.
 
+## Scaling & failure modes
+
+- **Split editions and multiple versions** need the server's naming for versions (`Movie (2010) - 4K.mkv`); check the server docs.
+- **Anime and daily shows** use different numbering (absolute or date-based); follow the specific scraper's guidance.
+- **Storage growth** is dominated by a few large files; plan capacity and consider transcoding rules.
+- **Hardlinks with download clients** save space when a download folder and library share a filesystem; keep them on the same volume.
+
 ## Variants
 
 - **Plex-strict** — exactly the form documented above; safest baseline.
@@ -79,6 +99,14 @@ Video/
 - **Per-quality variants** — some users keep a parallel `Movies-4K/` tree for HDR rips. Plex supports multiple library roots pointing at parallel trees.
 - **Year-grouped movies** — `Movies/2010/Inception (2010)/...`. Aids backups but loses Plex's poster-wall flow; uncommon.
 - **Anime-specific** — `Anime/Show Name/Show Name - 01.mkv` (absolute numbering, no season). Treat as a separate library so the matcher pulls from AniDB/AniList instead of TheTVDB.
+
+## Adoption checklist
+
+- [ ] Every movie is in `Title (Year)/`, every episode is in `Show/Season XX/`.
+- [ ] Subtitles and artwork share the base name of their video.
+- [ ] The media server's unmatched list is empty.
+- [ ] The download folder and library sit on the same filesystem if using hardlinks.
+- [ ] A backup or replacement plan exists for irreplaceable items.
 
 ## Real-world projects using this
 

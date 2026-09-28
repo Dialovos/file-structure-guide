@@ -58,6 +58,19 @@ The label discipline is what turns an undifferentiated pile of "camera-sd, that-
 7. Archive subdirectories under `~/imports/archive/` use the same `<label>-<YYYY-MM-DD>/` naming. The archive holds *post-processing keepers* — culled, lightly-organised, but still preserving the original-import provenance.
 8. A `~/imports/INDEX.md` file maintained by hand listing each label, the physical card it refers to, and the date(s) of imports is highly recommended for long-running setups (>10 cards in rotation).
 
+## Worked example
+
+An SD card from a camera is about to be formatted.
+
+1. Label the physical card (`camera-sd`) and note it in a list of media if you own several.
+2. Copy everything, don't move: `rsync -a --info=progress2 /media/$USER/CARD/ ~/imports/camera-sd-2026-04-29/`.
+3. Verify the copy: `diff -rq /media/$USER/CARD ~/imports/camera-sd-2026-04-29` prints nothing.
+4. Process from the imports folder: move keepers into the photo library (see `photos-by-date-and-event`); leave the rest.
+5. After a second backup exists, format the card. Once processed, move the import folder into `~/imports/archive/` or delete it.
+6. Keep a one-line `PROVENANCE.txt` in each import if the source is worth remembering.
+
+The origin and date of every file remain traceable until you decide to discard them.
+
 ## Anti-patterns
 
 - **No physical label** — within a year, you'll forget which card was the BW card and which was the colour card. Print labels. Use a paint pen if your cards are too small for printed labels.
@@ -70,6 +83,13 @@ The label discipline is what turns an undifferentiated pile of "camera-sd, that-
 - **Date-only import directories** (`2026-04-29/`) — convenient but loses provenance the moment you have two cards from the same day.
 - **Trusting card-internal date metadata** — many cameras have wrong clocks. The *import* date is the only date you can trust; preserve it in the directory name.
 
+## Scaling & failure modes
+
+- **Bit rot and failing media**: cards and cheap USB sticks fail without warning; copy first, verify, and don't treat them as storage.
+- **Unlabeled media**: identify by a label; assign one at first import.
+- **Large imports** eat local disk; process and prune promptly.
+- **Unknown sources** (found drives, other people's media) can carry malware; scan before opening files.
+
 ## Variants
 
 - **label-date** (this guide) — the recommended form; preserves both physical-source identity and import time.
@@ -80,6 +100,14 @@ The label discipline is what turns an undifferentiated pile of "camera-sd, that-
 - **per-device subtree** — `~/imports/camera-sd/2026-04-29/` instead of flat. Useful for very high-volume photographers; nests the date under the device.
 - **mounted-as-source** — never import; just mount the device and read directly. Only viable for devices that stay connected (external drives, not removable cards).
 - **DAM-managed** — Lightroom or Capture One catalogs handle import and provenance internally; the filesystem layout still benefits from this guide's date+label scheme as the catalog's underlying file path.
+
+## Adoption checklist
+
+- [ ] Every device has a physical label and matching import folder names.
+- [ ] Copies are verified (`diff -rq` or checksums) before media is wiped.
+- [ ] Two copies exist before formatting.
+- [ ] Imports are processed and cleared on a schedule.
+- [ ] Unknown media is scanned first.
 
 ## Real-world projects using this
 

@@ -54,6 +54,19 @@ Maildir/
 5. Flag letters in `:2,<flags>` are alphabetised: `D` draft, `F` flagged, `P` passed (forwarded), `R` replied, `S` seen, `T` trashed. The flag list is rewritten in alphabetical order on every status change.
 6. Never rename `new/cur/tmp/`. Tools rely on those exact lowercase names; case differences break delivery agents.
 
+## Worked example
+
+You want offline, greppable mail with a local client.
+
+1. Choose a sync tool (`mbsync`/isync, offlineimap) and configure a Maildir store: `Path ~/Mail/personal/`, `Inbox ~/Mail/personal/Inbox`, `SubFolders Verbatim` (or `Maildir++`, depending on your client's expectations).
+2. Run `mbsync -a`. Each message becomes a file in `new/` or `cur/`; read messages carry flags in the name, such as `:2,S` (seen), `R` (replied), `F` (flagged), `T` (trashed).
+3. Point a client at it: `mutt`, `aerc`, or `notmuch` plus an interface.
+4. Index for search: `notmuch new`, then `notmuch search from:alice AND date:2026-04..`.
+5. Back up with a plain copy or `rsync`; there is no database to snapshot.
+6. Don't edit files in `cur/` by hand while a client or sync is running.
+
+Mail is ordinary files: tools can grep, back up, and process it without a server.
+
 ## Anti-patterns
 
 - **Copying a Maildir with `cp -r` instead of `cp --reflink` or `rsync -aH`** — `cp` may follow symlinks for shared messages and double-store, plus it loses hardlink-based deduplication used by some sync tools.
@@ -63,6 +76,13 @@ Maildir/
 - **Mixing two clients writing to the same Maildir without a lock** — Maildir's lock-free guarantees apply to delivery, not to two readers both trying to move messages from `new/` to `cur/`. Pick one indexer; let others read-only.
 - **Symlinking `new/` to a remote NFS share separate from `cur/`** — atomic rename is only atomic *within a single filesystem*. Splitting `new/` and `cur/` across mounts breaks the format.
 
+## Scaling & failure modes
+
+- **Many small files**: hundreds of thousands of messages slow some file systems and backup tools; archive old years to separate Maildirs or compress them.
+- **Flag conflicts**: sync tools resolve flags and moves between server and local; use one master and test with a spare folder before a full sync.
+- **Folder naming** differs between Maildir flavors (dot-prefixed `Maildir++` vs plain directories); match your client and sync tool.
+- **Encryption at rest**: Maildir is plain text; use disk encryption for the volume.
+
 ## Variants
 
 - **Maildir (Bernstein original)** — the three-directory format described above. Specified at https://cr.yp.to/proto/maildir.html.
@@ -70,6 +90,14 @@ Maildir/
 - **Maildir+S=size (Dovecot)** — appends `,S=<bytes>` to filenames so directory listing alone reveals size; `maildirsize` becomes redundant. Set via `maildir_extra_file_size` in Dovecot.
 - **Maildir+W=lines (Dovecot)** — similar but caches RFC 822 line counts.
 - **MH** — older Bernstein-adjacent format with one file per message but flat numbering. Maildir replaced it because MH's locking story was weak.
+
+## Adoption checklist
+
+- [ ] Sync tool and client agree on the Maildir flavor.
+- [ ] A full backup copy exists and was restored once.
+- [ ] A search index (`notmuch`) is current.
+- [ ] Old years are archived to keep active directories small.
+- [ ] The volume holding mail is encrypted.
 
 ## Real-world projects using this
 

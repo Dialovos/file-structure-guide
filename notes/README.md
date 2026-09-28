@@ -1,6 +1,6 @@
 # Notes & knowledge layouts
 
-20 systems for organizing notes, journals, and knowledge bases. They cluster into a handful of philosophies — pick the one whose "When to use" reflects how you actually work, not how you wish you worked.
+23 systems for organizing notes, journals, and knowledge bases. They cluster into a handful of philosophies — pick the one whose "When to use" reflects how you actually work, not how you wish you worked.
 
 ## Project- and area-driven
 
@@ -32,6 +32,12 @@
 - [`access-framework/`](access-framework/) — Action / Categories / Concepts / Entries / Search / Sources
 - [`literature-review-structure/`](literature-review-structure/) — `papers/`, `summaries/`, `bib/`
 - [`topic-vs-date-organization/`](topic-vs-date-organization/) — comparison and decision aid
+
+## Work, study, and research records
+
+- [`course-notes-structure/`](course-notes-structure/) — one folder per course, same shape every term
+- [`research-lab-notebook/`](research-lab-notebook/) — dated log + numbered, hypothesis-first experiments
+- [`engineering-work-log/`](engineering-work-log/) — daily log, weekly review, wins document, incidents
 
 ## Tool-specific
 

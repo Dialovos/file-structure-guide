@@ -57,6 +57,19 @@ Logseq creates `journals/`, `pages/`, `assets/`, and `logseq/` automatically on 
 - **Config**: `logseq/config.edn` (EDN syntax — Clojure data format, not JSON, not YAML).
 - **Block UUIDs**: Logseq inserts `id::` properties at block level when a block is referenced elsewhere. Don't strip these — they're load-bearing.
 
+## Worked example
+
+You want a Roam-style workflow on local files.
+
+1. Create a graph folder and open it in Logseq; it creates `journals/`, `pages/`, `assets/`, and `logseq/`.
+2. Write in today's journal (`journals/2026_04_30.md`; note the underscores). Outline everything as blocks.
+3. Link a topic with `[[deep work]]`; Logseq creates `pages/deep work.md` when you add content to it.
+4. Reference a block from elsewhere with `((block-uuid))`; Logseq adds an `id::` property to the source block in the file.
+5. Add `.gitignore` entries for `logseq/bak/` and `logseq/version-files/`, and commit the rest.
+6. Review a topic page's linked references panel to see all mentions across journals.
+
+Your notes are plain markdown on disk, with the daily-journal-first workflow and backlinks Roam popularized.
+
 ## Anti-patterns
 
 - **Renaming journal files to `2026-04-30.md` (dashes).** Logseq stops treating them as journal pages; the calendar view and daily features break. The format is configurable but if you change it, change the config setting too — don't just rename files.
@@ -66,6 +79,13 @@ Logseq creates `journals/`, `pages/`, `assets/`, and `logseq/` automatically on 
 - **Sync conflicts from cloud sync.** Logseq's database can corrupt if two clients write simultaneously via Dropbox/iCloud. Use Logseq Sync (paid) or git for conflict-aware syncing. Avoid simultaneous-edit clouds.
 - **Manual `id::` removal.** Block UUIDs exist because something references them. Removing them breaks transclusions silently.
 
+## Scaling & failure modes
+
+- **Page file names**: characters like `/` in titles are encoded in file names, and namespaces (`a/b`) map to `a___b.md` in the current format (older graphs used `a.b.md`); check the file name format setting before migrating.
+- **Block IDs** are written into your markdown; they survive moves but make files noisy.
+- **Large graphs** slow indexing on start-up; archive old journals into a separate graph if needed.
+- **Sync conflicts**: two devices editing one outline produce merge trouble; use one sync method and don't mix.
+
 ## Variants
 
 - **Logseq-default-Markdown** (this guide) — the recommended default. Markdown files, EDN config, journal-first.
@@ -73,6 +93,14 @@ Logseq creates `journals/`, `pages/`, `assets/`, and `logseq/` automatically on 
 - **Logseq-DB version** — the newer SQLite-backed storage Logseq is rolling out (still considered experimental at the time of writing). Single `.db` file replaces the `journals/`/`pages/` Markdown structure. Not recommended yet for git-synced graphs.
 - **Logseq + companion Markdown vault** — keep Logseq for journal-driven thinking, Obsidian for long-form / publishing. They can share an `assets/` directory if configured carefully.
 - **Public-published graph** — Logseq supports static-site export. The published graph becomes a digital garden; structure stays the same but pages get publish-ready.
+
+## Adoption checklist
+
+- [ ] `logseq/bak/` and `logseq/version-files/` are ignored by git.
+- [ ] Journals use the `YYYY_MM_DD.md` format that Logseq expects.
+- [ ] File name format setting is decided before importing or migrating.
+- [ ] Only one sync mechanism is active.
+- [ ] Topic pages have content beyond the auto-created stub.
 
 ## Real-world projects using this
 

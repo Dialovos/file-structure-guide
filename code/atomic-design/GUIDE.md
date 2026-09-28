@@ -65,6 +65,18 @@ component-library/
 - **Barrel**: `index.ts` re-exports the component (and its public types). Consumers always import from the folder, never from the inner `Button.tsx`. This keeps the import path stable across refactors.
 - **Public package entry**: `src/index.ts` re-exports the components other apps consume (typically only atoms, molecules, and organisms; templates and pages stay private).
 
+## Worked example
+
+A team has a flat `components/` folder with 120 files and can't tell which are safe to change.
+
+1. Sort components by what they contain, not by what they do: no other component inside means atom (`Button`, `Icon`); a few atoms means molecule (`LabeledInput`); a self-sufficient section means organism (`NavigationBar`).
+2. Move one folder per component: `src/atoms/Button/{Button.tsx,Button.stories.tsx,index.ts}`. Keep the `index.ts` as the only import surface.
+3. Enforce direction with a lint rule (for example `eslint-plugin-boundaries` or `import/no-restricted-paths`): atoms import nothing above them, molecules import atoms, organisms import molecules and atoms.
+4. Give every atom a story so `.storybook/` doubles as living documentation.
+5. Hold the line on `templates/` and `pages/`: they hold layout and content wiring, no business logic.
+
+After the migration a reviewer can answer "what breaks if I change Button?" by looking at who imports `atoms/Button`.
+
 ## Anti-patterns
 
 - **An `<atom>` that is actually an organism.** A "Button" that includes a dropdown, a popover, and three icons is not an atom — it's an organism with `Button` in its name. Move it. The vocabulary only works when the levels are honest.
@@ -75,6 +87,13 @@ component-library/
 - **A `components/` folder alongside the atomic levels.** When `components/` and `atoms/` coexist at the same level, contributors stop knowing which one to use. Pick one model.
 - **Storybook stories in a separate `stories/` directory at root.** Co-locate. The story belongs with the component; a parallel `stories/` tree is the same trap as a parallel `tests/` tree at root, and worse because it breaks Storybook's auto-discovery defaults.
 
+## Scaling & failure modes
+
+- **Classification arguments** ("is this a molecule or an organism?") are the main cost. Time-box them: pick the lower level when unsure and promote when the component gains its own state or data fetching.
+- **Feature code doesn't fit the ladder.** Product features that fetch data and hold state belong in feature folders; keep atomic design for the presentational library underneath (see `feature-based-frontend`).
+- **Story and test files multiply** with the component count; the one-folder-per-component rule keeps them adjacent.
+- **Design tokens** (colors, spacing) live outside the ladder, in a `tokens/` or `theme/` module every level may import.
+
 ## Variants
 
 - **Strict Atomic** (this guide) — five layers (atoms, molecules, organisms, templates, pages); pure adherence to Frost's book.
@@ -82,6 +101,14 @@ component-library/
 - **Modified naming** — substitutions like `atoms/components/blocks/layouts/`. Same intent, different vocabulary; pick this if your designers use different words. Document the mapping in the README.
 - **Atomic + tokens** — add `src/tokens/` for design tokens (colors, spacing, typography). Tokens are the substrate atoms consume; treat them as a separate concern below the atomic gradient.
 - **Atomic + theming** — add `src/themes/` for theme definitions consumed by components. Common in libraries that ship light/dark or branded variants.
+
+## Adoption checklist
+
+- [ ] Each component has its own folder with an `index.ts` public export.
+- [ ] A lint rule enforces the import direction (atoms up to pages).
+- [ ] Every atom and molecule has a story or visual test.
+- [ ] Data fetching happens no lower than organisms, and ideally in a feature layer.
+- [ ] Design tokens are shared and not duplicated per level.
 
 ## Real-world projects using this
 

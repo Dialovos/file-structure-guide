@@ -60,6 +60,19 @@ The directory split is between *purpose* (`reference/api-design-snippets/`) and 
 7. Files migrating to archive may keep the timestamp filename or be renamed with a trailing slug: `2026-04-30T14-22-08-stripe-checkout.png`. The timestamp stays leading so chronological sort works.
 8. Do not put non-screenshot images in this tree. If you save a downloaded image or a received image, it belongs in `~/Pictures/` not in `Screenshots/`.
 
+## Worked example
+
+The Desktop and Downloads are full of `Screenshot 2026-04-30 at 14.22.08.png` files.
+
+1. Create `~/Pictures/Screenshots/inbox/`, `reference/`, and `archive/`.
+2. Point the screenshot tool at the inbox: macOS `defaults write com.apple.screencapture location ~/Pictures/Screenshots/inbox && killall SystemUIServer`; on Linux use the tool's setting (Flameshot, Spectacle, GNOME Screenshot).
+3. Set an ISO-timestamp filename pattern where the tool allows it: `2026-04-30T14-22-08.png`.
+4. Triage weekly: keepers move to `reference/<purpose>/` with a descriptive name (`api-design-snippets/`), the rest is deleted.
+5. Move long-term keepers to `archive/2026-04/` monthly.
+6. Add a size guard: `du -sh ~/Pictures/Screenshots/inbox` in your weekly triage.
+
+Captures stop scattering, and only the useful ones survive.
+
 ## Anti-patterns
 
 - **Screenshots on the Desktop** — the macOS default. Pollutes your workspace, makes Desktop a graveyard, breaks the `files/desktop-zero-policy/` discipline. Reconfigure the default save location immediately.
@@ -72,6 +85,13 @@ The directory split is between *purpose* (`reference/api-design-snippets/`) and 
 - **Hoarding** — refusing to delete because "I might need it" is the disease. The triage rule is "if I can't label it in 5 seconds, delete." This is healthy.
 - **Manual screenshots into a date-only archive** — `2026-04-30/screenshot.png` skips the inbox-and-triage flow and you end up with thousands of unlabeled images per month directory.
 
+## Scaling & failure modes
+
+- **Sensitive content** (passwords, personal messages) ends up in screenshots; delete on triage and don't sync the inbox to the cloud.
+- **Retina/4K captures** are large; convert reference images to compressed PNG or WebP if space matters.
+- **Naming**: tools that can't use ISO patterns will need a rename step in the triage script.
+- **Volume**: if the inbox regularly exceeds a few hundred files, triage more often rather than building more folders.
+
 ## Variants
 
 - **auto-then-triage** (this guide) — inbox + weekly triage; recommended for most users.
@@ -81,6 +101,14 @@ The directory split is between *purpose* (`reference/api-design-snippets/`) and 
 - **CleanShot or ShareX cloud-and-local** — uploads to a SaaS *and* keeps a local copy in the inbox flow.
 - **inbox-only, no archive split** — `~/Pictures/Screenshots/` flat, with `reference/` for keepers; skip the `archive/YYYY-MM/` long-term split. Simpler, fine for low-volume users.
 - **triage during the next idle window** — set a Hammerspoon, Keyboard Maestro, or AutoHotkey rule that prompts you to triage when the inbox passes 50 files. Reactive instead of scheduled.
+
+## Adoption checklist
+
+- [ ] The screenshot tool saves to the inbox by default.
+- [ ] Filenames are ISO timestamps.
+- [ ] Weekly triage leaves the inbox empty or nearly empty.
+- [ ] Sensitive captures are deleted, not archived.
+- [ ] The inbox isn't synced to shared cloud folders.
 
 ## Real-world projects using this
 

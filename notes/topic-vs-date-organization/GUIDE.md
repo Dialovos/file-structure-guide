@@ -63,6 +63,19 @@ The intentional mix is two non-overlapping layers, each with a clear ownership r
 6. **Don't let date prefixes leak into topical files.** `attention/2026-04-30-attention-residue.md` is the start of accidental drift — drop the date.
 7. **Don't let topics leak into date files.** `daily/2026-04-30-q2-redesign.md` is similarly drift; the date file is `2026-04-30.md`, period.
 
+## Worked example
+
+Notes are filed by date for journaling and by topic for ideas, and you keep losing track of which is where.
+
+1. State the rule in a sentence: "If it happened, it goes in `daily/`; if it's something I believe or know, it goes in `topics/`".
+2. Create `daily/` (date-driven) and `topics/` (topic-driven), and nothing else at the top.
+3. Take a week of notes and classify each: the meeting that happened is a daily entry; the insight from the meeting becomes a topic note.
+4. Link from the daily entry to the topic note, so the timeline shows where ideas came from.
+5. Run a monthly pass that extracts durable claims from dailies into `topics/`.
+6. Delete or ignore the topic subfolders that only ever hold one note.
+
+Time-stamped material and durable knowledge live in separate places, joined by links.
+
 ## Anti-patterns
 
 - **Accidental mix.** Some files named by date, some by topic, no rule. Search works but orientation breaks.
@@ -73,6 +86,13 @@ The intentional mix is two non-overlapping layers, each with a clear ownership r
 - **Switching strategies mid-vault.** Pre-2025 notes are date-driven, post-2025 are topic-driven, no migration. The vault becomes two vaults pretending to be one.
 - **Folder-by-year as the only structure.** `2024/`, `2025/`, `2026/` is date-driven at folder level; if every year folder is a soup of mixed notes, the folders aren't doing useful work.
 
+## Scaling & failure modes
+
+- **Boundary cases**: project notes are both time-bound and topical; give them a project folder with dates inside, and record that as a third layer.
+- **Extraction debt**: if dailies never get mined, `topics/` stays empty; schedule the pass.
+- **Topic taxonomies** drift; prefer few broad folders plus links over a deep tree.
+- **Search** covers both layers, so the split matters for maintenance more than lookup.
+
 ## Variants
 
 - **pure-topic.** All notes named by subject; no daily layer. Suits researchers/essayists who don't journal.
@@ -81,6 +101,14 @@ The intentional mix is two non-overlapping layers, each with a clear ownership r
 - **intentional-mix-with-area-folders.** Adds PARA-style or ACCESS-style area folders alongside the date+topic split. More structure; more decisions.
 - **accidental-mix (the anti-pattern).** Listed for completeness as the case to avoid. Also called "muddled vault".
 - **journal-as-index.** A pure-date variant where each daily note is heavily linked to topical notes that auto-emerge from wikilinks (Roam/Logseq style). Topical notes exist but are derivative — their content is mostly assembled from daily-note backlinks.
+
+## Adoption checklist
+
+- [ ] The classification rule fits in one sentence and is written down.
+- [ ] Only two top-level layers exist (or a third with a stated reason).
+- [ ] Daily entries link to the topic notes they produced.
+- [ ] A periodic pass extracts durable ideas from the dailies.
+- [ ] Topic folders with a single note are merged.
 
 ## Real-world projects using this
 

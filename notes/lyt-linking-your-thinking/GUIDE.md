@@ -61,6 +61,19 @@ vault/
 6. **One MOC per Space.** `+ Spaces/+ Career.md`, `+ Spaces/+ Health.md`, `+ Spaces/+ Hobbies.md` — about 5-10 spaces total. More than 12 means you're confusing projects with spaces.
 7. **Home MOC is canonical entry.** `+ Home.md` lives at vault root and links to every space MOC. Treat it as your dashboard.
 
+## Worked example
+
+A vault of 400 notes has many links but no obvious starting points.
+
+1. Create `+ Home.md` as the entry MOC and a `+ Spaces/` folder for area MOCs (`+ Career.md`, `+ Hobbies.md`).
+2. For each cluster of at least 5 related notes, create a MOC that groups them with one-line reasons.
+3. Link every MOC from `+ Home.md`, and link each note from at least one MOC.
+4. Keep the folders coarse: `Calendar/` for dailies, `Notes/` for ideas, `Resources/` for external material.
+5. Find orphans with a search for notes not linked from a MOC and file them at your next review.
+6. Let MOCs grow with the topic; when one passes about 50 links, split it into sub-MOCs.
+
+You enter the vault at `+ Home.md` and can reach any topic in two or three clicks.
+
 ## Anti-patterns
 
 - **Deep folder hierarchies inside `Notes/`.** Defeats the entire framework. Notes are flat; structure lives in the MOC.
@@ -71,6 +84,13 @@ vault/
 - **Ignoring the `+` prefix.** Without it, MOCs sort alphabetically among regular notes and lose their hub-marker function. The convention is small but cumulative.
 - **Building the perfect MOC before writing notes.** MOCs grow with the vault; pre-architecting an empty MOC produces taxonomy that doesn't match the eventual content.
 
+## Scaling & failure modes
+
+- **MOC decay**: stale hubs mislead; touch the MOC whenever you add related notes.
+- **Premature MOCs** with three links add noise; wait for a real cluster.
+- **Naming**: the `+` prefix keeps hubs at the top of listings in Obsidian; other tools may sort it differently.
+- **Team vaults**: shared MOCs need an owner or become inconsistent.
+
 ## Variants
 
 - **LYT-classic (this guide).** Four folders, MOCs in `+ Spaces/`, daily notes in `Calendar/`, flat `Notes/`.
@@ -78,6 +98,14 @@ vault/
 - **LYT-with-Dataview.** Adds Obsidian's Dataview plugin to auto-generate parts of MOCs from queries (`tasks where ...`, `pages tagged ...`). Reduces hand-curation, increases tool-lock-in.
 - **LYT-IMF (Ideaverse / Idea Mass Framework).** Milo's later evolution — adds an `Atlases/` folder for source-derived concept maps. Most useful for researchers.
 - **LYT-Lite.** Drop `+ Spaces/` and put MOCs directly in vault root with `+` prefix. Simpler for small vaults; loses the spaces-vs-MOCs distinction.
+
+## Adoption checklist
+
+- [ ] `+ Home.md` links to every space MOC.
+- [ ] Every note is reachable from some MOC.
+- [ ] MOCs have short reasons next to links, not bare lists.
+- [ ] MOCs over about 50 links are split.
+- [ ] An orphan check is done periodically.
 
 ## Real-world projects using this
 

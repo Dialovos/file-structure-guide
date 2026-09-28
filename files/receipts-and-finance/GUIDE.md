@@ -58,6 +58,22 @@ finance/
 9. Refunds are filed as separate documents with a leading minus sign in the amount: `2026-04-23 amazon -$42.18 office-chair-cushion-return.pdf`. The minus inside the dollar segment keeps the regex consistent.
 10. Multi-currency: prefix non-USD amounts with the ISO 4217 code: `2026-04-15 hotel €120.50 paris-trip.pdf`. The dollar sign convention then becomes a per-currency anchor and your tally script needs a currency-aware pass.
 
+## Worked example
+
+Tax season: receipts are in email, on the phone, and in a shoebox.
+
+1. Create `finance/2026/2026-04/`.
+2. Name each receipt when it arrives: `2026-04-01 amazon $42.18 office-chair-cushion.pdf`. Photos of paper go through OCR (see `scanned-documents`) first.
+3. Add a note file for anything ambiguous (business vs personal) next to the receipt with the same name and `.txt`.
+4. At year end, total with a one-liner:
+```
+find finance/2026 -name '*.pdf' | grep -o '\$[0-9]*\.[0-9][0-9]' | tr -d '$' | paste -sd+ | bc
+```
+5. Group by vendor with `sort | uniq -c`, and hand the folder to your accountant.
+6. Back up the folder, encrypted, and keep it for the retention period your jurisdiction requires.
+
+Totals come from filenames, so the folder works even without a spreadsheet.
+
 ## Anti-patterns
 
 - **Amount in a spreadsheet, not the filename** — defeats the entire scheme; the filesystem becomes a dumb file store and you've reinvented Expensify badly. The amount must live in the path.
@@ -70,6 +86,13 @@ finance/
 - **Forgetting to file refunds** — credits without matching refund records make year-end totals wrong. Always file the refund the day it posts.
 - **Over-categorising in the filename** — `2026-04-01 amazon $42.18 [office] [furniture] [tax-deductible] cushion.pdf` is bracket soup; use a sibling tag file or a directory for tags.
 
+## Scaling & failure modes
+
+- **Sensitive data**: receipts contain account and address details; encrypt backups and don't sync them to shared folders.
+- **Multiple currencies**: put the currency in the amount (`EUR42.18`) or use separate roots; the awk one-liner needs adjusting.
+- **Business vs personal** need separate trees (or a prefix) if taxes require it.
+- **Retention**: check the legal minimum for your country before deleting; delete deliberately, not by accident.
+
 ## Variants
 
 - **date-vendor-amount-desc** (this guide) — the recommended form; fixed-position amount enables one-liner totals.
@@ -79,6 +102,14 @@ finance/
 - **paperless-managed flat** — paperless-ngx handles correspondents and tags; the filesystem is just a consume directory. Loses bash-grep ergonomics, gains full-text search.
 - **hledger-driven sidecar** — receipts under `finance/documents/` referenced by transaction ID from a `journal.ledger` file in the project root. The journal is the source of truth; the receipts are evidence.
 - **encrypted root** — `finance/` lives inside a gocryptfs or age-encrypted directory; same internal layout, encryption at rest.
+
+## Adoption checklist
+
+- [ ] Every file follows `date vendor $amount description`.
+- [ ] The year-end total command runs and matches your records.
+- [ ] Backups are encrypted and tested.
+- [ ] Business and personal records are separable.
+- [ ] A retention period is written down.
 
 ## Real-world projects using this
 

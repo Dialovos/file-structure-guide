@@ -69,6 +69,23 @@ myproject/
 - **CMake module files**: `cmake/FindFoo.cmake` for find-modules, `cmake/myprojectConfig.cmake.in` for the project config template.
 - **Variables**: `UPPER_SNAKE_CASE` for CMake variables, but namespaced (`MYPROJECT_BUILD_TESTS`, not `BUILD_TESTS`). Project-scoped variables avoid global pollution.
 
+## Worked example
+
+A library builds with a hand-written Makefile and consumers copy headers into their tree.
+
+1. Create the skeleton: `include/mylib/`, `src/`, `tests/`, `cmake/`.
+2. Move public headers to `include/mylib/` and include them as `#include <mylib/core.h>` everywhere, including inside `src/`.
+3. Write target-based CMake:
+```
+add_library(mylib src/core.cpp)
+target_include_directories(mylib PUBLIC include)
+target_compile_features(mylib PUBLIC cxx_std_20)
+```
+4. Add tests with `enable_testing()` and `add_test`, and build out of source: `cmake -S . -B build && cmake --build build && ctest --test-dir build`.
+5. Add `install(TARGETS ...)` and a package config so consumers can `find_package(mylib)`.
+
+The Makefile goes away, `build/` is gitignored, and a consumer needs one `target_link_libraries(app PRIVATE mylib)` line.
+
 ## Anti-patterns
 
 - **`include_directories(...)` at the top level.** Adds an include path to every target globally; one wrong header shadows another. Use `target_include_directories(<tgt> ...)` instead.
@@ -81,6 +98,13 @@ myproject/
 - **Mixing `add_subdirectory` and `find_package` for the same dep.** Pick one strategy per dep.
 - **Missing `cmake_minimum_required(VERSION 3.20)` at the top.** Without it, CMake uses very old policy defaults; nothing modern works.
 
+## Scaling & failure modes
+
+- **Global commands** (`include_directories`, `add_definitions`) leak into every target and cause the most confusing failures. Keep everything on targets with `PUBLIC`/`PRIVATE`/`INTERFACE`.
+- **Dependencies** grow slowly into a mess. Choose one mechanism (`find_package`, `FetchContent`, or a package manager such as vcpkg or Conan) and stay with it.
+- **Build times** rise with header-only-heavy code; use precompiled headers or unity builds selectively and measure first.
+- **Multi-platform matrices** belong in `CMakePresets.json` so CI and developers run identical configurations.
+
 ## Variants
 
 - **modern CMake** (≥3.20, this guide) — target-centric, `target_*` everything.
@@ -90,6 +114,14 @@ myproject/
 - **CMake + FetchContent** — `FetchContent_Declare` + `FetchContent_MakeAvailable` pulls deps from git/zip at configure time. Simplest for small projects; doesn't scale to dozens of deps.
 - **Header-only library variant** — no `src/` directory, just `include/<project>/`. CMake target is `INTERFACE`. `target_include_directories(myproject INTERFACE include)`.
 - **Multi-target project** — multiple libraries + executables, each with its own `add_library`/`add_executable`. Common when you have a core lib + CLI + tests + examples.
+
+## Adoption checklist
+
+- [ ] `cmake -S . -B build && cmake --build build && ctest --test-dir build` works from a clean clone.
+- [ ] Public headers live in `include/<project>/` and are included with angle brackets and the project prefix.
+- [ ] No `include_directories()` or `link_libraries()` at directory scope.
+- [ ] `CMakePresets.json` captures the configurations CI runs.
+- [ ] `build/` is ignored and no generated file is tracked.
 
 ## Real-world projects using this
 

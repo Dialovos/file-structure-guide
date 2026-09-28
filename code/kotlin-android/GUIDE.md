@@ -74,6 +74,19 @@ MyApp/
 - **Version catalog keys** in `libs.versions.toml`: dotted, lowercase. `androidx.compose.material3`, `kotlinx.coroutines.android`. Referenced from build scripts as `libs.androidx.compose.material3`.
 - **Convention plugins**: descriptive PascalCase (`AndroidLibraryConventionPlugin`, `AndroidApplicationConventionPlugin`); registered in `build-logic` with kebab-case ids (`myapp.android.library`, `myapp.android.application`).
 
+## Worked example
+
+A single `app` module takes 4 minutes to build and any change recompiles everything.
+
+1. Add a version catalog `gradle/libs.versions.toml` and move all dependency versions into it.
+2. Create `build-logic/convention/` with plugins such as `android.library`, `android.feature`, and `android.compose`.
+3. Extract shared infrastructure into `core/{data,domain,designsystem,network}`.
+4. Extract each screen group to `feature/<name>/`; a feature module depends on `core` modules, never on another feature.
+5. Keep `app/` for navigation wiring and the application class.
+6. Check the graph with `./gradlew projects` and build times with `--scan`.
+
+Changing one feature recompiles that module only, and features can be built and tested alone.
+
 ## Anti-patterns
 
 - **Monolithic `app/` module** with 50+ screens. Slow incremental builds, merge conflict magnet, no architectural enforcement.
@@ -89,6 +102,13 @@ MyApp/
 - **Storing API keys in `gradle.properties`.** Use `local.properties` (gitignored) or a secrets-injection plugin.
 - **A single huge `:designsystem` module** that depends on every Compose dependency. Split if it grows beyond ~30 composables.
 
+## Scaling & failure modes
+
+- **Module granularity**: too many tiny modules increases configuration time; too few loses incremental builds. Aim for feature-sized modules.
+- **Feature-to-feature navigation** needs an abstraction (a navigation interface in `core`, or type-safe routes in a shared module) to avoid cross-feature dependencies.
+- **Convention plugins** are code; test them and keep them small.
+- **Baseline profiles and shrinking** belong in `app` and a benchmark module, not in every library.
+
 ## Variants
 
 - **Now-in-Android style** (this guide) — `:app` + `:feature:*` + `:core:*` + `:build-logic`. Canonical 2025 layout.
@@ -97,6 +117,14 @@ MyApp/
 - **Compose Multiplatform shared module** — adds a `:shared` Kotlin Multiplatform module exposing Compose UI for both Android and iOS (via Compose for iOS). Layout is otherwise the same; the `:shared` module's `build.gradle.kts` is more complex.
 - **Dynamic Feature Modules** — `feature:` directory but each module declares `com.android.dynamic-feature` instead of `com.android.library`, enabling Play Feature Delivery (install on demand). Used by larger apps to keep base APK small.
 - **Modularisation by layer** — `:data`, `:domain`, `:presentation` instead of `:feature:*` + `:core:*`. Older convention, still seen; weaker for parallel team ownership.
+
+## Adoption checklist
+
+- [ ] Features depend on `core` modules only, and `./gradlew projects` shows no feature-to-feature edge.
+- [ ] All versions come from the catalog and repeated configuration lives in convention plugins.
+- [ ] Each feature module has its own tests and runs them alone.
+- [ ] Build scan shows cache hits on unchanged modules.
+- [ ] `app` contains wiring only.
 
 ## Real-world projects using this
 

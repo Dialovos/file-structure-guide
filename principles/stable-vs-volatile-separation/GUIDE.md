@@ -56,6 +56,18 @@ project/
 5. Cache dirs go under a single project-local `.cache/` or under `~/.cache/<project>/` (XDG), not scattered.
 6. Logs go to `logs/` (file logs) or stdout/stderr (12-factor); not interleaved with source.
 
+## Worked example
+
+`data/` holds an immutable vendor dump next to last night's regenerated features, and nobody dares clean it.
+
+1. Classify each entry by change rate and recoverability: irreplaceable input, hand-written config, regenerable output, ephemeral cache.
+2. Split `data/` into `data/raw/` (never modified, backed up) and `data/processed/` (gitignored, disposable).
+3. Move logs to `logs/` and caches to `.cache/`; ignore both.
+4. Make the pipeline write only to `processed/`. Add a test that the raw directory hashes identically before and after a run.
+5. Back up `raw/` and `config/`; skip the rest. Cleaning becomes `rm -rf data/processed logs .cache`.
+
+The blast radius of a mistake is now the size of the volatile directories.
+
 ## Anti-patterns
 
 - **`output/` for both kinds** — mixes regenerable artifacts with hand-curated reports. Two `output/`s would be redundant; the fix is renaming: `reports/` (stable) and `output/` (volatile).
@@ -65,6 +77,13 @@ project/
 - **Logs in `src/logs/`** — logs are runtime output; they don't share a lifecycle with source. Move them to `logs/` and gitignore.
 - **Cache co-located with source** — `src/.cache/` makes greps hit cached files. Hoist the cache to repo root.
 
+## Scaling & failure modes
+
+- **Boundaries blur** when a stable input is derived from another stable input. Keep the derivation script beside the output and record its inputs.
+- **Backup policy** should follow the split: nightly for volatile working data if it's expensive to regenerate, versioned for stable data.
+- **Read-only raw data** is easiest to enforce with file permissions or an object store with versioning.
+- **Volatile directories grow unbounded**; add a retention rule (delete after N days) or a size alert.
+
 ## Variants
 
 - **Binary** (stable vs volatile) — simplest split. Two top-level groups; everything is one or the other.
@@ -72,6 +91,13 @@ project/
 - **XDG-flavored** (config / data / cache / state) — four-way split as defined by XDG Base Directory. Strongest variant for OS-installed apps; less common for project repos.
 - **Cookiecutter Data Science** — `data/raw/`, `data/interim/`, `data/processed/`, `data/external/` — pipeline-shaped variant for ML/DS projects.
 - **Build-artifact split** (Maven/Gradle, Cargo, npm) — ecosystem-mandated `target/`, `dist/`, `build/`. The ecosystem chose for you; lean into it rather than re-inventing.
+
+## Adoption checklist
+
+- [ ] Raw inputs live apart from anything a script writes.
+- [ ] Volatile directories are gitignored and safe to delete.
+- [ ] The backup job lists exactly the stable directories.
+- [ ] A check confirms scripts never modify raw inputs.
 
 ## Real-world projects using this
 

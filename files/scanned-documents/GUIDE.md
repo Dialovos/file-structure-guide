@@ -56,6 +56,19 @@ scans/
 8. Multi-page documents stay in one PDF. Splitting a five-page lease into five PDFs loses the document boundary.
 9. Append page count or revision in parens only when needed: `2026-04-12 - utility-co - electric-bill (revised).pdf`.
 
+## Worked example
+
+A stack of paper letters and bills needs to become searchable.
+
+1. Scan at 300 dpi, black and white or grayscale, to PDF, using the scanner or a phone app.
+2. Run OCR so text is selectable: `ocrmypdf --deskew --rotate-pages --optimize 1 in.pdf out.pdf`.
+3. Rename to `YYYY-MM-DD - source - description.pdf`, using the document's own date: `2026-04-12 - utility-co - electric-bill.pdf`.
+4. File under `scans/2026/2026-04/`.
+5. Test the payoff: `pdftotext file.pdf - | grep -i "account number"` or search with your desktop indexer.
+6. Shred or keep the paper according to the legal category (tax and property documents often must be kept).
+
+Anything can be found by date, sender, or text within seconds.
+
 ## Anti-patterns
 
 - **No date in the filename** — `electric-bill.pdf` becomes ambiguous after the third one; you can't tell which year without opening it.
@@ -67,6 +80,13 @@ scans/
 - **Skipping OCR** — image-only PDFs cannot be searched. Always run OCR on ingestion (`ocrmypdf`, `tesseract`, paperless-ngx's pipeline).
 - **Filing originals before they're stable** — scanning a draft contract that gets revised three times leaves three near-identical PDFs in the archive. Wait for "final" before filing.
 
+## Scaling & failure modes
+
+- **Language packs** for OCR (`ocrmypdf -l eng+deu`) matter for non-English documents; bad OCR makes files unsearchable.
+- **Storage**: high-resolution color scans get large; grayscale 300 dpi is enough for text.
+- **Multi-page and mixed batches**: split batches by document; use a scanner's blank-page split or a tool like `pdfsandwich`/`pdfseparate`.
+- **Privacy**: scans include IDs and account numbers; encrypt backups and restrict sync.
+
 ## Variants
 
 - **date-source-description** (this guide) — the recommended form; balances retrievability and brevity.
@@ -76,6 +96,14 @@ scans/
 - **Year-flat without month directories** — `2026/2026-04-12 - source - desc.pdf`. Works for low-volume archives (under ~50 docs/year); month subdirectories help past that.
 - **Per-source top-level** — `scans/utility-co/2026-04-12 - electric-bill.pdf`. Inverts the hierarchy; better when most queries are by source and chronology matters less.
 - **encrypted archive** — `scans-encrypted.tar.gz.gpg` with the same internal layout; for sensitive medical or legal documents at rest.
+
+## Adoption checklist
+
+- [ ] Every scan is OCR'd and searchable by text.
+- [ ] Filenames use the document date, source, and description.
+- [ ] The paper-retention rule per document type is written down.
+- [ ] Backups are encrypted and tested.
+- [ ] OCR language matches the documents.
 
 ## Real-world projects using this
 

@@ -55,6 +55,19 @@ The four list files at the root are non-negotiable. `projects/` holds one file p
 - **Reference files** in `reference/`: free-form. The reference area is meant to be a low-friction filing cabinet, not a structured library. Use kebab-case filenames; subfolder when the area grows.
 - **Done items**: don't leave them cluttering the lists. Either delete on completion (most common in GTD) or move to a `done/` log file if you want a record. Don't move project files for completed projects out of `projects/` until the next weekly review.
 
+## Worked example
+
+Commitments live in email flags, sticky notes, and memory.
+
+1. Create `inbox.md`, `next-actions.md`, `waiting-for.md`, `someday-maybe.md`, `projects/`, and `reference/`.
+2. Capture everything into `inbox.md` with no organizing.
+3. Process the inbox top to bottom: if it's not actionable, delete it, file it in `reference/`, or add to `someday-maybe.md`; if it takes under two minutes, do it; otherwise, decide the next physical action.
+4. For anything needing more than one step, create `projects/<name>.md` with the outcome sentence and a next action at the top; copy that next action into `next-actions.md` under a context (`@computer`, `@calls`, `@errands`).
+5. Move delegated items to `waiting-for.md` with a date and the person.
+6. Do a weekly review: empty inbox, check each project has a next action, scan waiting-for and someday-maybe.
+
+Every open loop has a home, and the weekly review keeps the lists trustworthy.
+
 ## Anti-patterns
 
 - **Vague next actions.** "Plan vacation" is not a next action; "look up Iceland flights on Skyscanner" is. The most common GTD failure is leaving next actions abstract.
@@ -65,6 +78,13 @@ The four list files at the root are non-negotiable. `projects/` holds one file p
 - **Mixing `next-actions.md` and project task lists.** Each project file lists *all* the tasks that move the project forward; `next-actions.md` lists only the *single current* next action per project. Conflating the two duplicates work and breaks the model.
 - **Hiding `waiting-for.md`.** "Waiting for" is the discipline of tracking what you're owed; if you don't review it, the asks fall through the cracks. Make it part of the weekly review.
 
+## Scaling & failure modes
+
+- **List bloat**: `next-actions.md` with more than about 60 items means projects lack focus or the review is being skipped.
+- **Context lists** are optional; with a single device or a small list, one flat list is fine.
+- **Stalled projects**: a project without a next action is a signal; the review catches these.
+- **Tool fit**: plain files lack reminders; pair with a calendar for date-specific commitments only.
+
 ## Variants
 
 - **Classic-list** (this guide). The four canonical lists plus per-project files. Most faithful to David Allen's book.
@@ -72,6 +92,14 @@ The four list files at the root are non-negotiable. `projects/` holds one file p
 - **GTD + Bullet Journal hybrid.** Use a bullet journal (paper or digital) for daily ritual and rapid logging; mirror only project files and reference into markdown. Common for paper-leaning GTDers.
 - **GTD via Org-mode.** Emacs Org-mode has first-class GTD support: task-state keywords, `:context:` tags, `agenda` views. Same conceptual model, different syntax. See dedicated org-mode-GTD writeups (Bernt Hansen's "Organize Your Life In Plain Text!" is canonical).
 - **GTD + tickler file.** Add a `tickler/` directory with date-named files (`2026-05-15.md`) for items that should resurface on a future date. Approximates GTD's 43-folders concept.
+
+## Adoption checklist
+
+- [ ] The inbox is empty after processing, not merely small.
+- [ ] Every project file states the outcome and has a next action listed in `next-actions.md`.
+- [ ] `waiting-for.md` entries have dates and names.
+- [ ] A weekly review happens and takes under an hour.
+- [ ] Calendar holds only hard-date items.
 
 ## Real-world projects using this
 

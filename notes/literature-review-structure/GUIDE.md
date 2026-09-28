@@ -59,6 +59,18 @@ The summaries' filenames match the papers' filenames (just the extension differs
 - **BibTeX citation keys**: most reference managers default to `firstauthor-year-firstword` (e.g., `newport2024deep`); pick a convention and let the manager generate consistently. Don't hand-edit keys after the fact — your manuscripts depend on them.
 - **Subdirectories under `summaries/` or `papers/`**: only if the corpus is huge (hundreds of papers per sub-area). Then group by sub-field (`papers/ml/`, `papers/hci/`). For most projects, flat is fine; the prefix-by-year-author makes flat searchable.
 
+## Worked example
+
+A folder of 80 PDFs is named `paper (3).pdf`, `smith2020.pdf`, and `Kahneman Noise.pdf`.
+
+1. Rename each PDF to `<year>-<first-author>-<short-title>.pdf`, for example `2023-kahneman-noise.pdf`.
+2. Create a same-named summary: `summaries/2023-kahneman-noise.md` with sections for question, method, findings, limits, and quotes with page numbers.
+3. Add the BibTeX entry to `bib/references.bib` using the same key (`kahneman2023noise`), and put the key in the summary's frontmatter.
+4. Write theme notes in `themes/`, such as `attention-economics.md`, that cite summaries by key and state your synthesis.
+5. Check consistency with a script that lists PDFs without summaries and summaries without a bib entry.
+
+A search for a claim leads to a theme note, then to the summary, then to the exact page in the PDF.
+
 ## Anti-patterns
 
 - **Editing PDFs in `papers/`.** PDFs are immutable artifacts. Annotations belong in a reference manager (Zotero, Mendeley) or as a separate `papers-annotated/` if you must keep both.
@@ -68,6 +80,13 @@ The summaries' filenames match the papers' filenames (just the extension differs
 - **Duplicate of paper content in the summary.** A summary should be in your own words, not a transcript. If you find yourself copy-pasting paper text, you're not summarizing — you're highlighting. Highlight in the PDF; summarize in the notes.
 - **Themes that cite zero summaries.** A theme that doesn't link to specific summaries is a personal opinion, not a literature synthesis. If you write a theme, link the sources.
 
+## Scaling & failure modes
+
+- **Reference manager overlap**: Zotero or similar can own PDFs and BibTeX export; keep summaries and themes in your notes and point at the citation key.
+- **Large PDFs** bloat git; keep `papers/` out of git or use git-lfs, and version only summaries and bib.
+- **Duplicate papers** (preprint vs journal version) get separate summaries unless you decide otherwise; note the relationship.
+- **Theme sprawl**: a theme per paper defeats synthesis; a theme needs at least three sources.
+
 ## Variants
 
 - **Classic-paper-summary-bib** (this guide). Flat papers/summaries/bib/themes; works for most.
@@ -75,6 +94,14 @@ The summaries' filenames match the papers' filenames (just the extension differs
 - **Notion-database.** A Notion database of papers, with each row being a paper plus its summary; themes are pages that filter the database. Same model, different storage.
 - **Roam-/Logseq-style.** Drop the directories; let each paper become a topical page (`[[2024 Newport — Deep Work]]`) and themes emerge from `[[bracket links]]` between them. Works if you're already living in a Roam-style outliner.
 - **Annotated-PDF-centric.** If you do most of the thinking in PDF margins (Hypothes.is, GoodReader, ReadCube), the summary becomes lighter and the annotated PDF carries more weight. Keep `papers-annotated/` separate from `papers/`.
+
+## Adoption checklist
+
+- [ ] PDF and summary filenames match one-to-one.
+- [ ] Every summary has a BibTeX key that exists in `bib/references.bib`.
+- [ ] Quotes carry page numbers.
+- [ ] A consistency script runs before writing sessions.
+- [ ] Large PDFs are not committed to ordinary git.
 
 ## Real-world projects using this
 

@@ -57,6 +57,18 @@ The numbered prefixes (`0-` through `4-`) are a usability trick — they keep th
 - **`output/<deliverable>.md`** — drafts and final pieces. Filename matches the publication: `output/blog-attention-tax-2026-05.md`. Once published, archive a copy with the publication date.
 - **Markdown only at root of each PARA folder.** Sub-folders allowed *inside* a project/area/resource. Don't nest PARA folders inside each other.
 
+## Worked example
+
+Web clippings, highlights, and voice memos land in many apps; nothing turns them into work you can ship.
+
+1. Capture: send everything to `0-inbox/` with no organizing decision.
+2. Organize: at a weekly pass, move each item into PARA by actionability: project (`1-projects/`), area, resource, or archive.
+3. Distill: for items you touch, bold the key passages, then highlight the best of those, then add a summary at the top; save reusable summaries to `distilled/`.
+4. Express: when a project needs output, assemble from distilled packets into `output/` (draft, post, talk).
+5. Measure the cycle by counting items that reach `output/` each month, not items captured.
+
+Notes are turned into output because each stage has one job and one folder.
+
 ## Anti-patterns
 
 - **Skipping Distill.** Capturing and Organizing without ever Distilling means your `1-projects/` folders fill with raw clippings that never compose into drafts. The Distill stage is the most-skipped and the most valuable.
@@ -66,6 +78,13 @@ The numbered prefixes (`0-` through `4-`) are a usability trick — they keep th
 - **Outputs left in `1-projects/`.** When a project finishes and ships an output, move both: the project folder to `4-archive/`, and the output file to `output/`. Don't leave deliverables stranded inside the project folder.
 - **Distilling without later re-reading.** Progressive summarization is for *future re-reading*. If you never re-open `distilled/`, the bolding was busywork.
 
+## Scaling & failure modes
+
+- **Capture without distill** is the common failure: a large inbox and no output. Cap the capture volume or schedule distillation.
+- **Progressive summarization** costs time; apply it only to items you revisit, not to everything.
+- **Tool switching** between capture apps fragments the inbox; funnel them into one place.
+- **Over-organizing**: spending more time on folders than on output means the system has become the project.
+
 ## Variants
 
 - **CODE + PARA** (this guide) — the canonical Forte pairing. Recommended default.
@@ -73,6 +92,14 @@ The numbered prefixes (`0-` through `4-`) are a usability trick — they keep th
 - **CODE + ACCESS** — Nick Milo's ACCESS framework as the storage layer. Resource-flavored; works well for academics.
 - **CODE-only (no PARA)** — folders by stage only: `0-inbox/`, `distilled/`, `output/`. Skip the PARA layer entirely. Simplest; loses PARA's actionability heuristic.
 - **CODE-Lite** — drop Distill as an explicit stage; do progressive summarization inline in your notes instead of producing separate intermediate packets. Lower overhead; less reusable output.
+
+## Adoption checklist
+
+- [ ] The inbox is processed at least weekly and is not a permanent store.
+- [ ] Items are filed by actionability, not by topic alone.
+- [ ] Distilled notes exist for active projects.
+- [ ] Each month, at least one item reaches `output/`.
+- [ ] Capture sources are limited to a small number.
 
 ## Real-world projects using this
 

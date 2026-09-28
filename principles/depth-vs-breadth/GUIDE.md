@@ -67,6 +67,18 @@ deep-bad/
 5. If a feature dir grows internal nesting (`feature/lib/`, `feature/util/`, `feature/types/`), it's usually time to split the feature into peers, not add depth.
 6. Generated and vendored content lives at known shallow paths (`dist/`, `build/`, `target/`, `vendor/`, `node_modules/`).
 
+## Worked example
+
+A service has `src/main/app/modules/auth/components/forms/login.ts`: eight levels to reach one file.
+
+1. Count depth from the repo root to each leaf: `find . -type f -not -path './.git/*' | awk -F/ '{print NF-1}' | sort -n | uniq -c`.
+2. Collapse ceremonial levels first. `src/main/app/` adds nothing, so the code lives at `src/`.
+3. Replace the `modules/` layer with the module names themselves: `src/auth/`.
+4. Flatten `components/forms/` to `src/auth/login-form.ts`. Filenames now carry what the folder names used to.
+5. Re-run the count. The target is a histogram whose tail stops at depth 3 or 4.
+
+Result: `src/auth/login-form.ts` (three levels). The import path shrank from 9 segments to 3, and `auth/` now lists 6 files instead of hiding 6 folders.
+
 ## Anti-patterns
 
 - **`src/main/app/modules/...`** ladder — four wrappers before any code. Common in Java-shaped projects copied into JS or Python where they aren't required.
@@ -75,6 +87,13 @@ deep-bad/
 - **Mirror-the-URL** — copying a URL hierarchy directly into a filesystem when the URL was already too deep.
 - **"Just one more level"** — adding a parent for one item with the expectation more will arrive. They rarely arrive in the same shape; you've sunk the cost early.
 
+## Scaling & failure modes
+
+- **Wide isn't free either.** A directory with 80 children is as hard to scan as a deep tree. Past about 15 siblings, group by purpose (see `one-purpose-per-directory`) or add an `INDEX.md`.
+- **Framework-imposed depth** (Maven's `src/main/java/com/example/app/`) is outside your control. Count from the first level you own.
+- **Monorepos** legitimately add one or two levels (`apps/`, `packages/`). Treat the workspace prefix as free and apply the budget inside each package.
+- **Deep trees regrow** through copy-paste of an existing deep template. Review new directories in pull requests.
+
 ## Variants
 
 - **Strict 3-level** (this repo's default) — every leaf concept reachable in three levels. Forces hard splitting decisions early.
@@ -82,6 +101,13 @@ deep-bad/
 - **Width threshold split** — flat until any directory exceeds N peers (often 30), then split by content shape. Common in monorepos where one feature dominates.
 - **Hexagonal / clean-architecture** — deliberately deeper (`domain/usecase/port/adapter/`); accept the depth as the cost of explicit dependency direction.
 - **Single-file-per-concept** — extreme flatness; one `auth.ts` instead of `auth/*.ts`. Works until it doesn't; the file becomes the directory and the rule re-applies inside the file.
+
+## Adoption checklist
+
+- [ ] The depth histogram has no leaf deeper than 4 (excluding vendored or generated trees).
+- [ ] No directory holds a single child that is itself only a directory.
+- [ ] No directory holds more than about 15 entries without an index.
+- [ ] Exceptions (framework-mandated depth) are named in the README.
 
 ## Real-world projects using this
 

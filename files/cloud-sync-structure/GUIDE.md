@@ -61,6 +61,18 @@ The provider-first hierarchy (`<provider>/<purpose>/`) is intentional. Provider 
 5. If a provider's actual sync root cannot be relocated (iCloud on macOS), put a real symlink at `~/cloud/icloud/` pointing to the mandated path so commands like `ls ~/cloud/` still show every provider you use.
 6. Don't nest providers (`~/cloud/google-drive/work/dropbox/`) — providers must be at exactly the second level, never deeper.
 
+## Worked example
+
+Dropbox sits in `~/Dropbox`, OneDrive in `~/OneDrive`, and a Google Drive mount somewhere else, and a file was dragged into the wrong one.
+
+1. Create `~/cloud/` and move each provider's sync root under it: `~/cloud/dropbox/`, `~/cloud/onedrive/`, `~/cloud/google-drive/`. Use each client's own "change sync folder" setting rather than moving files behind its back.
+2. Inside each provider, create purpose folders (`shared-with-family/`, `work-handoff/`) instead of dumping files in the root.
+3. Decide what is allowed in the cloud at all. Private working files stay local; only files that need to be shared or synced land here.
+4. Keep the source of truth outside: don't put a git working tree or a database inside a sync folder, because sync clients can corrupt them.
+5. Add `~/cloud/` to the backup job as a whole; you now get one clear boundary.
+
+`cd ~/cloud` shows every provider, and a drag-and-drop mistake is visible from the path.
+
 ## Anti-patterns
 
 - **Letting installers default to `~/<Provider>/`** — accept their default, then move and reconfigure their root once. Every installer supports a custom location; finding the option is a 30-second cost.
@@ -71,6 +83,13 @@ The provider-first hierarchy (`<provider>/<purpose>/`) is intentional. Provider 
 - **Putting secrets in cloud-synced folders unencrypted** — `.env` files, SSH keys, AWS credentials. If you must, encrypt with `age`, `sops`, or a vault first.
 - **Leaving conflict files (`Conflicted copy.docx`, `(Hoang's MacBook)`) untouched** — they accumulate. Resolve and delete on each weekly triage.
 
+## Scaling & failure modes
+
+- **Client conflicts**: two clients syncing the same files, or a client syncing a mounted drive of another, produce conflict copies. Give each folder exactly one owner.
+- **Selective sync and placeholders** (on-demand files) make disk usage misleading and break tools that walk the whole tree; exclude cloud folders from indexers and backups that would trigger downloads.
+- **Provider lock-in**: purpose folder names should not mention the provider (`shared-with-family`, not `dropbox-family`) so a migration is a move.
+- **Mobile and web access** ignore your layout; that's fine, the structure is for your desktop.
+
 ## Variants
 
 - **by-provider (this guide)** — `~/cloud/<provider>/<purpose>/`. Provider visibility is paramount. Best when audiences/quotas matter most.
@@ -78,6 +97,14 @@ The provider-first hierarchy (`<provider>/<purpose>/`) is intentional. Provider 
 - **single-flat** — keep one sync provider at its default, no namespacing. Lowest overhead, but doesn't scale to multi-provider.
 - **flat-with-symlinks** — providers stay at their installed paths, with `~/cloud/<provider>/` symlinks for visibility. Useful when relocation is impossible (iCloud).
 - **per-tenant subdirectories** — for OneDrive at companies with multiple tenants: `~/cloud/onedrive/<tenant>/`. Adds a fourth level only when needed.
+
+## Adoption checklist
+
+- [ ] Every sync client's root is under `~/cloud/<provider>/`.
+- [ ] No git repo, database, or virtualenv lives inside a sync folder.
+- [ ] Each provider folder has purpose subfolders, not loose files.
+- [ ] Backups and indexers treat `~/cloud/` as a single, deliberate target.
+- [ ] Purpose names are provider-neutral.
 
 ## Real-world projects using this
 

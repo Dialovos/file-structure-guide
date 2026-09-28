@@ -51,6 +51,24 @@ $HOME/
 5. Tracked files retain their natural names — `.bashrc`, `.config/git/config`, `.ssh/config`. There is no `dot_*` rename layer (that's chezmoi's convention).
 6. The bootstrap script that creates `~/.dotfiles/` and the alias is conventionally `setup.sh` or `bootstrap.sh`, kept in the repo root for new machines.
 
+## Worked example
+
+A new laptop needs the same shell, git, and editor setup as the old one.
+
+On the old machine:
+1. `git init --bare $HOME/.dotfiles`
+2. `alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'` (put it in `.bashrc`)
+3. `dotfiles config --local status.showUntrackedFiles no`
+4. `dotfiles add ~/.bashrc ~/.config/git/config ~/.config/nvim/init.lua && dotfiles commit -m "add dotfiles"`
+5. `dotfiles remote add origin <url> && dotfiles push -u origin main`
+
+On the new machine:
+1. `git clone --bare <url> $HOME/.dotfiles`
+2. Define the same alias, then `dotfiles checkout`. If it complains about existing files, move them to a backup folder first, then re-run.
+3. `dotfiles config --local status.showUntrackedFiles no`
+
+You get the configuration with normal git history and no symlinks.
+
 ## Anti-patterns
 
 - **Running `dotfiles add -A` or `dotfiles add .` from `$HOME`** — would attempt to track tens of thousands of files. Always add by explicit path: `dotfiles add ~/.bashrc`.
@@ -61,6 +79,13 @@ $HOME/
 - **Symlinking `~/.dotfiles/` into the repo** — the bare directory is the repo. Symlinking it sideways adds a layer that breaks `git`'s assumptions about its own metadata layout.
 - **Letting tracked files diverge from the actual file** — running `dotfiles checkout` is the only way to apply changes. Edit-the-file-then-commit is fine; never edit a copy elsewhere and expect git to notice.
 
+## Scaling & failure modes
+
+- **Accidental adds**: `git add .` in `$HOME` would try to add everything; the `showUntrackedFiles no` setting and a habit of adding named files prevent it. Never use `dotfiles add -A`.
+- **Machine differences**: bare-git has no templating; use branches per machine or conditional includes in configs (`[include]` in git config, `if` blocks in shell rc), or move to `dotfiles-chezmoi` if differences multiply.
+- **Secrets**: nothing here encrypts. Keep secrets out of tracked files, and out of history.
+- **Discoverability**: with no README in `$HOME`, keep a list of tracked files (`dotfiles ls-files`) in the repo's own notes.
+
 ## Variants
 
 - **Bare-with-symlinks (legacy)** — bare repo plus a script that symlinks tracked files from elsewhere. Predates the `--work-tree=$HOME` trick. Avoid for new setups.
@@ -68,6 +93,14 @@ $HOME/
 - **Bare-with-stow** — bare repo at `~/.dotfiles/<module>/`; `stow` symlinks each module into `$HOME`. Best for "enable nvim on this host, skip kitty". More moving parts.
 - **Bare-with-git-crypt** — pure-bare plus `git-crypt init` to encrypt SSH keys and API tokens at rest. Solves the secrets problem without leaving git.
 - **Bare-with-bootstrap-Makefile** — pure-bare plus a `Makefile` of post-checkout steps (install Homebrew packages, set macOS defaults). Pushes setup beyond just file checkout.
+
+## Adoption checklist
+
+- [ ] `dotfiles status` is quiet: `showUntrackedFiles` is set to `no`.
+- [ ] A fresh clone plus `dotfiles checkout` reproduces the environment in a test account or VM.
+- [ ] No secret, key, or token is tracked (scan history too).
+- [ ] The alias is defined in a tracked file so it comes with the clone.
+- [ ] The list of tracked files is documented.
 
 ## Real-world projects using this
 

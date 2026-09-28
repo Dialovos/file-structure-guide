@@ -55,6 +55,19 @@ mybin/
 - **Integration test files**: `tests/<descriptive_name>.rs`. Each top-level `.rs` in `tests/` is compiled as its own crate, so name them by feature (`tests/cli_smoke.rs`, `tests/config_parsing.rs`).
 - **Example files**: `examples/<descriptive_name>.rs`. Run with `cargo run --example basic`.
 
+## Worked example
+
+`main.rs` has 700 lines and integration testing means shelling out to the binary.
+
+1. Keep `main.rs` to a few lines: parse args, call `mybin::run(args)`, map the error to an exit code.
+2. Move logic to `src/lib.rs` and submodules, and make `run` return `Result<(), Error>`.
+3. Define CLI arguments in `src/cli.rs` with `clap` derive.
+4. Test the logic directly in `tests/integration_test.rs` and unit tests in modules; use `assert_cmd` for a few end-to-end checks of the actual binary.
+5. Commit `Cargo.lock` (binaries should).
+6. Add `cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test` to CI.
+
+The binary is a thin shell over a library you can test without spawning processes.
+
 ## Anti-patterns
 
 - **Putting all logic in `main.rs` then trying to write integration tests.** Integration tests cannot reach binary-only code. Symptom: you write `tests/integration_test.rs` and discover none of your functions are visible. Fix: extract logic into `lib.rs`.
@@ -65,6 +78,13 @@ mybin/
 - **Using `tests/` for unit tests.** Unit tests go in `#[cfg(test)] mod tests` *inside* the file they test. `tests/` is for integration tests that exercise the public API.
 - **Forgetting `examples/` exists.** It's free CI: every example must compile when you run `cargo build --examples`. Use it to keep your README's code samples honest.
 
+## Scaling & failure modes
+
+- **Error handling**: use `thiserror` for typed errors in the library and `anyhow` at the binary edge.
+- **Compile time** grows with dependencies; use `cargo build --timings` before optimizing and consider workspace splitting.
+- **Multiple binaries** go in `src/bin/` or become a workspace; don't put unrelated tools in one `main.rs`.
+- **Release binaries** need `--release` profile settings (LTO, strip) tuned deliberately.
+
 ## Variants
 
 - **main-only** — single `src/main.rs`, no `lib.rs`. Fine for ≤200 LOC. Cannot have integration tests against internal logic. Switch to main-with-lib the day you write the second non-trivial function.
@@ -72,6 +92,14 @@ mybin/
 - **multi-binary** — drop `src/bin/foo.rs`, `src/bin/bar.rs`, and Cargo produces two binaries. Combine with `lib.rs` so each binary is also a thin wrapper around shared library code.
 - **binary + workspace member** — for very large projects, the binary becomes one crate inside a workspace; see `code/rust-workspace/`.
 - **binary with build.rs** — adds a `build.rs` for codegen, vendored C deps, or version-stamping. The layout is unchanged; `build.rs` sits next to `Cargo.toml`.
+
+## Adoption checklist
+
+- [ ] `main.rs` is under about 30 lines.
+- [ ] `Cargo.lock` is committed.
+- [ ] `cargo fmt --check && cargo clippy -- -D warnings && cargo test` pass in CI.
+- [ ] At least one `assert_cmd` test covers the real binary.
+- [ ] Errors reach the user with clear messages and non-zero exit codes.
 
 ## Real-world projects using this
 

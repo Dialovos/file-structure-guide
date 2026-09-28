@@ -59,6 +59,18 @@ The 24-hour SLA is not arbitrary. It's the longest interval over which you'll st
 7. macOS-specific: hide the `.DS_Store` files via shell config, and consider `defaults write com.apple.finder CreateDesktop -bool false; killall Finder` to disable Desktop icons entirely if you want strict zero.
 8. Windows-specific: empty Desktop is achievable with the standard "Sort by > Auto arrange icons OFF + delete all icons" combo plus redirecting Downloads, Screenshots, and "Save to Desktop" defaults.
 
+## Worked example
+
+The desktop has 60 icons and finding the current one takes a minute.
+
+1. Create `~/desktop-staging/` and move everything currently on the Desktop into `~/desktop-staging/2026-04-29-from-desktop/` in one go.
+2. Sort that folder once: delete junk, file the rest in real homes (project folders, `~/Documents`, the archive).
+3. Change defaults that write to the Desktop: the screenshot tool (see `screenshots-auto-flow`), browser downloads (see `downloads-triage`), and any app export folder.
+4. Add a nightly check that lists anything on the Desktop older than a day, for example `find ~/Desktop -mindepth 1 -mtime +0` in a systemd timer or cron job that sends a notification.
+5. Set a wallpaper you like. The Desktop's job is to be seen.
+
+After a week the Desktop stays empty by habit and by defaults.
+
 ## Anti-patterns
 
 - **"I'll just leave it here for now"** — the most common failure mode. *Now* is forever; without a 24-hour SLA, files accumulate.
@@ -71,6 +83,13 @@ The 24-hour SLA is not arbitrary. It's the longest interval over which you'll st
 - **Permanent staging** — the `desktop-staging/` directory grows forever because nothing ever ages out. Implement the 30-day deletion or the staging area is just Desktop with extra steps.
 - **Symlinks-to-projects on the Desktop** — same problem as aliases: clutter without value. Use the file manager's sidebar or your shell's `cd` aliases instead.
 
+## Scaling & failure modes
+
+- **Habit vs. defaults**: policies that rely on willpower fail; fix the apps that write there.
+- **Shared machines and work profiles** may enforce their own Desktop redirects; apply the rule to the visible surface, not the mechanism.
+- **Staging folders** become the new Desktop; the 24-hour timer and the dated name are the safeguard.
+- **Cloud-synced Desktops** (OS-level folder backup) upload the mess; turn off desktop sync or keep the folder empty.
+
 ## Variants
 
 - **strict-empty** (this guide) — `ls ~/Desktop` is literally empty; redirect every default that targets Desktop.
@@ -80,6 +99,14 @@ The 24-hour SLA is not arbitrary. It's the longest interval over which you'll st
 - **virtual-desktops-as-organisation** — using multiple virtual desktops (Spaces on macOS, Workspaces on GNOME, Virtual Desktops on Windows) so each is contextually clean even if one is messy. Not a substitute for the policy but a complement.
 - **null-desktop** (`defaults write com.apple.finder CreateDesktop -bool false`) — disable the Desktop entirely on macOS so icons cannot be placed there. The most extreme variant; great for users who never use Desktop intentionally.
 - **time-boxed exception** — allow Desktop icons during a specific work session (e.g., reviewing a stack of PDFs), but commit to clearing before logoff. Functions as deliberate tactical clutter.
+
+## Adoption checklist
+
+- [ ] `ls ~/Desktop` is empty.
+- [ ] Screenshot, browser, and chat-app default save locations don't point at the Desktop.
+- [ ] `~/desktop-staging/` entries are dated and emptied within a week.
+- [ ] A reminder or timer flags files older than a day.
+- [ ] Desktop cloud sync is disabled or irrelevant.
 
 ## Real-world projects using this
 
