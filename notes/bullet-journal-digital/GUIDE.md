@@ -59,6 +59,18 @@ The directory shape mirrors the four BuJo modules. Daily logs go in `daily/`, mo
 - **INDEX.md**: a flat list of collection links. Each entry: `- [Books to read](collections/books-to-read.md) — short description`.
 - **Glyphs in entries**: `• task`, `○ event`, `– note`, `* priority`. Use Markdown-friendly versions if your editor mangles bullets (e.g., `- [ ] task` for checkboxes is acceptable).
 
+## Worked example
+
+Tasks live in five apps and a notes file; nothing reviews them.
+
+1. Create `future-log.md` with headings for the next six months, and `monthly/2026-05.md` for the current month.
+2. Each morning, create `daily/2026-05-14.md` and rapid-log with glyphs: `•` task, `○` event, `–` note, `*` priority.
+3. At the end of the day, review: mark `x` for done, `>` for migrated to tomorrow, `<` for scheduled to the future log.
+4. At month end, migrate open tasks to the new monthly page, and cancel what no longer matters (`~~text~~`); the act of choosing is the point.
+5. Start collections as needed (`collections/books-to-read.md`) and list each in `INDEX.md` with a link.
+
+Everything open is visible on today's page or this month's page, and nothing stays open without a decision.
+
 ## Anti-patterns
 
 - **Skipping migration.** The single biggest BuJo failure mode. If you don't migrate unfinished tasks each day/month, your daily logs become a graveyard and the system collapses to "dated notes folder".
@@ -68,6 +80,13 @@ The directory shape mirrors the four BuJo modules. Daily logs go in `daily/`, mo
 - **Using glyphs inconsistently.** Pick the four glyphs (or your variant) and stick to them. Inconsistent glyphs = no signifier system = unstructured notes.
 - **Future Log sprawl.** The Future Log is for *fixed* future dates (birthdays, deadlines), not aspirations. "Someday/maybe" goes in a collection.
 
+## Scaling & failure modes
+
+- **Migration fatigue**: if the same task migrates three times, delete it or turn it into a project.
+- **Glyph inflation**: keep to four or five signifiers; extra symbols slow logging.
+- **Digital friction**: search and sync are strengths; don't recreate paper layouts (calendars drawn with tables) that a calendar app does better.
+- **Archive**: monthly and daily files accumulate cheaply; keep them flat by date.
+
 ## Variants
 
 - **Strict BuJo** (this guide) — faithful to *The Bullet Journal Method*: four modules, four glyphs, migration ritual, Index. The recommended starting point.
@@ -75,6 +94,14 @@ The directory shape mirrors the four BuJo modules. Daily logs go in `daily/`, mo
 - **Simplified BuJo** — drop the Future Log; keep Monthly + Daily + Collections + Index. Lower overhead; gives up long-horizon planning.
 - **Roam-flavored BuJo** — daily pages with backlinks to collection pages (which auto-update). Loses the migration ritual but gains queryability. Closer to Logseq than canonical BuJo.
 - **BuJo-on-paper + digital archive** — keep the analog notebook for ritual; periodically photograph or transcribe completed months into a digital archive for search. Carroll himself has expressed sympathy for this hybrid.
+
+## Adoption checklist
+
+- [ ] Today's daily log exists and uses the glyph set consistently.
+- [ ] A monthly review migrates or cancels every open task.
+- [ ] `future-log.md` covers the next several months.
+- [ ] Every collection is linked from `INDEX.md`.
+- [ ] Tasks migrated three times are reconsidered.
 
 ## Real-world projects using this
 

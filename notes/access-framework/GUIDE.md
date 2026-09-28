@@ -58,6 +58,19 @@ The numbers force the order. Anything inside each folder follows that folder's d
 7. **Inside `6-sources/`:** one note per source — `6-sources/newport-2016-deep-work.md`, `6-sources/matuschak-evergreen-notes.md`. Author-year-title is conventional but not required.
 8. **`INDEX.md` at vault root** is recommended — it's a top-level MOC that links to entry points across all six folders.
 
+## Worked example
+
+A PARA vault's `3-resources/` holds book highlights, half-written ideas, and dashboards in one pile.
+
+1. Sort resources by whose thinking it is: yours (`3-concepts/`) or someone else's (`6-sources/`).
+2. Move dated captures (journal, meeting logs) to `4-entries/`; keep durable life-area hubs in `2-categories/`.
+3. Move current to-dos and active projects to `1-action/`.
+4. Put saved queries and dashboards (Dataview blocks, search notes) in `5-search/`, so they don't pose as content.
+5. Add one category hub per area, for example `2-categories/health.md`, that links to concepts, sources, and open actions.
+6. Cap it: six folders, no seventh. New kinds of things go into an existing folder or become tags.
+
+Ideas you wrote yourself and quotes from books are no longer mixed, so citing and reusing both gets easier.
+
 ## Anti-patterns
 
 - **Putting concepts in sources.** `6-sources/my-thoughts-on-attention.md` — that's a concept, move it. The split's value collapses if you blur it.
@@ -68,6 +81,13 @@ The numbers force the order. Anything inside each folder follows that folder's d
 - **No `5-search/` content.** If `5-search/` is empty, you're not using the framework — saved indexes are the *point* of having a search folder.
 - **Skipping numbers.** `action/`, `categories/` without numeric prefixes loses the workflow ordering. Tools sort alphabetically; numbering forces semantic order.
 
+## Scaling & failure modes
+
+- **Boundary disputes** (is this a concept or a source?) recur; use the test "could someone else have written it?" If yes, it's a source.
+- **Concept folder growth**: past a few hundred notes, rely on category hubs and MOCs instead of subfolders.
+- **Entries pile up** as dated files; they're cheap, so leave them flat and prune by review.
+- **Tool coupling**: the search folder assumes a tool with queries (Dataview or similar); without one it stays empty and can be dropped.
+
 ## Variants
 
 - **ACCESS-strict (this guide).** Six folders, numbered prefixes, hard separation.
@@ -75,6 +95,14 @@ The numbers force the order. Anything inside each folder follows that folder's d
 - **ACCESS-with-archive.** Seven folders — adds `0-archive/` or `7-archive/` for fully cold material. Useful if you compulsively delete; keeps a graveyard outside the active six.
 - **ACCESS-PARA-hybrid.** Use PARA's `1-Projects / 2-Areas / 3-Resources / 4-Archive` for the action/category/source axis, then add `Concepts/`, `Entries/`, `Search/` as parallel non-numbered folders. Concrete and emergent — pay both costs.
 - **ACCESS-with-evergreen-flat.** Inside `3-concepts/`, enforce strict [`evergreen-notes`](../evergreen-notes/) discipline (declarative titles, dense linkage, no sub-folders). Common pairing.
+
+## Adoption checklist
+
+- [ ] Exactly six top-level folders with numeric prefixes.
+- [ ] Every note in `3-concepts/` is your own claim; quotes live in `6-sources/`.
+- [ ] Each category has one hub note linking concepts, sources, and actions.
+- [ ] Saved searches are kept in `5-search/`, not among concepts.
+- [ ] The framework is described in a short `README` at the vault root.
 
 ## Real-world projects using this
 

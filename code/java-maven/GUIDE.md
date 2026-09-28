@@ -67,6 +67,19 @@ my-project/
 - **Resource files**: `application.properties`, `application.yml`, `logback.xml`, `META-INF/services/...`. Filenames usually fixed by the consuming framework.
 - **`webapp/`** (servlet-based web apps only): `src/main/webapp/WEB-INF/web.xml`, JSPs, static assets. Most modern apps use Spring Boot embedded servers and skip `webapp/`.
 
+## Worked example
+
+A project compiles in the IDE but `mvn package` fails on CI because of missing resources and an unpinned JDK.
+
+1. Confirm the layout: sources in `src/main/java`, resources in `src/main/resources`, tests in `src/test/java`. Move anything that isn't there.
+2. Pin the toolchain in `pom.xml` with `<maven.compiler.release>21</maven.compiler.release>` and set `project.build.sourceEncoding` to `UTF-8`.
+3. Add the Maven Wrapper (`mvn wrapper:wrapper`) so everyone uses the same Maven version.
+4. Manage dependency versions in `<dependencyManagement>` or import a BOM.
+5. Separate unit tests (`*Test`, run by Surefire) from integration tests (`*IT`, run by Failsafe in `mvn verify`).
+6. Verify with `./mvnw -B verify` on a clean clone.
+
+The build result no longer depends on the developer's machine.
+
 ## Anti-patterns
 
 - **Source files outside `src/main/java/`.** `src/java/`, `java/`, `code/` — all of these break every Maven plugin's defaults. Move to MSDL.
@@ -78,6 +91,13 @@ my-project/
 - **Putting integration tests in `src/test/java/` and running them with Surefire.** Slow ITs blow up the unit-test cycle. Use `*IT.java` with `failsafe-plugin` and a separate phase.
 - **Manual `<dependency>` declarations for Spring/JUnit BOMs instead of `<dependencyManagement>` import.** BOMs (Bill of Materials) keep transitively-related deps version-aligned. Use `spring-boot-dependencies` BOM, JUnit `junit-bom`, AWS SDK BOM.
 
+## Scaling & failure modes
+
+- **Multi-module growth**: a parent POM with modules is natural past one deployable; keep the parent thin (versions and plugins) and use `<packaging>pom</packaging>`.
+- **Dependency conflicts** are diagnosed with `mvn dependency:tree`; enforce convergence with the enforcer plugin.
+- **Slow builds**: use `-T 1C` for parallel modules and `-pl <module> -am` to build only what you touch.
+- **Java package names** mirror the reverse-DNS path; deep `com/example/...` nesting is imposed and doesn't count against your depth budget.
+
 ## Variants
 
 - **single-module** (this guide) — one `pom.xml`, one artifact. Default for libraries and small apps.
@@ -86,6 +106,14 @@ my-project/
 - **with-dependabot** — `.github/dependabot.yml` with `package-ecosystem: maven`. Recommended for any production project to keep deps current.
 - **with-spring-boot** — Spring Boot's `spring-boot-maven-plugin` repackages the JAR into an executable fat JAR. Inherits from `spring-boot-starter-parent` instead of declaring a `<parent>` of your own.
 - **archetype-driven** — `mvn archetype:generate -DarchetypeArtifactId=maven-archetype-quickstart` produces this exact layout. Useful for teaching; production projects usually start from a known-good `pom.xml` rather than the bare archetype.
+
+## Adoption checklist
+
+- [ ] `./mvnw -B verify` passes from a clean clone.
+- [ ] JDK release, encoding, and plugin versions are pinned.
+- [ ] Unit and integration tests run in separate phases.
+- [ ] `target/` is gitignored.
+- [ ] Dependency versions are managed in one place.
 
 ## Real-world projects using this
 

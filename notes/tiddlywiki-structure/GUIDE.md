@@ -52,6 +52,19 @@ Single-file mode collapses to a single `wiki.html` containing everything. Node.j
 - **Plugin / theme / language directories**: when used, plugins, themes, and languages live in well-known directories (`plugins/`, `themes/`, `languages/`) at the wiki root or are referenced from a system path. The convention is `category/author/plugin-name/`.
 - **`output/`**: build artifact directory. Conventional but configurable in `tiddlywiki.info`'s `build` section. Always gitignore.
 
+## Worked example
+
+A single-file wiki has grown to 12 MB and is hard to back up or version.
+
+1. Install Node.js and TiddlyWiki (`npm install -g tiddlywiki`).
+2. Convert the single file into a folder wiki: `tiddlywiki --load old-wiki.html --savewikifolder mywiki`. Each tiddler becomes a `.tid` file in `mywiki/tiddlers/`.
+3. Run it locally: `tiddlywiki mywiki --listen`, and edit in the browser at `localhost:8080`.
+4. Commit `tiddlers/` and `tiddlywiki.info` to git; ignore `output/` and any backup folders.
+5. Build a single-file copy when needed: `tiddlywiki mywiki --build index`, which writes `output/index.html`.
+6. Note system tiddlers: names starting with `$:/` are stored with a `$__` file-name prefix.
+
+Each note is a diffable text file, and you can still publish or share the single-file HTML.
+
 ## Anti-patterns
 
 - **Editing a single-file wiki while it's open in two tabs.** The "save" operation rewrites the whole HTML; two tabs racing each other will lose tiddlers silently. Always edit in one tab.
@@ -61,6 +74,13 @@ Single-file mode collapses to a single `wiki.html` containing everything. Node.j
 - **Editing system tiddlers in place without overrides.** Modify `$:/themes/...` directly and the next plugin update overwrites your changes. Use shadow-tiddler overrides (a `tiddlers/$__themes_...tid` file) so your edits live in your wiki, not in the plugin.
 - **Mixing Node.js mode and single-file editing.** If you build `output/index.html`, edit it in a browser, and save — your in-browser edits go to the saved HTML, not back into `tiddlers/`. The two halves desync. Pick a workflow.
 
+## Scaling & failure modes
+
+- **File names**: tiddler titles with special characters are transformed into file names; two titles can collide after sanitizing.
+- **Plugins** live inside the wiki data; record which ones you depend on and their versions.
+- **Single-file mode** saving depends on the browser and saver method; test backups before trusting them.
+- **Growth**: thousands of tiddlers load fine in Node mode, but a single HTML file gets heavy on mobile.
+
 ## Variants
 
 - **Single-file (classic).** One `wiki.html` with everything embedded. Simplest, most portable, hardest to version-control granularly (one big file diff).
@@ -69,6 +89,14 @@ Single-file mode collapses to a single `wiki.html` containing everything. Node.j
 - **TiddlyHost.** Managed-cloud TiddlyWiki — they host your single-file wiki and provide a save endpoint. Storage is still a single HTML file from your perspective.
 - **TiddlyWiki Classic.** The pre-5.x version (TiddlyWikiClassic). Mostly historical; not recommended for new wikis.
 - **Bob (multi-user).** A Node.js server that exposes a TiddlyWiki to many users with conflict handling. Storage is per-tiddler files like Node.js mode plus a Bob-specific layer.
+
+## Adoption checklist
+
+- [ ] `tiddlers/` and `tiddlywiki.info` are in git; `output/` is ignored.
+- [ ] A rebuild from the repository produces a working `index.html`.
+- [ ] Installed plugins and versions are noted in the repository.
+- [ ] Backups of single-file wikis are restored at least once as a test.
+- [ ] Tiddler naming convention is documented.
 
 ## Real-world projects using this
 

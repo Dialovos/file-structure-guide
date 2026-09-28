@@ -61,6 +61,18 @@ notes/
 6. Keep each section ≤ ~10 entries. If a section grows beyond that, the directory probably wants subdirs.
 7. The first link in each entry is the file's full name — readers should be able to identify the file from the index without clicking.
 
+## Worked example
+
+`notes/` has 40 date-named files and `ls` is an unreadable wall.
+
+1. Group by what you look for: projects, people, reading, ideas.
+2. Create `notes/INDEX.md` (or a `MOC` note in a vault). Each entry is `- [Title](file.md) — one line saying why you'd open it`.
+3. Write the one-line descriptions by hand; generated titles alone add no meaning.
+4. Link the index from the parent README and from any note that acts as a hub.
+5. Each time you add a note, add its line, or set a monthly reminder to sweep for orphans: `for f in notes/*.md; do grep -q "$(basename $f)" notes/INDEX.md || echo "$f"; done`.
+
+The directory keeps every file; the index says which ones matter and why.
+
 ## Anti-patterns
 
 - **`INDEX.md` that just runs `ls`.** If the index is identical to the alphabetical file listing, it adds nothing. Delete it; it'll only go stale.
@@ -71,6 +83,13 @@ notes/
 - **Index buried in a subdirectory.** `notes/_meta/INDEX.md` — readers won't find it. The index lives at the directory's root.
 - **One giant root-level index for the whole repo.** That's the README's job, and at scale that's a MOC vault, not an index. Multiple smaller indexes scale; one giant index doesn't.
 
+## Scaling & failure modes
+
+- **Hand-maintained indexes drift.** Past about 100 entries, generate the mechanical list (for example a script that emits titles) and keep the hand-written index for the curated layer only.
+- **One giant index** repeats the wall problem. Split by theme and add an index of indexes.
+- **Orphans** are the failure signal: a file no index mentions is effectively lost. Run an orphan check in CI or on a schedule.
+- **In repos**, a good README table can serve as the index; a separate `INDEX.md` is for directories that aren't a project root.
+
 ## Variants
 
 - **Hand-curated** — every entry is hand-written. Maximum quality, maximum maintenance cost. Best for stable directories.
@@ -79,6 +98,13 @@ notes/
 - **MOC (Map of Content)** — notes-vault flavor; the "index" is itself a first-class note that other notes link to as a hub. Common in Obsidian and LYT vaults.
 - **Sectioned MOC** — a hub note with multiple `##` sections, each its own mini-MOC. Used when the topic has natural subtopics that don't quite warrant separate directories.
 - **External catalog** — for very large vaults, the "index" is a database query (Dataview in Obsidian, Logseq queries) rather than a file. Live, never-stale, but tied to the tooling.
+
+## Adoption checklist
+
+- [ ] Every directory with more than ~7 children has an index or MOC.
+- [ ] Each index line has a description, not just a title.
+- [ ] An orphan check (script or periodic review) exists.
+- [ ] Indexes are linked from their parent, so they're reachable from the root.
 
 ## Real-world projects using this
 

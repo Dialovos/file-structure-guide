@@ -60,6 +60,18 @@ my-repo/
 - **`go.work` (workspaces)**: when present, lives at the repo root and lists each module path: `use ./core`, `use ./client`, etc. Don't commit `go.work.sum` if you intend `go.work` to be local-only — but in practice committing both is common and sane.
 - **Avoid**: nested modules (a `go.mod` *inside* another module's directory tree). Technically valid, but confuses every Go tool and most humans. Prefer flat sibling layout.
 
+## Worked example
+
+A repo holds a library and a server; the library needs v1 stability while the server changes weekly.
+
+1. Give each subtree its own `go.mod`: `core/`, `client/`, `server/`.
+2. In `server/go.mod`, require the library at a released version, and use a `go.work` file locally so edits are seen across modules without `replace` directives: `go work init ./core ./client ./server`.
+3. Tag releases by subdirectory: `git tag core/v1.4.2`.
+4. Run tests per module in CI: `for m in core client server; do (cd $m && go test ./...); done`.
+5. Don't commit `go.work` unless the team agrees; release builds should resolve real versions.
+
+Each module releases on its own and consumers of `core` don't download server dependencies.
+
 ## Anti-patterns
 
 - **Pre-emptive multi-module split** before you have an actual release-cadence problem. Adds ceremony with no payoff.
@@ -72,6 +84,13 @@ my-repo/
 - **Skipping `go mod tidy` per module.** Each module's `go.mod`/`go.sum` is independent; running tidy in `core` doesn't update `client`. Add a `make tidy` target that loops.
 - **Mixing single-module and multi-module conventions.** A single root `go.mod` plus child `go.mod`s is the "nested" anti-pattern. Pick one style.
 
+## Scaling & failure modes
+
+- **Coordination cost** rises with the number of modules: each cross-module change needs release then bump. Keep the count small.
+- **`replace` directives** left in committed `go.mod` files break downstream consumers.
+- **Major versions** need a `/v2` path suffix in module and directory; plan for it before the first breaking change.
+- **Tooling** (linters, CI) must iterate over modules; a `Makefile` target or a small script is essential.
+
 ## Variants
 
 - **sibling-modules** (this guide) — flat layout, each top-level subdirectory is one module. The most common multi-module shape.
@@ -80,6 +99,14 @@ my-repo/
 - **`go.work` workspace mode** — a `go.work` file at the repo root replaces per-module `replace` directives during local development. Modules see each other through the workspace; downstream consumers see them through tags. Modern recommendation as of Go 1.18+. Combine with sibling-modules.
 - **API-version split** — modules organised by API version (`api/v1/go.mod`, `api/v2/go.mod`) so consumers pin to one major while you iterate on another. Used by some gRPC and protobuf libraries.
 - **Per-service SDK modules** — each external service gets its own module under `service/<name>/go.mod`. AWS SDK for Go v2 follows this pattern.
+
+## Adoption checklist
+
+- [ ] Each module builds and tests independently: `cd <module> && go test ./...`.
+- [ ] No committed `replace` pointing at a local path.
+- [ ] Release tags follow `<dir>/vX.Y.Z`.
+- [ ] CI loops over all modules and fails on any.
+- [ ] A short document lists which module depends on which.
 
 ## Real-world projects using this
 

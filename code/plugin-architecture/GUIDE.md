@@ -60,6 +60,19 @@ my-host/
 - **Plugin module**: `<plugin_name>_plugin.py` exporting one class — `AudioPlugin`, `VideoPlugin`. The redundant `_plugin` suffix is intentional: it makes grepping for plugin classes trivial across an ecosystem.
 - **Entry-points group**: `myhost.plugins` (dotted, lowercase). One group per extension point — if you have multiple kinds of extensions (codecs vs filters), use `myhost.codecs` and `myhost.filters`.
 
+## Worked example
+
+An app hard-codes three exporters in an `if/elif` chain and each new one needs a core change.
+
+1. Define the contract in `core/plugin_api.py`: an abstract class with `name`, `run(context)`, and optional `setup()`/`teardown()`.
+2. Write `core/registry.py` that discovers plugins from the entry-point group `myhost.plugins` (`importlib.metadata.entry_points(group="myhost.plugins")`) and from `plugins/*/plugin.toml` for in-tree development.
+3. Move each exporter to `plugins/<name>/` with a `plugin.toml` manifest (name, version, host API version).
+4. Add a compatibility check: the registry refuses plugins declaring an unsupported host API version and logs why.
+5. Write a contract test that loads every plugin and checks it implements the interface.
+6. Document how to publish an external plugin: entry point declaration in its `pyproject.toml`.
+
+Adding a new exporter now needs no host change.
+
 ## Anti-patterns
 
 - **Host imports specific plugins.** `from plugins.audio import AudioPlugin` defeats the entire pattern; the host now hard-depends on the plugin. The registry returns `Plugin` instances; the host calls methods on those instances and never asks what concrete class they are.
@@ -70,6 +83,13 @@ my-host/
 - **Two discovery mechanisms with different semantics.** If `entry_points` and the in-tree scan return different fields or prioritise differently, plugins that work in dev break in production. Make the in-tree scan a *fallback* that produces the exact same `PluginInfo` shape as the entry-points loader.
 - **No sandbox for untrusted plugins.** If you'll accept plugins from arbitrary authors, run them under reduced privileges (subprocess, Wasm, restricted import). Native Python plugins have full access to the host process; treat that as a trust decision, not an oversight.
 
+## Scaling & failure modes
+
+- **API stability** is the cost: once external plugins exist, every contract change breaks someone. Version the API and support at least one previous version.
+- **Isolation**: plugins run in-process with full privileges; sandbox or vet them if they're untrusted.
+- **Load order and conflicts** need deterministic rules (priority, explicit disable list).
+- **Discovery performance**: importing every plugin at startup slows launch; load lazily by name.
+
 ## Variants
 
 - **entry-points-discovered** (this guide) — plugins are separate distributions registering via `pyproject.toml` `[project.entry-points."<group>"]` (Python) or `package.json#contributes`/`activationEvents` (Node/VS Code). Production-grade.
@@ -78,6 +98,14 @@ my-host/
 - **capability-based / sandboxed** — plugins are Wasm modules or subprocesses with a narrow IPC surface. Used by Figma plugins, Envoy filters (Wasm), Pony actor systems. Higher cost, much stronger isolation.
 - **declarative-only** — the plugin is the manifest; the host does the work (e.g., GitHub Actions composite actions). Right when "extension" means configuration plus a few well-known scripts.
 - **hot-reloadable** — the registry watches the plugin directory and reloads on change. Useful for editor-style hosts; harder to get right because you must invalidate held references safely.
+
+## Adoption checklist
+
+- [ ] The plugin contract is one small interface with documented lifecycle.
+- [ ] Each plugin declares its name, version, and required host API version in a manifest.
+- [ ] The registry rejects incompatible plugins with a clear message.
+- [ ] A contract test loads every plugin.
+- [ ] Plugin authors have a documented publish path.
 
 ## Real-world projects using this
 

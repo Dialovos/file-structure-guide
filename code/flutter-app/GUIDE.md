@@ -74,6 +74,19 @@ my_app/
 - **Test files**: mirror the source name + `_test.dart`. `lib/features/home/home_screen.dart` → `test/features/home/home_screen_test.dart`.
 - **Asset paths in `pubspec.yaml`**: lowercase, hyphens or underscores both work but stay consistent. `assets/images/logo.png`. Reference in code as `'assets/images/logo.png'` (no leading slash).
 
+## Worked example
+
+All screens live in `lib/screens/`, all widgets in `lib/widgets/`, and adding a setting touches both.
+
+1. Create `lib/features/<name>/` for each capability: `home/`, `settings/`.
+2. Move each screen with its controller, state, and private widgets: `home_screen.dart`, `home_controller.dart`.
+3. Put cross-feature infrastructure in `lib/core/` (API client, dependency injection) and reusable widgets in `lib/shared/widgets/`.
+4. Keep `lib/app/` for the root `MaterialApp`, routing, and theme.
+5. Mirror the structure in `test/`, and run `flutter analyze && flutter test`.
+6. Leave the generated `android/`, `ios/`, and other platform folders in place; edit them only for platform settings.
+
+New work now lands in one feature folder and code review follows feature boundaries.
+
 ## Anti-patterns
 
 - **`lib/screens/` and `lib/widgets/` as top-level type folders.** As an app grows, these become unsearchable. A widget for the checkout flow lives next to a widget for the user settings — no relationship between adjacent files. Use `lib/features/<name>/` instead.
@@ -85,6 +98,13 @@ my_app/
 - **Putting `pubspec.lock` in `.gitignore` for an app.** Apps commit the lockfile (deterministic builds). Libraries / packages don't (they let consumers resolve fresh). Same convention as Cargo / poetry — the difference matters.
 - **One giant `lib/utils.dart`.** A 2000-line dumping ground. Split into focused files inside `lib/shared/` or `lib/core/` (`lib/core/extensions/string_extensions.dart`, `lib/shared/format/date_format.dart`).
 
+## Scaling & failure modes
+
+- **State management** choice (Riverpod, Bloc, Provider) matters less than consistency; apply one pattern per feature folder layout.
+- **Generated code** (`*.g.dart`, `*.freezed.dart`) should be gitignored or clearly marked; regenerate with `dart run build_runner build`.
+- **Platform folders** attract merge conflicts; keep changes to them small and reviewed.
+- **Large apps** benefit from a multi-package (melos) layout, splitting `core` and features into packages.
+
 ## Variants
 
 - **Feature folders (this guide)** — the most common community convention, taught in the Flutter docs and used in Very Good CLI's generated apps, Reso Coder's templates, and most production codebases.
@@ -94,6 +114,14 @@ my_app/
 - **Riverpod clean-architecture** — feature folders, with `application/`, `domain/`, `presentation/`, `data/` per feature. Common in apps using Riverpod with code generation (`riverpod_generator`).
 - **Modular (`flutter_modular` package)** — each feature is a self-contained "module" with its own router. Stronger isolation; smaller community.
 - **Single-package** vs. **multi-package monorepo** (Melos) — large apps split features into their own pub packages and depend on them via path. Out of scope for this guide; see Very Good Ventures' "Very Good Layered Architecture" for an example.
+
+## Adoption checklist
+
+- [ ] `flutter analyze` and `flutter test` pass on a clean clone.
+- [ ] `lib/` uses feature folders, with no flat `screens/` or `widgets/` dumping ground.
+- [ ] One state-management approach is used across features.
+- [ ] Generated files are either ignored or consistently committed.
+- [ ] Assets are declared in `pubspec.yaml` and live under `assets/`.
 
 ## Real-world projects using this
 

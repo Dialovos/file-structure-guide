@@ -54,6 +54,21 @@ archive/
 5. Empty directories that exist only to receive future content carry a `.gitkeep` file (when archived in git) or simply remain empty (when on a local disk).
 6. Do not create `YYYY-MM-DD/` directories unless a single day produces multiple files that warrant grouping (e.g. one event with several scans).
 
+## Worked example
+
+A `statements/` folder holds 400 PDFs with names like `stmt.pdf`, `stmt (1).pdf`, and `March.pdf`.
+
+1. Decide the true date of each file from its content or metadata (statement period, email date).
+2. Rename to `YYYY-MM-DD-<slug>.<ext>`: `2026-03-31-bank-statement.pdf`.
+3. Bucket automatically by the filename's prefix:
+```
+for f in 20??-??-??-*; do y=${f:0:4}; m=${f:0:7}; mkdir -p "archive/$y/$m"; mv -n "$f" "archive/$y/$m/"; done
+```
+4. Use the placeholder `2026-04-XX-` only when the day is genuinely unknown, and revisit it later.
+5. Put the rule in `archive/README.md` so the next contributor (or you in a year) follows the same shape.
+
+New material goes to the current month; old material never needs reorganizing.
+
 ## Anti-patterns
 
 - **`YYYY/MM/`** without year-prefixing the month — sorts correctly under its parent but a directory listing of all months across years jumbles them.
@@ -63,6 +78,13 @@ archive/
 - **Adding a `current/` symlink that drifts** — tools that follow symlinks pick up stale content; rotate by date instead.
 - **Storing months as words** — `2026/April/` doesn't sort and forces locale handling. ISO numerics only.
 
+## Scaling & failure modes
+
+- **Volume**: thousands of files per month need a third level or a slug rule; up to a few hundred per month is fine flat.
+- **Multiple streams** (receipts, letters, chats) should each get their own root (`archive/receipts/`, `archive/letters/`) instead of sharing one, so retention rules can differ.
+- **Late arrivals**: documents dated in the past belong in their own month, not the current one; file by the document date, not the download date.
+- **Integrity**: an append-only stream can be checksummed; keep a manifest for irreplaceable records.
+
 ## Variants
 
 - **`YYYY/YYYY-MM/`** (this guide) — most readable; canonical for personal archives.
@@ -71,6 +93,14 @@ archive/
 - **`YYYY/MM-month-name/`** (`04-april/`) — adds redundant month name for human readability; trades some sortability for skim-ability.
 - **`YYYY/YYYY-WW/`** — ISO week numbering; useful for content driven by weekly cadence (sprints, status reports).
 - **Single flat year** — for low-volume archives, skip the month layer until the year holds more than ~50 items.
+
+## Adoption checklist
+
+- [ ] Every file begins with an ISO date and sits in the matching `YYYY/YYYY-MM/` folder.
+- [ ] Unknown days use the `XX` placeholder and are revisited.
+- [ ] Each stream has its own root.
+- [ ] The convention is written in a README at the archive root.
+- [ ] Irreplaceable records are backed up and, ideally, checksummed.
 
 ## Real-world projects using this
 

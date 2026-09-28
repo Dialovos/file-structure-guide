@@ -64,6 +64,19 @@ mytool/
 - **Man pages**: `<binary>.1` for the main page, `<binary>-<subcommand>.1` for subcommand pages (e.g. `git-commit.1`). Section 1 = user commands.
 - **Module paths**: Go uses `github.com/<owner>/<repo>` as the module path; this guide's template uses `github.com/example/mytool` as a placeholder.
 
+## Worked example
+
+A 600-line script has grown three modes chosen by `--mode`. Users complain about help output and missing completions.
+
+1. Model modes as subcommands: `mytool sync`, `mytool export`, `mytool config get|set`.
+2. Keep `main` thin: parse argv, build the root command, call it. Put each subcommand in its own file under `internal/commands/`.
+3. Make every command return an exit code and write results to stdout, diagnostics to stderr, so pipes work.
+4. Generate shell completions from the command tree (cobra, clap, click, or argparse-completion) into `completions/`.
+5. Add a manpage under `docs/` and a `--version` that prints a build-injected version.
+6. Add a golden-file test per command that runs the binary and compares stdout and exit code.
+
+Users get `mytool --help`, tab completion, and stable machine-readable output.
+
 ## Anti-patterns
 
 - **Putting all subcommand logic in `main.go`** or `cmd/main.go`. Once you have more than two subcommands, the file becomes unreviewable. One file per subcommand under `internal/commands/`.
@@ -78,6 +91,13 @@ mytool/
 - **Bundling secrets / config in the binary.** Use the platform's standard config dir (`~/.config/mytool/config.yaml` on Linux per XDG, `~/Library/Application Support/mytool/` on macOS, `%APPDATA%\mytool\` on Windows).
 - **No version subcommand.** `mytool version` (or `mytool --version`) should print the version, the commit SHA, and the build date. Bug reports always start with "what version?"
 
+## Scaling & failure modes
+
+- **Command sprawl**: past about 15 subcommands, group with nested commands (`mytool config get`) and keep `--help` output short.
+- **Stable interfaces**: flags and output formats become an API. Deprecate with a warning for at least one release before removing.
+- **Config precedence** (flag over env over file over default) must be documented and tested; it's where most bug reports come from.
+- **Distribution** (Homebrew, apt, winget, static binaries) each need a release artifact; automate with the ecosystem's release tool.
+
 ## Variants
 
 - **Subcommand-style (this guide)** — `mytool foo bar`, git-pattern. The dominant modern convention.
@@ -88,6 +108,14 @@ mytool/
 - **Hybrid CLI + REPL** — `mytool` with no args opens a REPL; with a subcommand runs it once. See: `psql`, `python`, `node`.
 - **Plugin-driven** — `mytool` discovers `mytool-<plugin>` binaries on `$PATH` and runs them as subcommands. The pattern git, gh, and kubectl all use. Layout adds a `plugins/` directory and a discovery protocol.
 - **Bun / single-file** — Bun + TypeScript can produce a single-binary CLI from one file. Smaller scale, fewer moving parts; structure is simpler.
+
+## Adoption checklist
+
+- [ ] `--help` works at every command level and `--version` prints the real version.
+- [ ] Data goes to stdout, logs and errors to stderr, and exit codes are meaningful and documented.
+- [ ] Completions for at least bash and zsh are generated from the command tree.
+- [ ] Config precedence is written in the README and covered by a test.
+- [ ] Each command has at least one end-to-end test that runs the built binary.
 
 ## Real-world projects using this
 

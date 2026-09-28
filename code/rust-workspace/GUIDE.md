@@ -59,6 +59,19 @@ myworkspace/
 - **Path deps between members**: `myworkspace-core = { path = "../core" }` in `crates/cli/Cargo.toml`. The path is relative to the member crate's `Cargo.toml`, not the workspace root.
 - **`crates/` vs flat-members**: putting members under `crates/` (`crates/core/`, `crates/cli/`) is more scannable than peer directories (`core/`, `cli/`) once you have ≥3 crates. The flat layout is older Rust convention; `crates/` is the current preference.
 
+## Worked example
+
+Three crates live in separate repos and their dependency versions drift.
+
+1. Create the root `Cargo.toml` with `[workspace] members = ["crates/*"]` and `resolver = "2"`.
+2. Add shared metadata in `[workspace.package]` (`version`, `edition`, `license`) and common dependencies in `[workspace.dependencies]`.
+3. In each member, inherit: `version.workspace = true` and `serde = { workspace = true }`.
+4. Move crates into `crates/core`, `crates/cli`, `crates/server`; depend on siblings with `core = { path = "../core" }`.
+5. Build once, share the cache: `cargo build --workspace`; test with `cargo test --workspace`.
+6. Use `cargo hack` or `--exclude` in CI for feature combinations of a single crate.
+
+A dependency bump is a one-line change and every crate compiles it once.
+
 ## Anti-patterns
 
 - **Per-crate `Cargo.lock` files.** They will be silently ignored by Cargo (only the workspace root's lockfile counts), but they confuse readers and cause merge conflicts. Delete them; they don't belong.
@@ -69,6 +82,13 @@ myworkspace/
 - **Mixing `[workspace]` and `[package]` at the root.** A workspace root *can* also be a crate (a "virtual+real" workspace), but it's confusing. Prefer a *virtual workspace*: the root `Cargo.toml` has only `[workspace]`, all crates live in `crates/`.
 - **Nested workspaces.** Cargo doesn't support them well. If `crates/core/` is itself a workspace, you're in for surprises. One workspace per repo.
 
+## Scaling & failure modes
+
+- **Compile times** scale with crate count and dependency graph shape; a tall chain of crates serializes builds.
+- **Publishing order** matters: publish leaf crates first and use path plus version dependencies.
+- **Feature unification** across the workspace can enable features you didn't expect; resolver 2 reduces this for dev-dependencies and build-dependencies.
+- **Too many crates** add ceremony without gain; split for compile time, API boundaries, or independent publishing.
+
 ## Variants
 
 - **flat-members** — `core/`, `cli/`, `server/` as peers under the repo root. Older convention; some projects (rustls, actix) still use it. Functionally equivalent but less scannable at scale.
@@ -77,6 +97,14 @@ myworkspace/
 - **virtual workspace** (this guide) — root `Cargo.toml` has only `[workspace]`, no `[package]`. Cleanest layout.
 - **non-virtual workspace** — root is itself a crate, with `[package]` and `[workspace]` both at the root. Sometimes used when there's "the main crate" and a few helper crates. Slightly confusing; prefer virtual.
 - **nested-workspaces** — rare and not well-supported. Avoid.
+
+## Adoption checklist
+
+- [ ] `cargo build --workspace && cargo test --workspace` pass from a clean clone.
+- [ ] Shared versions and metadata use `[workspace.package]` and `[workspace.dependencies]`.
+- [ ] `resolver = "2"` (or the edition default) is set.
+- [ ] A single `Cargo.lock` is committed.
+- [ ] The publish order and target crates are documented.
 
 ## Real-world projects using this
 

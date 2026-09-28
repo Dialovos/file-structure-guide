@@ -16,8 +16,11 @@ SECTIONS = [
     "When NOT to use",
     "Tree diagram",
     "Naming rules",
+    "Worked example",
     "Anti-patterns",
+    "Scaling & failure modes",
     "Variants",
+    "Adoption checklist",
     "Real-world projects using this",
     "Migration & references",
 ]

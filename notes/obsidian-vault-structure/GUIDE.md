@@ -55,6 +55,19 @@ The content layer (`notes/`) is intentionally placeholder — replace it with wh
 - **`daily/`** — `daily/YYYY-MM-DD.md` (ISO 8601). Configure Daily Notes core plugin: `Settings → Core plugins → Daily notes → Date format: YYYY-MM-DD`, `Folder: daily/`, `Template: 00-meta/templates/daily.md`.
 - **Snippets** — `00-meta/snippets/<descriptor>.css`. Once edited, copy to `.obsidian/snippets/<descriptor>.css` (Obsidian only reads from there). A small post-pull script can sync; some users symlink the directory.
 
+## Worked example
+
+A new Obsidian vault has images everywhere, plugin settings in git diffs, and templates mixed with notes.
+
+1. In Settings, set the attachment folder to `attachments/`, the new-note location to `notes/`, and daily notes to `daily/` with `YYYY-MM-DD`.
+2. Create `00-meta/templates/` and point the Templates or Templater plugin at it.
+3. Add `.gitignore` entries: `.obsidian/workspace.json`, `.obsidian/workspaces.json`, `.obsidian/cache`, and plugin data you don't want shared; keep `.obsidian/snippets/` and `themes/`.
+4. Commit `.obsidian/app.json` and `core-plugins.json` only if you want the same settings on every device.
+5. Pick a content philosophy for `notes/` (PARA, LYT, evergreen) and document it in `00-meta/README.md`.
+6. Verify by cloning to a second folder and opening it: templates, attachments, and daily notes should behave identically.
+
+The scaffolding is the same regardless of philosophy, and config churn no longer pollutes history.
+
 ## Anti-patterns
 
 - **Gitignoring all of `.obsidian/`.** You lose theme + snippet + plugin settings. Every fresh clone needs reconfiguration. Use the selective gitignore in this guide.
@@ -64,6 +77,13 @@ The content layer (`notes/`) is intentionally placeholder — replace it with wh
 - **Renaming `.obsidian/`.** Obsidian will recreate it. You'll have two config dirs, neither working as expected.
 - **Storing snippets only in `.obsidian/snippets/` without a copy in `00-meta/`.** If `.obsidian/` is gitignored you lose your snippets on a fresh clone. Source of truth lives in `00-meta/snippets/`.
 
+## Scaling & failure modes
+
+- **Plugin sprawl** slows the app and creates hidden dependencies in notes; record required plugins in `00-meta/README.md`.
+- **Attachments folder growth**: large media makes sync and backup slow; consider a subfolder by year.
+- **Mobile**: `.obsidian/` settings are per device unless synced; test the vault on mobile early.
+- **Link format**: choose relative or shortest path links once; switching later is painful.
+
 ## Variants
 
 - **Flat-attachments** (this guide) — single `attachments/` folder. Simple; fine for most.
@@ -71,6 +91,14 @@ The content layer (`notes/`) is intentionally placeholder — replace it with wh
 - **Mixed content + meta (no `00-meta/`)** — keep templates in PARA's `1-projects/_template/` or similar. Less separation; smaller folder count.
 - **Underscore-prefixed meta** — `_meta/` instead of `00-meta/`. Sorts first on most filesystems; visually distinct. Equivalent in practice.
 - **Separate snippets repo** — keep CSS snippets in a separate dotfiles repo and symlink `.obsidian/snippets/` to it. Best if you reuse snippets across multiple vaults.
+
+## Adoption checklist
+
+- [ ] Attachment, new-note, and daily-note locations are configured and match the tree.
+- [ ] `.obsidian/workspace*.json` and caches are ignored.
+- [ ] Required plugins are listed in `00-meta/README.md`.
+- [ ] The content philosophy is documented.
+- [ ] A fresh clone opens with the same behavior.
 
 ## Real-world projects using this
 

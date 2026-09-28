@@ -61,6 +61,18 @@ mypackage/
 - **Distribution name** in `pyproject.toml` (`name = "mypackage"`) typically matches the import name. Hyphens are allowed in distribution names but discouraged unless there's a reason — they map to underscores at install time and that aliasing trips people up.
 - **Tests live in `tests/`**, never in `src/`. `tests/` is not a package on PyPI; the wheel only ships `src/mypackage/`.
 
+## Worked example
+
+A library's tests pass locally but the released wheel is missing `mypackage/data/schema.json`.
+
+1. Move the package to `src/mypackage/` and delete any `sys.path` hacks.
+2. Declare package data in the build config (`[tool.hatch.build.targets.wheel] packages = ["src/mypackage"]`, plus include patterns for data files).
+3. Install in editable mode: `pip install -e .[dev]`, then run `pytest`. Tests now import from the installed package.
+4. Build and inspect the wheel: `python -m build && unzip -l dist/*.whl` and check that `schema.json` is listed.
+5. In CI, test the built wheel in a fresh venv (`pip install dist/*.whl && pytest`) using tox or nox.
+
+The missing-file bug is caught in the pull request that introduced it.
+
 ## Anti-patterns
 
 - **Adding `src/` to `sys.path` to import without installing.** Defeats the entire point of src-layout. If you find yourself doing this, you wanted flat-layout.
@@ -70,6 +82,13 @@ mypackage/
 - **Mirroring `src/mypackage/` in `tests/mypackage/`.** Tests import *from* the package; they aren't *part of* the package. `tests/test_core.py` is enough.
 - **Using `setup.py` in 2026.** PEP 517/518 made `pyproject.toml` the source of truth. `setup.py` is fine if it exists for legacy reasons, but new src-layout projects should not start with one.
 
+## Scaling & failure modes
+
+- **Editable-install caveats**: some tools don't see editable packages; test the wheel too.
+- **Multiple packages** in one repo need a namespace plan or separate distributions.
+- **Type stubs and data files** need explicit inclusion in the build config; audit the wheel content on each release.
+- **Contributor friction**: the mandatory install step trips newcomers; put it at the top of `CONTRIBUTING.md`.
+
 ## Variants
 
 - **src-layout-hatch-managed** (this guide) — current PyPA preference; Hatch handles version, build, env management.
@@ -78,6 +97,14 @@ mypackage/
 - **src-layout-setuptools-managed** — the classic. Still works, still maintained, more verbose `pyproject.toml`. Use if you have legacy `setup.py` you can't migrate.
 - **src-layout-with-co-located-tests** — `src/mypackage/tests/` instead of top-level `tests/`. Rare; ships tests inside the wheel. Justified only if downstream users call your tests as a runnable suite (almost never).
 - **src-layout-namespace-packages** — `src/mycompany/billing/` and `src/mycompany/auth/` shipped as separate distributions sharing the `mycompany` namespace. Advanced; see PEP 420 and PyPA namespace-package guide.
+
+## Adoption checklist
+
+- [ ] `pip install -e .[dev] && pytest` passes on a clean venv.
+- [ ] The built wheel's file list was inspected for data files and type marker (`py.typed`).
+- [ ] CI installs the wheel (not the source tree) for at least one test job.
+- [ ] `src/` contains only the package directory.
+- [ ] Version is defined in exactly one place.
 
 ## Real-world projects using this
 

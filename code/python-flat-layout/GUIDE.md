@@ -58,6 +58,18 @@ mypackage/
 - **`tests/` is not a package** by default; tests are discovered by pytest collection. Add `tests/__init__.py` only if you have strong reasons (e.g. shared test helpers imported across files).
 - **Distribution name** in `pyproject.toml` (`name = "mypackage"`) typically matches the import name. Keep them aligned to avoid surprises when users `pip install` a different name from what they `import`.
 
+## Worked example
+
+A FastAPI or Django app lives in `app/` and scripts sometimes import from the wrong copy.
+
+1. Keep the package at the repo root (`mypackage/`) with `__init__.py`, and tests in `tests/`.
+2. Declare dependencies in `pyproject.toml`, and install with `pip install -e .` or `uv sync` so tools see the package.
+3. Add a `[tool.pytest.ini_options]` with `pythonpath = ["."]` if you rely on running from the root.
+4. Pin the interpreter (`requires-python`) and lock dependencies (`uv.lock` or `pip-tools`).
+5. Run `python -m mypackage` and `pytest` from the repo root only; document this in the README.
+
+You keep the simplicity of a flat layout while making the environment reproducible.
+
 ## Anti-patterns
 
 - **Two top-level packages at the repo root.** `mypackage/` and `myhelper/` next to each other usually means you wanted a single package with a sub-package, or two repos. Decide.
@@ -67,6 +79,13 @@ mypackage/
 - **Publishing flat-layout to PyPI without checking the wheel.** Build the wheel, install it into a fresh venv, run the test suite against the install. If anything breaks, you needed src-layout.
 - **`from mypackage import *`** inside `__init__.py` to re-export everything. It works in flat-layout (and src-layout), it's still a bad idea — be explicit about your public API.
 
+## Scaling & failure modes
+
+- **Import-from-cwd surprises**: the package is importable without installation, which hides packaging bugs. If you ever publish the project, migrate to `python-src-layout`.
+- **Namespace clashes**: a top-level package named `app`, `utils`, or `tests` can collide with other installs; give it a distinctive name.
+- **Growth**: at 50+ modules, group into subpackages by purpose instead of adding more root-level modules.
+- **Scripts** belong in `scripts/`, not next to the package.
+
 ## Variants
 
 - **flat-with-tests-dir** (this guide) — the default; `tests/` next to the package.
@@ -74,6 +93,14 @@ mypackage/
 - **flat-without-tests-dir** — single-file or two-file CLIs where a `tests/` directory is overkill. Add tests inline (`test_*.py` next to source files) or as you grow.
 - **flat-monorepo** — multiple flat packages next to each other in one repo (`mypackage/`, `mytool/`, `myservice/`). Workable for internal tools; PyPI publishing of multiple packages from one repo is a separate problem (see Hatch / setuptools workspace docs).
 - **Django flat-layout** — Django's `startproject` template is a flat layout with `manage.py` at the root. See `code/django-project/` for the larger app-per-feature variant.
+
+## Adoption checklist
+
+- [ ] `pytest` passes from the repo root on a clean environment.
+- [ ] Dependencies are declared in `pyproject.toml` and locked.
+- [ ] The package name is distinctive (not `app`, `src`, `utils`).
+- [ ] Scripts and one-off tools live in `scripts/`.
+- [ ] README states the exact run and test commands.
 
 ## Real-world projects using this
 

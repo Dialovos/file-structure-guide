@@ -67,6 +67,19 @@ my-app/
 - **Cross-feature shared UI**: `src/components/ui/<ComponentName>/<ComponentName>.tsx`. Components in here are presentational and should not import from `src/features/`.
 - **Cross-feature lib**: `src/lib/<concern>.ts` (`http.ts`, `dates.ts`, `currency.ts`).
 
+## Worked example
+
+A React app's `components/` and `hooks/` folders each contain code for every feature, and a checkout change touches five directories.
+
+1. List features from the product's point of view: `customer-onboarding`, `billing`, `search`.
+2. For one feature, create `src/features/billing/{components,api,hooks}/`, plus `types.ts` and `index.ts`.
+3. Move all billing-only files there; leave truly shared UI in `src/components/ui/`.
+4. Export only what other features need from `billing/index.ts`; make everything else internal by convention.
+5. Enforce with `eslint-plugin-import` `no-restricted-paths` or `eslint-plugin-boundaries`: features may import `lib/`, `components/ui/`, and other features' `index.ts` only.
+6. Repeat per feature in small PRs.
+
+Deleting a feature is deleting one folder, plus its route entry.
+
 ## Anti-patterns
 
 - **Importing from another feature's internals.** `import { Foo } from "@/features/billing/components/Internal"` couples you to billing's implementation. Either Foo is part of billing's public API (re-export from `index.ts`) or it doesn't belong outside billing.
@@ -77,6 +90,13 @@ my-app/
 - **Co-locating tests poorly.** Either co-locate (`OnboardingForm.test.tsx` next to `OnboardingForm.tsx`) consistently, or use a parallel `tests/` tree consistently. Pick one; alternating breaks the muscle-memory.
 - **Reaching into the framework's reserved paths from features.** `src/app/` is Next.js routing or Vite's entry; features should not import from it. Routes import from features, not the other way around.
 
+## Scaling & failure modes
+
+- **Cross-feature dependencies** show up as import cycles. Extract the shared part into a lower feature or into `lib/`, rather than allowing deep imports.
+- **Shared folder growth**: `components/ui/` should hold primitives only; move anything with domain meaning into a feature.
+- **Route layer**: keep routes (`app/` in Next, router config in Vite) as thin wiring over feature exports.
+- **Large features** may need internal subfolders; apply the same rule recursively but keep total depth within budget.
+
 ## Variants
 
 - **features-with-shared** (this guide) — `src/features/` plus `src/components/ui/`, `src/lib/`, `src/types/`. The default; works for the vast majority of React apps.
@@ -84,6 +104,14 @@ my-app/
 - **monorepo-features-as-packages** — each feature graduates to its own package (`packages/feature-billing/`); the app composes packages. The natural endpoint for large feature trees. See `code/turborepo-monorepo/` and `code/nx-monorepo/`.
 - **Bulletproof React variant** — adds `src/providers/`, `src/stores/`, `src/config/`, `src/test/` at the same level as `features/`. Slightly heavier but proven at scale; the *Bulletproof React* repo is the reference.
 - **Feature-vertical with co-located routes** — Next.js App Router lets routes live next to features; `src/features/billing/` exports the page component and `src/app/billing/page.tsx` re-exports it. Keeps related code together at the cost of one indirection.
+
+## Adoption checklist
+
+- [ ] Each feature exposes a single `index.ts` and nothing imports from its internals.
+- [ ] A lint rule enforces the boundary.
+- [ ] `components/ui/` holds only domain-free primitives.
+- [ ] Routes only import from feature public APIs.
+- [ ] Removing a feature touches its folder and one registry line.
 
 ## Real-world projects using this
 

@@ -67,6 +67,19 @@ MyPackage/
 - **File names**: PascalCase, matching the primary type defined inside (`URLLoader.swift` defines `struct URLLoader`). Avoid generic names like `Helpers.swift`.
 - **Avoid**: Hyphens, spaces, and lower-case-first letters in target/folder names. SwiftPM tolerates them; the rest of the ecosystem doesn't.
 
+## Worked example
+
+An app's networking code is copied between two projects.
+
+1. Create `swift package init --type library` and rename the target to `MyPackage`.
+2. Move code under `Sources/MyPackage/`, marking the API `public` and everything else internal.
+3. Add tests in `Tests/MyPackageTests/` using Swift Testing or XCTest.
+4. Declare platforms and products in `Package.swift` (`platforms: [.iOS(.v17), .macOS(.v14)]`, `products: [.library(name: "MyPackage", targets: ["MyPackage"])]`).
+5. Consume it from apps with a local path during development (`.package(path: "../MyPackage")`), then by URL and version.
+6. Run `swift build && swift test` in CI on macOS and Linux if the code is portable.
+
+Both apps share one tested module with a defined public surface.
+
 ## Anti-patterns
 
 - **Custom `path:` overrides for every target** when the conventional `Sources/<Target>/` layout would have worked. Bloats the manifest and confuses Xcode.
@@ -80,6 +93,13 @@ MyPackage/
 - **Cross-target file references via relative paths in code.** Targets are modules; refer to other targets by `import <Target>`, not by file paths.
 - **Public types where internal would do.** Swift's default access level is `internal` (visible within the module). `public` is the package's external API surface — every `public` declaration is a stability commitment.
 
+## Scaling & failure modes
+
+- **Access control** discipline (internal by default) prevents accidental API commitments.
+- **Resource bundling** (`resources: [.process("Assets")]`) has quirks; test resource loading from a consumer.
+- **Multiple targets** should mirror dependency boundaries; avoid cyclic target dependencies.
+- **Semantic versioning** via git tags is the release mechanism; tag deliberately.
+
 ## Variants
 
 - **library-only** (this guide can collapse to this) — only `Sources/MyPackage/`, no executable. Most published libraries (`swift-collections`, `swift-argument-parser`).
@@ -89,6 +109,14 @@ MyPackage/
 - **Swift Concurrency strict-mode** — same layout, plus `swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]` in each target. Required for Swift 6 ahead of full strict-mode default.
 - **macro-package** — adds a `MyPackageMacros` target with `swift-syntax` dependency for compile-time macros. Layout is identical; manifest declares it as `.macro()`.
 - **Vapor server** — `Sources/App/` (the library with controllers and configure.swift), `Sources/Run/main.swift` (entry point). Tests in `Tests/AppTests/`. Identical otherwise.
+
+## Adoption checklist
+
+- [ ] `swift build && swift test` pass from a clean clone.
+- [ ] Public API is explicit; the rest is internal.
+- [ ] Platforms and minimum versions are declared in `Package.swift`.
+- [ ] Releases are git tags following semver.
+- [ ] `.swiftpm/` and `.build/` are gitignored.
 
 ## Real-world projects using this
 

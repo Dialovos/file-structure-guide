@@ -52,6 +52,19 @@ The three status directories reflect the publishing pipeline. `meta/` holds the 
 - **Status badges**: many gardens render a status badge at the top of each note based on which directory it lives in. Don't encode status in the filename; encode it in the directory.
 - **Internal links**: `[[wikilinks]]` are the convention because most garden builders (Quartz, Obsidian Publish, Eleventy with plugins) expand them and build backlinks. Use them; don't try to fight the wiki-link affordance.
 
+## Worked example
+
+A blog has 12 polished posts and 60 unpublished half-drafts nobody sees.
+
+1. Create `seedlings/`, `budding/`, `evergreen/`, plus `meta/` for the about page and colophon.
+2. Give each note frontmatter: `status: seedling`, `planted: 2026-04-30`, `tended: 2026-05-12`. Keep the folder and the status field in sync.
+3. Publish all three folders. Add a visible status label and dates to each page.
+4. Promote by moving files (`git mv seedlings/x.md budding/x.md`) when a note gains structure and links; move to `evergreen/` when you'd stand behind it.
+5. Generate an `INDEX.md` grouped by status and sorted by last-tended date.
+6. Once a month, tend: update dates, prune dead seedlings, and merge duplicates.
+
+Visitors can watch ideas mature, and unfinished thoughts stop blocking publication.
+
 ## Anti-patterns
 
 - **Hiding `seedlings/` from the published site.** Defeats the whole metaphor. The seedling-on-display *is* the garden's point. Publish them; let them be rough.
@@ -61,6 +74,13 @@ The three status directories reflect the publishing pipeline. `meta/` holds the 
 - **Polished-sounding seedlings.** A seedling should *look* like a seedling — a few sentences, a question, a fragment. Writing seedlings in finished prose blurs the categories and undermines the trust readers place in the labels.
 - **MOC overgrowth.** Some gardens evolve a thick layer of MOCs (Maps of Content) until the garden is mostly index pages. The notes-to-index ratio should stay heavily on the notes side. Use MOCs sparingly.
 
+## Scaling & failure modes
+
+- **Redirects**: moving files between status folders changes URLs; keep permalinks independent of folders, or set redirects.
+- **Neglected seedlings** make the garden look abandoned; show dates and prune.
+- **Reputation risk**: rough public notes are still public; keep private material out of the publish path.
+- **Structure vs search**: at a few hundred notes, tags, MOCs, and search matter more than the three folders.
+
 ## Variants
 
 - **Seedling-budding-evergreen** (this guide). Maggie-Appleton-style; the most-adopted shape.
@@ -68,6 +88,14 @@ The three status directories reflect the publishing pipeline. `meta/` holds the 
 - **Mike Caulfield's "stocks and flows"** — a theoretical framing that distinguishes accumulating notes (stocks) from time-bound posts (flows). Maps onto evergreen vs seedling abstractly. More vocabulary than directory shape, but informs many gardens' structure.
 - **Andy Matuschak's "evergreen notes"** — heavier on evergreens, lighter on seedlings; the public site is mostly mature notes with very few in-progress ones. Different philosophy from Maggie-style; both are gardens.
 - **Newsletter-plus-garden hybrid.** A newsletter for finished essays, a garden for everything else. Both publish; neither is forced into the other's shape.
+
+## Adoption checklist
+
+- [ ] Every note shows its status and last-tended date.
+- [ ] URLs don't change when a note moves between stages.
+- [ ] The index is generated and sorted by tended date.
+- [ ] Private notes can't leak into the published tree.
+- [ ] A monthly tending pass is scheduled.
 
 ## Real-world projects using this
 

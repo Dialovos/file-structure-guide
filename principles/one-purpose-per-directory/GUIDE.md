@@ -60,6 +60,18 @@ bad/
 5. Use kebab-case for the directory name (`http-retry/`, not `httpRetry/` or `HTTPRetry/`) unless the ecosystem mandates otherwise.
 6. If a directory's purpose changes, rename it in a single commit. Don't let the old name persist out of inertia — it lies to readers.
 
+## Worked example
+
+`utils/` has `format_string.ts`, `parse_date.ts`, `retry_http.ts`, and `token_helpers.ts`, and 40 imports point at it.
+
+1. Group the files by the question each answers: text, time, network, auth.
+2. Create `string-formatting/`, `date-parsing/`, `http-retry/`, `auth-tokens/` and move one file into each.
+3. Use your editor's move-file refactor so imports update; run the type checker.
+4. If a directory ends up with one tiny file, that's fine; it can grow, and the name now says where new code goes.
+5. Delete `utils/` and add a lint rule (or a PR check) that rejects new `utils`, `helpers`, `misc`, and `common` directories.
+
+The next contributor asks "which purpose does this serve?" instead of "does it fit in utils?".
+
 ## Anti-patterns
 
 - **`utils/` as default destination** — the canonical junk drawer. Once it exists, every "I don't know where this goes" file lands there.
@@ -69,6 +81,13 @@ bad/
 - **Numbered or ordinal dirs** — `utils1/`, `helpers-old/`, `misc-backup/`. The number is admitting the original name didn't work; rename properly.
 - **Personal-name dirs** — `bobs-stuff/`, `legacy-from-jane/`. Code outlives ownership; the dir name should describe the code, not its author.
 
+## Scaling & failure modes
+
+- **Small projects** can keep a flat `src/` with a few files; the rule applies once a directory has multiple unrelated things.
+- **Over-splitting** creates ten one-file directories. Merge directories that always change together.
+- **Names that hedge** (`core/`, `base/`, `shared/`) are the new junk drawers. Ask what the directory does, not where it sits in the dependency graph.
+- **Generated or vendored code** may not follow the rule; keep it apart (see `generated-vs-source-separation`).
+
 ## Variants
 
 - **Strict purpose-only** (this repo's bias) — no util-style dirs allowed anywhere. Forces every dir to earn its name. Highest discipline, highest payoff.
@@ -76,6 +95,13 @@ bad/
 - **Feature-vertical** — every directory is a feature; "purpose" is the feature, and inside it you find code, tests, and types together. Strongly purpose-driven by construction.
 - **Domain-driven (DDD)** — purpose maps to a *bounded context*; each top-level dir is a context with its own model, language, and team. The strongest version of this principle.
 - **Layer-then-purpose hybrid** — top-level by layer (`api/`, `domain/`, `infra/`), purpose inside each layer (`api/auth-tokens/`). Common in Hexagonal/Clean architectures; the layer is the type, the purpose is the leaf.
+
+## Adoption checklist
+
+- [ ] No directory is named `utils`, `helpers`, `misc`, `common`, or `stuff`.
+- [ ] Each directory name answers a single question in a few words.
+- [ ] A new file's destination can be decided without asking someone.
+- [ ] A PR check or lint rule blocks new junk-drawer names.
 
 ## Real-world projects using this
 

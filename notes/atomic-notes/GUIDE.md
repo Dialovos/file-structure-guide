@@ -53,6 +53,19 @@ The leaf layout is what matters; this guide doesn't dictate folders. Pair atomic
 - **Permanent titles.** Once a note is linked from elsewhere, don't rename casually — every link breaks. If you need to rename, update all backlinks atomically.
 - **No version suffixes.** `attention-v2.md` is a smell. The note is itself; new ideas are new notes that link to the old one.
 
+## Worked example
+
+A note called `productivity-thoughts.md` holds five ideas over 900 words.
+
+1. Underline each distinct idea: task-switching cost, time-blocking, energy vs time, email batching, weekly review.
+2. Create one note per idea with a specific title (`task-switching-has-a-recovery-cost.md`).
+3. Write each in your own words, 100 to 300 words, so it can be embedded elsewhere without its neighbors.
+4. Replace the original note with a short MOC that links to the five new notes.
+5. Add at least two links from each new note to related notes, and say why in a sentence.
+6. Test: embed one note inside another; if it drags in unrelated material, split again.
+
+Each idea can now be cited, embedded, and improved on its own.
+
 ## Anti-patterns
 
 - **The "thoughts" note.** `my-thoughts-on-X.md` is almost always a bundle. Split it.
@@ -62,6 +75,13 @@ The leaf layout is what matters; this guide doesn't dictate folders. Pair atomic
 - **Topic notes as atomic notes.** A note titled `productivity.md` containing "Productivity is when you get things done." is a topic, not an idea. Topics belong in MOCs (`notes/maps-of-content/`), not as atomic notes.
 - **Forgetting the rule applies to refinement, not capture.** If you try to write your daily journal in atomic form, you'll stop journaling. Bundle in dailies; atomize in refinement.
 
+## Scaling & failure modes
+
+- **Over-atomization**: fragments too small to make sense on their own are worse than one clear paragraph. The unit is an idea, not a sentence.
+- **Link maintenance** grows with note count; favor few, meaningful links over automatic ones.
+- **Discoverability** falls without hubs; pair with `maps-of-content`.
+- **Imports** (clippings, highlights) aren't atomic; keep them in a source folder and derive atomic notes from them.
+
 ## Variants
 
 - **Strict-atomic** (this guide) — one idea per note, period. The default for serious knowledge work.
@@ -69,6 +89,14 @@ The leaf layout is what matters; this guide doesn't dictate folders. Pair atomic
 - **Micro-atomic** — one *sentence* per note. Endorsed by some Logseq/Roam users; usually over-discipline. Friction exceeds payoff for most people.
 - **Section-atomic** — one idea per Markdown `##` section, multiple sections per file. Common in working docs and project notes; not recommended for the durable knowledge layer because it loses the linkability of file-level atoms.
 - **Atomic claims (not notes)** — a Niklas Luhmann-flavored variant where the unit is a *claim* (a defensible statement) rather than just an idea. Forces sharper notes; harder to write.
+
+## Adoption checklist
+
+- [ ] Each note states one idea and can be embedded without losing meaning.
+- [ ] Titles are specific enough to distinguish the note from siblings.
+- [ ] Each note links to at least two others, with a reason.
+- [ ] Bundled notes have been split and replaced by a MOC.
+- [ ] Source material is kept apart from your own notes.
 
 ## Real-world projects using this
 

@@ -72,6 +72,18 @@ MySolution/
 - **MSBuild property files**: `Directory.Build.props` and `Directory.Packages.props` (PascalCase, dotted) are the magic names; do not rename.
 - **Avoid**: `MySolution.Common`, `MySolution.Utils`, `MySolution.Helpers` projects; like Go's `util/`, they accrete grab-bag code. Pick a feature-oriented name.
 
+## Worked example
+
+Three projects each pin different versions of the same NuGet packages and share copy-pasted `PropertyGroup` blocks.
+
+1. Create `Directory.Build.props` at the root with shared properties (`TargetFramework`, `Nullable`, `ImplicitUsings`, `LangVersion`, `TreatWarningsAsErrors`).
+2. Create `Directory.Packages.props` with `<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>` and one `<PackageVersion Include="..." Version="..."/>` per package.
+3. Strip `Version` attributes from each `.csproj`'s `PackageReference`.
+4. Put projects under `src/` and tests under `tests/<Project>.Tests/`, then `dotnet sln add` each.
+5. Verify: `dotnet build -warnaserror && dotnet test`.
+
+Upgrading a package is now a one-line change in one file.
+
 ## Anti-patterns
 
 - **Flat layout (no `src/`/`tests/`)** with 20+ projects mixed at the root. Works for 2–3 projects; chaos at scale.
@@ -85,6 +97,13 @@ MySolution/
 - **Committing `bin/`, `obj/`, `*.user`, `.vs/`.** Standard .NET `.gitignore` covers these; missing them leads to massive merge conflicts.
 - **Solution folders that don't mirror disk layout.** Visual Studio lets you create solution folders independently of disk; doing so creates two truths and confuses everyone.
 
+## Scaling & failure modes
+
+- **Project count**: one project per deployable or per architectural layer is normal; a project per class is not. Merge projects that always change together.
+- **Build time** improves with a shared `Directory.Build.props` and `<Deterministic>` plus `dotnet build --no-restore` in CI.
+- **Analyzers** belong in `Directory.Build.props` so every project gets the same rules.
+- **Multi-targeting** (net8.0;net10.0) doubles build and test time; use it only for libraries with real consumers on old runtimes.
+
 ## Variants
 
 - **classic `src/` + `tests/`** (this guide) — most common modern layout; what `dotnet/runtime` and `dotnet/aspnetcore` use internally.
@@ -94,6 +113,14 @@ MySolution/
 - **multi-targeted libraries** — `<TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>` in libraries that ship to both modern and older .NET. Common in NuGet libraries supporting downstream .NET Framework consumers.
 - **monorepo-with-`Directory.Build.targets`** — adds `Directory.Build.targets` (imported *after* targets, not before) to inject custom build steps repo-wide. Used by `dotnet/runtime` for its complex code-generation pipeline.
 - **`global.json`-pinned SDK** — `global.json` at the repo root pins the .NET SDK version. Mandatory for reproducible CI on shared agents.
+
+## Adoption checklist
+
+- [ ] `dotnet build -warnaserror && dotnet test` passes from a clean clone.
+- [ ] Package versions are set only in `Directory.Packages.props`.
+- [ ] Each shippable assembly is in `src/` and each test project mirrors it in `tests/`.
+- [ ] `.editorconfig` and analyzers apply solution-wide.
+- [ ] `bin/` and `obj/` are gitignored.
 
 ## Real-world projects using this
 

@@ -61,6 +61,18 @@ projects/
 5. The active set should fit on one screen of `ls`. If `active/` has 30 items, half of them are probably stale and belong in `archive/` or `someday/`.
 6. Don't create deeper status splits (`active/in-progress/`, `active/blocked/`) unless your team is using the file system as a Kanban — most teams should not.
 
+## Worked example
+
+`projects/` contains `redesign`, `redesign_done`, `auth-rewrite-OLD`, and `idea-grand-rewrite`, and all sort together.
+
+1. Create `active/`, `archive/`, and `someday/` under `projects/`.
+2. Move each project by its true status: in progress to `active/`, finished to `archive/2026/`, aspirational to `someday/`.
+3. Strip status words from names (`redesign_done` becomes `redesign`).
+4. Fix references with a grep; run the project's own smoke test if it has one.
+5. Define the move triggers: finished, or untouched for 90 days, goes to `archive/<year>/`.
+
+The status is now visible from the path and `ls projects/active` is the current-work list.
+
 ## Anti-patterns
 
 - **`archive/` as a filename suffix** — `q4-billing-revamp_archive/` next to `auth-rewrite/` in one folder. Defeats the entire principle: the `ls` view is still mixed.
@@ -71,6 +83,13 @@ projects/
 - **`someday/` as graveyard** — when `someday/` becomes a write-only pile of bad ideas, prune it. The whole point is that you'd genuinely revisit these.
 - **Year-stamped names *inside* `archive/`** — `archive/q4-billing-revamp_2025/` plus the year directory is double-encoding. Pick the structural one.
 
+## Scaling & failure modes
+
+- **Path changes break references** (links, CI, bookmarks). Archive only what is truly closed, and leave a pointer if a URL matters.
+- **Two-state models** (active/archive) are enough for most trees; `someday/` earns its place only if you review it.
+- **Status vs topic**: a top-level status split fights topic-based organization. Pick which axis is primary and use tags or an index for the other.
+- **Archive bloat**: bucket by year, and prune or compress archives past your retention window.
+
 ## Variants
 
 - **active-archive-only** (minimal) — just `active/` and `archive/`. Simplest; works for solo projects without the "maybe later" pile.
@@ -79,6 +98,13 @@ projects/
 - **PARA full** (Tiago Forte) — `Projects/`, `Areas/`, `Resources/`, `Archive/`. Status is implicit (Projects = active) plus orthogonal categorization.
 - **GTD-style** — `next-actions/`, `waiting/`, `someday-maybe/`, `reference/`. Specifically tuned for task management rather than project work.
 - **Time-decayed archive** — `archive/recent/` plus `archive/cold-storage/` for very old items. Useful when you want a fast-glance recent archive without scanning every year.
+
+## Adoption checklist
+
+- [ ] No filename or directory carries a status word (`old`, `done`, `final`, `wip`).
+- [ ] Each status directory has a written trigger for moving items in and out.
+- [ ] `archive/` is bucketed by year.
+- [ ] `someday/` is reviewed on a schedule, or removed.
 
 ## Real-world projects using this
 

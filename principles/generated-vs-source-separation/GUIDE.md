@@ -56,6 +56,18 @@ project/
 5. **Caches go in dotfile dirs at the source root** (`.cache/`, `.next/`, `.pytest_cache/`) so they hide from default `ls` and clearly signal "tool state, regeneratable, ignore."
 6. **Never name a source directory the same as an output directory.** If your build outputs to `build/`, don't have a `build/` directory of source files. The collision will produce one of the worst classes of confusing bug.
 
+## Worked example
+
+A Python project commits `build/`, `*.egg-info/`, and a compiled `docs/_build/` because someone ran `git add .` once.
+
+1. Apply the litmus test to each directory: could `git clone && <build command>` recreate it? If yes it's generated.
+2. Untrack without deleting: `git rm -r --cached build docs/_build` (repeat for each generated directory).
+3. Add them to `.gitignore` at the repo root, anchored (`/build/`, `/docs/_build/`).
+4. Point every tool at one output directory per kind (`dist/` for wheels, `docs/_build/` for docs) and document them in the README.
+5. In CI, build from a clean checkout to prove the sources are complete.
+
+Then `git status` after a full build is clean, which is the ongoing proof the separation holds.
+
 ## Anti-patterns
 
 - **`dist/` committed to git.** Every PR has a 50,000-line diff in the bundled output; review becomes impossible. Gitignore it; let the build produce it locally and CI/registry produce it for releases.
@@ -65,6 +77,13 @@ project/
 - **Tracked `__pycache__/` or `*.pyc`.** Python byte code is always regeneratable; tracking it makes git pulls noisy and merges painful.
 - **Tracked `.next/` or `.cache/`** from a Next.js / build-tool project. These are local incremental-build state, not artefacts. CI doesn't need them; collaborators definitely don't.
 
+## Scaling & failure modes
+
+- **Checked-in generated files** are sometimes right: lockfiles, generated API clients, protobuf stubs that consumers need without a toolchain. Mark them (`# generated, do not edit` header, `linguist-generated` in `.gitattributes`) and add a CI check that regeneration produces no diff.
+- **Multiple build targets** multiply output directories. Keep them under one parent (`build/<target>/`) so one ignore rule covers them.
+- **Caches inside source trees** (`__pycache__/`, `.pytest_cache/`) are generated too; ignore by pattern, not by path.
+- **Editors that index generated code** slow down; exclude output directories in editor and search config.
+
 ## Variants
 
 - **Ecosystem-default-only.** Just use the conventional name (`target/`, `dist/`, `build/`, `node_modules/`) and gitignore. The simplest, recommended for most teams.
@@ -72,6 +91,13 @@ project/
 - **Underscore-prefixed for sort order.** `_build/`, `_site/` to push generated dirs to the start of an alphabetical listing. Common in static-site generators and Sphinx.
 - **Hidden / dotfile cache dirs.** `.next/`, `.cache/`, `.pytest_cache/`, `.mypy_cache/` for transient build state. Combines this rule with the hidden-files-policy: dotfile because it's plumbing, gitignored because it's regeneratable.
 - **`generated/` for intentionally-tracked generated code.** Used when downstream consumers can't run the regen command themselves (protobuf, OpenAPI clients shipped to non-build environments). Distinct from `src/` so readers know the lifecycle.
+
+## Adoption checklist
+
+- [ ] After a full build and test run, `git status --porcelain` is empty.
+- [ ] Each generated directory is named in `.gitignore` and appears in the README's build section.
+- [ ] Any deliberately committed generated file is labeled and has a regeneration check in CI.
+- [ ] A fresh clone builds with one documented command.
 
 ## Real-world projects using this
 

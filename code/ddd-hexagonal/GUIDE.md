@@ -74,6 +74,19 @@ myservice/
 - **Domain events**: `domain/events/<entity>_<past_tense_verb>.py` — `order_placed.py`, `payment_failed.py`. Past tense matters; events describe what happened.
 - **Handlers**: `application/handlers/on_<event>.py` — one handler per event subscription.
 
+## Worked example
+
+An order service's `place_order()` imports SQLAlchemy and `requests`, so its tests need a database.
+
+1. Define the port in the domain: `domain/ports/order_repository.py` with an abstract `OrderRepository` (`add`, `get`).
+2. Move the business rules into `domain/models/order.py`, with no framework imports.
+3. Write the use case in `application/commands/place_order.py`; it receives an `OrderRepository` in its constructor.
+4. Implement the adapter in `infrastructure/persistence/sqlalchemy_order_repo.py`.
+5. Wire the pieces at the edge (`interfaces/api/` builds the FastAPI app and injects the adapter).
+6. Test the use case with an in-memory fake repository in `tests/unit/`. Add a guard: `import-linter` contract "domain must not import infrastructure".
+
+The unit tests now run in milliseconds and the dependency rule is checked in CI.
+
 ## Anti-patterns
 
 - **Domain importing infrastructure.** `from sqlalchemy import Column` in `domain/models/order.py` is the cardinal sin. The domain must not know its persistence story. Fix: keep the entity a plain dataclass; let the adapter do the SQLAlchemy mapping.
@@ -84,6 +97,13 @@ myservice/
 - **One giant application service.** `OrderService` with 40 methods. Split into one use case per file (`place_order.py`, `cancel_order.py`, `refund_order.py`). The naming is verbose; the discoverability is excellent.
 - **Tests that hit the real DB by default.** Unit tests should not need Docker. Use an in-memory `FakeOrderRepository` that satisfies the port; reserve real DB tests for `tests/integration/`.
 
+## Scaling & failure modes
+
+- **Ceremony cost**: for CRUD-heavy services, the layers are overhead. Start with fewer layers and split when a rule or a dependency forces it.
+- **Anemic models** appear when all logic drifts into use cases; keep invariants inside entities.
+- **Mapping code** between domain objects and ORM rows grows; accept it or reduce it with an imperative mapper, but don't leak ORM types into the domain.
+- **Many bounded contexts** call for a top-level split (`billing/`, `shipping/`), each with its own layers, before layering within one shared tree.
+
 ## Variants
 
 - **Classic DDD 3-layer** (this guide) — domain / application / infrastructure with `interfaces/` for transports. The mainstream Python interpretation, popularised by *Cosmic Python*.
@@ -92,6 +112,14 @@ myservice/
 - **Onion architecture** (Jeffrey Palermo) — same idea, different naming: domain → domain services → application services → infrastructure. The layers are concentric and the rule is the same; the diagrams differ. Treat it as a re-skin of hexagonal.
 - **Clean Architecture** (Robert Martin) — same shape with another naming convention (entities / use cases / interface adapters / frameworks). Use whichever vocabulary your team prefers; the structure is identical.
 - **Hexagonal lite** — collapse `application/` into `domain/` for very small services. Re-emerge `application/` once you have more than ~5 use cases.
+
+## Adoption checklist
+
+- [ ] `domain/` has no imports from frameworks, databases, or HTTP libraries (enforced by an import-linter or dependency-cruiser rule).
+- [ ] Every port has an in-memory fake used by unit tests.
+- [ ] Composition (wiring adapters to ports) happens in one place at the edge.
+- [ ] Domain events and commands are named in the business's language.
+- [ ] Integration tests cover each adapter against the real dependency.
 
 ## Real-world projects using this
 

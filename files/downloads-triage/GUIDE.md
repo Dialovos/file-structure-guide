@@ -51,6 +51,19 @@ The directory shape is a behavioral nudge: every time you `cd ~/Downloads`, you 
 5. Inside `_to-process/`, optionally append a date prefix to the filename (`2026-04-30-tax-doc.pdf`) so you notice items that have lingered too long.
 6. Never rename `Downloads/` itself — your browser, mail client, and OS expect that exact path.
 
+## Worked example
+
+`~/Downloads/` has 3,000 files going back seven years, mixing installers, receipts, and half-read PDFs.
+
+1. Create `inbox/`, `archive/`, and `_to-process/` inside it.
+2. Move everything old into `archive/legacy-2026-04/` in one command and stop sorting it. If you need something, search there.
+3. Point the browser's download location at `~/Downloads/inbox/` (and chat apps if they support it).
+4. Once a week, list what's waiting: `find ~/Downloads/inbox -type f -mtime -14 | sort`. For each file, choose: delete, move to its real home (project, `finance/`, `scans/`), or move to `_to-process/` if it needs an action you can't do now.
+5. Delete `_to-process/` entries older than a month unless they got done.
+6. Reduce inflow: use "ask where to save" for anything that isn't disposable.
+
+Downloads becomes a queue that empties each week.
+
 ## Anti-patterns
 
 - **Letting `Downloads/` become a permanent storage tier.** If you find yourself "looking for that PDF I downloaded six months ago" inside `Downloads/`, the system has failed — that file should have been moved to a project tree or `archive/` long ago.
@@ -60,6 +73,13 @@ The directory shape is a behavioral nudge: every time you `cd ~/Downloads`, you 
 - **Synchronising `Downloads/` to cloud storage.** Cloud-sync of an inbox produces conflict files (`file (1).pdf`, `file (Hoang's MacBook).pdf`). Sync the destinations (`Documents/`, project trees), not the inbox.
 - **Mixing automated rules with the manual layout halfway** — pick one. If you adopt Hazel, write rules for everything; don't leave a manual `inbox/` and a parallel rule-driven flow that argue with each other.
 
+## Scaling & failure modes
+
+- **Installers and ISO files** eat space; delete after installing, and keep only what's hard to fetch again.
+- **Auto-cleanup scripts** that delete old files risk removing the only copy; move to `archive/` first and purge from there after a grace period.
+- **Multiple browsers/profiles** each have their own download setting; set all of them.
+- **Sensitive downloads** (statements, IDs) shouldn't sit in the inbox; file them the same day.
+
 ## Variants
 
 - **inbox-archive-toprocess (this guide)** — three folders, manual weekly triage. Best for people who want zero tooling.
@@ -67,6 +87,14 @@ The directory shape is a behavioral nudge: every time you `cd ~/Downloads`, you 
 - **date-stamped-inbox** — `inbox/2026-04/` rolls over monthly so old months become archive candidates. Useful for people whose triage cadence is monthly, not weekly.
 - **automation-driven (Hazel/Maid)** — rules sort files at write time by extension, source URL, or filename pattern. No `inbox/` exists; files land in their final home immediately. Highest leverage; highest setup cost.
 - **GTD-style with project folders** — `inbox/`, plus `_to-process/` is replaced by project-named folders (`_clientA/`, `_house-purchase/`) for active workstreams. Best when triage often produces multi-item project bundles.
+
+## Adoption checklist
+
+- [ ] Browsers and chat apps save to `~/Downloads/inbox/`.
+- [ ] A weekly triage is scheduled and takes under 10 minutes.
+- [ ] `_to-process/` items have a monthly expiry.
+- [ ] Sensitive documents are filed the day they arrive.
+- [ ] The legacy pile is archived, not re-sorted.
 
 ## Real-world projects using this
 

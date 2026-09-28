@@ -53,6 +53,19 @@ projects/
 5. If a project has both code and notes that you want to keep together, archive the whole directory; don't leave half in `active/` and half in `archive/`.
 6. Re-activated projects move *back* to `active/` rather than living in both. The history of moves can be reconstructed from `git log --follow` or filesystem mtimes if needed.
 
+## Worked example
+
+`~/projects/` has 40 folders, and half are dead.
+
+1. Create `active/` and `archive/<current-year>/`.
+2. For each project, ask "have I touched this in 90 days, and do I intend to?" Move finished or dormant ones: `mv projects/side-project-foo projects/archive/2026/`.
+3. Before archiving, make sure the work is safe: commit and push git repositories, and note the remote URL in the folder's README.
+4. Fix references: editor workspaces, scripts, shell aliases, and any catalog of projects.
+5. Delete regenerable bulk (`node_modules/`, `.venv/`, `target/`) before archiving to save space.
+6. Do this on a schedule: quarterly is enough.
+
+`ls projects/active` shows current work, and old projects stay retrievable by year.
+
 ## Anti-patterns
 
 - **`active/`, `pending/`, `someday/`, `done/`** — too many stages; the boundaries blur and projects get stuck in an intermediate state for years.
@@ -62,6 +75,13 @@ projects/
 - **Leaving symlinks behind in `active/`** — every script that crawls `active/` will follow them; either move cleanly or copy if you genuinely need both.
 - **Mixing finished projects with finished one-off scripts** — scripts go in `~/bin/` or `dotfiles/`; only project-shaped work belongs in this archive.
 
+## Scaling & failure modes
+
+- **Repo moves** are safe for git, but absolute paths in configs, CI caches, and tools break; grep for the old path.
+- **Bulk in archives**: build directories and virtualenvs inflate backups; clean before archiving.
+- **Reviving a project** is a move back to `active/`; update the last-touched date in its README.
+- **Long-term retention**: after several years, compress old archive years into single archives with a manifest.
+
 ## Variants
 
 - **archive-by-year** (this guide) — `archive/2025/<project>/`. Best default; matches journals and receipts.
@@ -69,6 +89,14 @@ projects/
 - **single-flat-archive** — one big `archive/<project>/`. Works only for small portfolios (≤30 lifetime projects).
 - **archive-with-tombstones** — leave a one-line `archive/<year>/<project>.md` stub in place of the dir (move the project elsewhere). Compact when projects are huge but you want them indexed.
 - **PARA `4-archive/`** — the Tiago Forte scheme; equivalent to this guide with the `archive/` directory named `4-archive/`.
+
+## Adoption checklist
+
+- [ ] `active/` has few enough projects to list from memory.
+- [ ] Archived repos are pushed and their remote is recorded.
+- [ ] Regenerable directories are removed before archiving.
+- [ ] The move criteria (for example 90 days idle) are written down.
+- [ ] Old archive years are compressed or pruned on a schedule.
 
 ## Real-world projects using this
 

@@ -58,6 +58,20 @@ Following FHS keeps these axes legible: anyone who reads `/etc/nginx/nginx.conf`
 5. Self-contained third-party blobs go under `/opt/<vendor>/<product>/` (e.g. `/opt/google/chrome/`). They bundle their own libs and don't depend on `/usr/lib/` layout.
 6. Served content (web roots, FTP roots, NFS exports) goes under `/srv/<service>/`. Prefer `/srv/www/` over `/var/www/` on systems that follow FHS strictly.
 
+## Worked example
+
+You built a tool from source and a small internal service, and you need to decide where each part goes.
+
+1. Binaries you built yourself go to `/usr/local/bin/`, libraries to `/usr/local/lib/`, shared data to `/usr/local/share/<tool>/`. Package-manager files stay in `/usr`.
+2. A self-contained vendor bundle (its own `bin/`, `lib/`) goes to `/opt/<vendor>/<product>/`.
+3. Host config goes to `/etc/<tool>/`; keep defaults out of `/etc` when a program ships them in `/usr/share`.
+4. Runtime state goes to `/var/lib/<service>/`, logs to `/var/log/<service>/`, caches to `/var/cache/<service>/`.
+5. Content served to others (a website, a git server's repos) goes to `/srv/<service>/`.
+6. With systemd, declare these directories in the unit (`StateDirectory=`, `LogsDirectory=`, `ConfigurationDirectory=`) so they're created with the right ownership.
+7. Read `man hier` for the reference.
+
+Every file has a predictable home, and package upgrades don't overwrite your files.
+
 ## Anti-patterns
 
 - **Installing to `/usr/bin/` from source** — that prefix belongs to the package manager. Use `/usr/local/` so the admin's installs are distinguishable from distro installs.
@@ -67,6 +81,13 @@ Following FHS keeps these axes legible: anyone who reads `/etc/nginx/nginx.conf`
 - **Putting user data under `/srv/`** — `/srv/` is for content the host *serves* (web pages, FTP files), not for personal files. Personal data lives in `/home/<user>/`.
 - **Ignoring `/usr/local/etc/`** — admin-installed software's config goes in `/usr/local/etc/`, not `/etc/`, on strictly FHS-compliant systems.
 
+## Scaling & failure modes
+
+- **Package manager conflicts**: files you put in `/usr` (not `/usr/local`) may be overwritten or removed by upgrades.
+- **Containers** ignore most of this; the FHS matters on the host and inside base images, but volumes make the mapping explicit.
+- **Per-user installs** belong under `$HOME/.local` (see `xdg-base-directory`), not in system paths.
+- **Backups**: the split tells you what to back up (`/etc`, `/var/lib`, `/srv`, `/home`) and what to rebuild (`/usr`).
+
 ## Variants
 
 - **Strict FHS** — every directory exactly per spec; common on Debian, Slackware, FreeBSD.
@@ -74,6 +95,14 @@ Following FHS keeps these axes legible: anyone who reads `/etc/nginx/nginx.conf`
 - **NixOS layout** — `/nix/store/<hash>-<name>/` plus per-user profile symlinks. Deliberately abandons FHS but provides shims (`/usr/bin/env` works) for portability.
 - **Stateless system layout (Fedora Silverblue, openSUSE MicroOS)** — `/etc/` and `/var/` are the only writable trees; the rest is immutable. Same FHS shape, different mount semantics.
 - **Container minimalism** — scratch-based or distroless images keep only what runs the binary. The shape is FHS-shaped but missing entire branches (`/var/log/`, `/usr/share/man/`).
+
+## Adoption checklist
+
+- [ ] Locally built software lives in `/usr/local` or `/opt`, never mixed into `/usr`.
+- [ ] Each service has separate config, state, log, and cache directories.
+- [ ] systemd units declare their directories.
+- [ ] Backups cover `/etc`, `/var/lib`, `/srv`, and `/home`.
+- [ ] Per-user software is installed under `$HOME`, not system paths.
 
 ## Real-world projects using this
 

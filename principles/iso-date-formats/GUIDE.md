@@ -60,6 +60,18 @@ bad/
 5. Year-only and year-month directories are valid containers: `2026/`, `2026-04/`. Do not nest deeper than `year/year-month/year-month-day/` without a content reason.
 6. Never use `_` between date components; use `-` only. Never use `.` (collides with file extensions).
 
+## Worked example
+
+`reports/` holds `4-29-26.pdf`, `April 30 2026.pdf`, and `01-05-2026.pdf`. Nobody can tell whether the last one is January 5 or May 1.
+
+1. Decide the true dates from file metadata or content; never guess from the ambiguous name. `stat -c %y file` and the PDF's own date help.
+2. Rename with a script that prints the plan first: `for f in *.pdf; do echo "$f -> $(date -d "$(stat -c %y "$f")" +%F)-report.pdf"; done`.
+3. Apply after reviewing the output. Use `mv -n` so nothing is overwritten.
+4. Sort check: `ls` now lists files chronologically with no options.
+5. For timestamps in filenames use `YYYY-MM-DDTHHMM` or `YYYYMMDD-HHMMSS`, and choose one across the tree.
+
+Result: `2026-01-05-report.pdf`, unambiguous and sortable in every tool.
+
 ## Anti-patterns
 
 - **`04-29-26.md`** or **`4/29/26`** — locale-dependent. A US reader sees April 29, 2026; a European reader sees a malformed day-month-year. Sorts wrong in every locale.
@@ -69,6 +81,13 @@ bad/
 - **Date *suffixed* on a sortable list** — `meeting-notes-2026-04-30.md` doesn't sort by date. Prefix instead.
 - **Mixing date formats in one tree** — one directory with `2026-04-30.md` and another with `Apr-30-2026.md` defeats the entire reason for the convention.
 
+## Scaling & failure modes
+
+- **Time zones.** Dates near midnight differ by zone. Pick one (usually UTC for machine logs, local for personal notes) and write it down.
+- **Two-level trees** like `2026/2026-04/` repeat the year on purpose so files stay unambiguous when moved out of context.
+- **Week dates** use ISO week notation (`2026-W18`), and ISO weeks can belong to the neighboring calendar year around New Year.
+- **Legacy data** with 2-digit years or mixed locales needs a one-time migration with a human check of the ambiguous rows.
+
 ## Variants
 
 - **Date-only** (`YYYY-MM-DD`) — for daily content with at most one entry per day.
@@ -76,6 +95,13 @@ bad/
 - **Date + time, T-separated** (`YYYY-MM-DDTHH-MM-SS`) — for high-frequency content (screenshots, logs, sensor data).
 - **Date + time + zone** (`YYYY-MM-DDTHH-MM-SSZ` for UTC, or `…+00-00` for explicit offset) — for distributed systems where local time is meaningless.
 - **Compact form** (`YYYYMMDD`) — no separators, used by some camera firmware and CI artifact stores. Sorts the same; less human-readable. Don't introduce it on purpose, but tolerate it from upstream tools.
+
+## Adoption checklist
+
+- [ ] `ls` in any dated directory sorts chronologically without flags.
+- [ ] No filename has a two-digit year, month names, or a locale-specific order.
+- [ ] Time-of-day format and time zone are documented once for the tree.
+- [ ] Rename scripts print a dry-run plan and never overwrite.
 
 ## Real-world projects using this
 

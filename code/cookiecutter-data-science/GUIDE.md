@@ -76,6 +76,19 @@ project/
 - **Python module names**: lowercase, snake_case, descriptive. `make_dataset.py`, `build_features.py`, `train_model.py`. Avoid generic names like `utils.py` at the top of a package — push them into a sub-package or rename for purpose.
 - **Makefile targets**: lowercase, hyphen-free verbs or noun-phrases. `data`, `features`, `train`, `clean`, `lint`, `test`. Multi-word targets use hyphens: `clean-data`, `train-baseline`.
 
+## Worked example
+
+A notebook `final_analysis_v3.ipynb` reads `../Downloads/data.csv` and cleaned data is written next to it.
+
+1. Scaffold with `ccds` (or copy the layout) so `data/{raw,interim,processed,external}/` exist.
+2. Move the original file to `data/raw/` and treat it as read-only (`chmod -R a-w data/raw`).
+3. Move cleaning code out of the notebook into `src/<project>/data/make_dataset.py`; the notebook now `import`s it (`pip install -e .`).
+4. Rename notebooks to `<order>-<initials>-<purpose>.ipynb`, for example `1.0-jh-eda.ipynb`.
+5. Add `make data`, `make features`, `make train` targets so the pipeline reruns from raw with one command.
+6. Gitignore `data/` contents and `models/`; keep `.gitkeep` files.
+
+Anyone can now reproduce `data/processed/` from `data/raw/` without opening a notebook.
+
 ## Anti-patterns
 
 - **Editing `data/raw/`.** The whole point of `data/raw/` is that it's immutable. If you need to clean / filter / transform, write the result to `data/interim/` (work-in-progress) or `data/processed/` (final).
@@ -89,6 +102,13 @@ project/
 - **Dropping models in the repo root** (`final_model.pkl` next to `README.md`). Goes in `models/`, gitignored unless tiny, ideally tracked by DVC or MLflow.
 - **Notebooks in `src/`.** `src/` is for installable code only. Notebooks in `notebooks/`. They have different lifecycles.
 
+## Scaling & failure modes
+
+- **Large raw data** doesn't belong in git. Use DVC, git-lfs, or an object store with a manifest of checksums committed to the repo.
+- **Notebook drift**: notebooks stay for exploration; the second time code is copied between notebooks, promote it to `src/`.
+- **Experiment sprawl** (many models, many runs) outgrows `models/`. Add an experiment tracker (MLflow, Weights & Biases) rather than folders like `models/v2/`.
+- **Collaboration**: strip notebook outputs before commit (`nbstripout`) so diffs are readable.
+
 ## Variants
 
 - **CCDS v2 (this guide)** — `pyproject.toml`-based, `hatchling` or `setuptools` backend, `uv` or `pip-tools` for env, optional Hydra for config. Released 2024. Current default.
@@ -98,6 +118,14 @@ project/
 - **Kedro** — a deeper opinion that swallows a lot of CCDS's structure but adds a pipeline framework, a data catalog (`conf/base/catalog.yml`), and Hooks. If your project is more "engineering" than "research," Kedro often wins.
 - **Pyro / nf-core / similar domain-specific** — bioinformatics / scientific-computing communities have CCDS-shaped templates with extra directories. Same shape, just specialised.
 - **Just the layout, no cookiecutter** — copy `template/` and run with it. CCDS is a convention more than a tool; many teams skip the cookiecutter prompt and just maintain the structure manually.
+
+## Adoption checklist
+
+- [ ] `data/raw/` is read-only, ignored by git, and has a documented source.
+- [ ] `make data && make features` reproduces `data/processed/` from raw.
+- [ ] Notebooks are numbered and import shared code from `src/`.
+- [ ] Notebook outputs are stripped in a pre-commit hook.
+- [ ] A README section says how to obtain the raw data.
 
 ## Real-world projects using this
 

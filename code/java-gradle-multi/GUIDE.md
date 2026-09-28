@@ -69,6 +69,19 @@ my-project/
 - **Version catalog accessors**: `libs.junit.jupiter` corresponds to `junit-jupiter` in TOML (`-` and `.` map to the same accessor). Stick to one separator per project — `kebab-case` keys read most cleanly.
 - **Convention plugins (when used)**: `buildSrc/src/main/kotlin/myproject.java-conventions.gradle.kts`. The dotted ID becomes a plugin you `apply` in module `build.gradle.kts`.
 
+## Worked example
+
+A Maven parent POM with five modules takes 9 minutes to build; dependency versions differ between modules.
+
+1. Add `settings.gradle.kts` with `include("core", "api", "app")`.
+2. Create `gradle/libs.versions.toml` with `[versions]`, `[libraries]`, and `[plugins]` blocks; reference entries as `libs.spring.boot.starter`.
+3. Move shared build logic into a convention plugin in `build-logic/` (or `buildSrc/` for a small project) so each module's `build.gradle.kts` is about ten lines.
+4. Declare inter-module dependencies with `implementation(project(":core"))`, and use `api` only for types that appear in a module's public signatures.
+5. Enable the build cache and parallel execution in `gradle.properties`.
+6. Confirm with `./gradlew build --scan` and compare timings.
+
+Module builds are incremental, so touching `app` no longer rebuilds `core`.
+
 ## Anti-patterns
 
 - **Skipping the wrapper** (`gradle/wrapper/`). Without it, "works on my machine" creeps in. Always commit `gradlew`, `gradlew.bat`, and `gradle/wrapper/*` (including the JAR — it's tiny and signed).
@@ -81,6 +94,13 @@ my-project/
 - **Committing `.gradle/` or `build/`.** Build outputs and caches; gitignored.
 - **Skipping `org.gradle.parallel=true` in `gradle.properties`.** Default in recent Gradle, but worth being explicit. Combined with multi-module, this is where the speed wins come from.
 
+## Scaling & failure modes
+
+- **`buildSrc` invalidation**: any edit reruns the whole build's configuration; move to composite `build-logic` when the project grows.
+- **Configuration time** rises with module count; use configuration cache and avoid heavy logic in build scripts.
+- **Circular module dependencies** are rejected by Gradle; treat that error as a design signal.
+- **Version alignment** across many libraries is easiest with the catalog plus `platform()` BOMs.
+
 ## Variants
 
 - **Groovy DSL** — `build.gradle` instead of `build.gradle.kts`. Older syntax, more permissive, less IDE help. Many existing projects use it; new projects should pick Kotlin DSL.
@@ -89,6 +109,14 @@ my-project/
 - **`buildSrc/` for convention plugins** — `buildSrc/` is a magic directory; Gradle compiles it before evaluating any `build.gradle.kts`. Define a convention plugin there (`myproject.java-conventions.gradle.kts`) and apply it in each module to dedupe Java toolchain + Checkstyle + dependencies setup.
 - **Gradle's *included builds* (`includeBuild`) for build logic** — newer than `buildSrc/`, more flexible (the build-logic project is just another Gradle project, no magic). Consider for large projects.
 - **With Spotless / Checkstyle / Detekt** — formatting + linting plugins applied in the root or via convention plugins.
+
+## Adoption checklist
+
+- [ ] `./gradlew build` succeeds from a clean clone using the wrapper.
+- [ ] All dependency versions come from `libs.versions.toml`.
+- [ ] Repeated module configuration lives in a convention plugin.
+- [ ] `api` vs `implementation` choices are deliberate.
+- [ ] Build cache and configuration cache are enabled and verified.
 
 ## Real-world projects using this
 

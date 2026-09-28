@@ -54,6 +54,19 @@ zettelkasten/
 7. **No folders.** All Folgezettel notes live in one directory. The tree is virtual, expressed by IDs.
 8. **`INDEX.md`** is optional but useful — list the root IDs (`1`, `2`, `3`) with one-line descriptions so a reader knows where to enter.
 
+## Worked example
+
+A slip box of 200 notes has no way to show that one note continues another.
+
+1. Start the first thread with a root note: `1 deep-work-overview.md`.
+2. Add a continuation with a letter: `1a attention-residue.md`; a further step from that gets a number: `1a1 task-switching-cost.md`.
+3. Add a sibling branch with the next letter: `1b prerequisites-for-deep-work.md`.
+4. Start a new theme with the next integer: `2 shallow-work-tax.md`.
+5. Never renumber. IDs are addresses; links use them (`[[1a1]]`), so a rename breaks the thread.
+6. Keep an `INDEX.md` listing the entry point of each thread.
+
+`ls` now displays each line of thought in order, and a new note's place is decided by which note it responds to.
+
 ## Anti-patterns
 
 - **Re-using a retired ID.** If you delete `1a3`, do not assign that ID to a later note. Every retired ID stays retired so links don't silently re-point.
@@ -63,6 +76,13 @@ zettelkasten/
 - **Treating IDs as hierarchical paths.** `1a1` is *related* to `1a` but it isn't *contained* by it. The "tree" is conceptual, not physical. Code that treats IDs as paths will mis-handle siblings.
 - **Long IDs.** A 14-character ID like `1a1b2c3a1b1a2c` indicates the chain has grown into a private maze. Fork into a new root (`14`) and use links instead of more characters.
 
+## Scaling & failure modes
+
+- **Sorting gotcha**: `1a10` sorts before `1a2` in plain lexicographic order. Zero-pad or use a tool that sorts naturally, and settle it before the first note.
+- **Deep branches** (`1a1b2c3`) become unreadable; when a branch grows its own theme, start a new root.
+- **Cross-thread links** matter more than the tree; use explicit links, and don't force every note into one parent.
+- **Rework** is expensive because IDs are positions; decide placement carefully or accept some imperfection.
+
 ## Variants
 
 - **strict-Luhmann (this guide).** Alternating letters and digits, single flat directory, no folders. Faithful to the paper original.
@@ -71,6 +91,14 @@ zettelkasten/
 - **dotted-letter.** `1.a.1` instead of `1a1`. Some users find dots more readable; Obsidian Folgezettel plugin supports both.
 - **Folgezettel-with-MOC.** Pure Folgezettel for the body, plus a small set of `MOC-<topic>.md` notes that link in by ID. Keeps the flat directory while adding topical entry points.
 - **Folgezettel-on-top-of-Zettelkasten.** Use timestamp IDs for raw permanent notes; assign a Folgezettel ID *additionally* when a note enters an argumentative thread. Two coordinate systems — heavier, but reflects how Luhmann actually worked late in his career.
+
+## Adoption checklist
+
+- [ ] IDs alternate letters and numbers by depth and are never renumbered.
+- [ ] Sorting order was tested, including ID `10` versus `2`.
+- [ ] Each thread has an entry in `INDEX.md`.
+- [ ] Cross-thread links use IDs.
+- [ ] Threads deeper than about four levels are reviewed for a new root.
 
 ## Real-world projects using this
 

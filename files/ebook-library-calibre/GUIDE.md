@@ -55,6 +55,19 @@ Calibre Library/
 6. Sibling files: `cover.jpg` for artwork, `metadata.opf` for OPF metadata. Calibre rewrites both whenever you change tags. Never edit `metadata.opf` by hand while Calibre is running — it overwrites your edits.
 7. Filename character substitution: Calibre replaces filesystem-illegal characters (`?`, `:`, `<`, `>`, `|`, `"`, `*`) with `_`. Do not "fix" these by hand; Calibre regenerates the path on every save.
 
+## Worked example
+
+Ebooks are in three folders and two e-readers; you want one library that syncs.
+
+1. Create the library in Calibre (`Calibre Library/` with `metadata.db` inside) and import books with "Add books". Let Calibre own the file names; don't rename by hand.
+2. Fix metadata inside Calibre (title, author sort, series, and index) so paths regenerate as `Author/Title (Series N)/`.
+3. Back up the whole library folder, including `metadata.db`; without the database, only file names and `.opf` sidecars remain.
+4. Serve it: Calibre content server or Calibre-Web on the library folder for browsers and OPDS readers (KOReader can sync from OPDS).
+5. Keep one writer: if Calibre and another tool both write to the folder, corruption follows.
+6. Check integrity: run "Check library" in Calibre after moves or restores.
+
+One library folder is the source of truth for all readers.
+
 ## Anti-patterns
 
 - **Hand-editing the directory structure** — Calibre's `metadata.db` indexes books by an internal ID and a relative path. Renaming directories from the shell decouples the database from the filesystem; books vanish from the GUI.
@@ -65,6 +78,13 @@ Calibre Library/
 - **Running two Calibre instances against the same library** — `metadata.db` is SQLite; concurrent writers corrupt it. Use Calibre Content Server for multi-user access.
 - **Renaming author directories to match the surname-first form** (`Le Guin, Ursula K/`) — diverges from Calibre's display form; the `metadata.db` no longer matches and the GUI relocates everything on next launch.
 
+## Scaling & failure modes
+
+- **Path length limits**: long titles and authors can exceed OS path limits; Calibre truncates, so don't fight it.
+- **Sync clients** (Dropbox and the like) writing to the library while Calibre runs cause database lock or corruption; sync a backup copy instead.
+- **Multiple formats** per book live in one folder; conversion adds files, so watch disk use.
+- **DRM'd files** need separate handling and aren't a layout matter.
+
 ## Variants
 
 - **Calibre-default** — the layout described above; what you get if you let Calibre manage the library, which is the recommended mode.
@@ -73,6 +93,14 @@ Calibre Library/
 - **Series-rooted** — `<Series>/<Author>/<Book>/...` for collectors who think in series first. Calibre's "save to disk" template can emit this; the live library cannot use it because standalones have no series.
 - **ISBN-flat** — `9780441478125.epub` in a single directory; used by some library imports and by automation pipelines. Loses all browsability; recover with metadata fetch on import.
 - **Plain-EPUB grids** (without `cover.jpg` or `.opf`) — produced by direct downloads. Run Calibre's "Add books" to upgrade them into the canonical layout.
+
+## Adoption checklist
+
+- [ ] Calibre is the only writer to the library folder.
+- [ ] `metadata.db` is included in backups, and a restore was tested.
+- [ ] Metadata (author sort, series) is fixed in Calibre, not by renaming files.
+- [ ] "Check library" reports no problems after changes.
+- [ ] The content server or OPDS feed points at the library, not a copy.
 
 ## Real-world projects using this
 

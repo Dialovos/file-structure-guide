@@ -59,6 +59,18 @@ after/
 5. **Keep the split shallow.** One level of subdirectory. If `auth/login/` is itself becoming a directory, that's a second iteration of the same rule, not a deeper hierarchy from day one.
 6. **Update imports atomically** in the same commit as the split, or stage them in a single PR. Don't leave the codebase half-migrated.
 
+## Worked example
+
+`auth.ts` is 812 lines. It contains login, signup, token refresh, and a block of types, separated by comments like `// === Token refresh ===`.
+
+1. Confirm the smell: `wc -l auth.ts` and `grep -n '^// ===' auth.ts`. Section comments are the split lines.
+2. Create `auth/` and move one section at a time: `login.ts`, `signup.ts`, `token-refresh.ts`, `types.ts`. Run the tests after each move.
+3. Add `auth/index.ts` that re-exports only the public API. Callers keep importing from `./auth`, so nothing outside the directory changes.
+4. Delete the section comments; the filenames replaced them.
+5. Commit each move separately so history stays reviewable.
+
+Result: five files of 30 to 200 lines, and a file-level diff for a login change no longer touches token code.
+
 ## Anti-patterns
 
 - **Splitting too eagerly.** A 200-line file with one cohesive responsibility doesn't need a directory. The threshold isn't 200; it's the smell of multiple concerns plus the line count.
@@ -68,6 +80,13 @@ after/
 - **Half-migration.** `auth.ts` deleted, `auth/login.ts` and `auth/signup.ts` created, but token refresh still copy-pasted in three callers because nobody finished the refactor. Either complete the split or revert.
 - **Fighting the threshold with sub-thresholds.** Inventing rules like "split at 200 lines" makes most reasonable code split unnecessarily. 500 is calibrated against real codebases; pick a different number only with intent.
 
+## Scaling & failure modes
+
+- **The number is a signal, not a rule.** A 900-line generated parser or a flat table of constants can be fine. The trigger is multiple responsibilities, not the count.
+- **Splitting too early** produces `auth/` folders with three 20-line files and an index that only re-exports them. Wait for the second responsibility.
+- **Cyclic imports** appear when sections shared private helpers. Extract those into their own module before moving anything.
+- **Large test files** follow the same rule; split by behavior under test, not by test type.
+
 ## Variants
 
 - **200-line threshold (very strict).** Some teams (often functional-programming heavy, or working in highly modular Lisp/Clojure styles) keep files under 200 lines. Encourages small modules; risks fragmentation and over-imports.
@@ -75,6 +94,13 @@ after/
 - **No fixed threshold; cohesion-rules-only** (Robert Martin / "Clean Code" school). Split when there are multiple reasons to change the file, regardless of size. More principled but harder to enforce mechanically; tends to produce files of wildly varying length.
 - **1000+ lines acceptable for stable, low-churn modules.** Some long-lived modules in stdlib codebases reach 1000-2000 lines because they're stable and the unit is genuinely cohesive. Acceptable for low-churn code; don't aim for it.
 - **Linter-enforced threshold.** Tools like `max-lines` (ESLint), `max-file-size` (custom), or repo-level CI checks that fail builds on files over a threshold. Useful as a tripwire; pair with an "ignore" mechanism for legitimately-large files (generated code, fixtures).
+
+## Adoption checklist
+
+- [ ] `git ls-files '*.ts' | xargs wc -l | sort -rn | head` has been reviewed this quarter and each file over ~500 lines has a stated reason to stay.
+- [ ] Each split keeps a single public entry point (`index.*`) so callers don't change.
+- [ ] Section-divider comments inside files are treated as split candidates.
+- [ ] Tests still pass after every individual move, not only at the end.
 
 ## Real-world projects using this
 

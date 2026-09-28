@@ -67,6 +67,20 @@ my-app/
 - **Utility files in `lib/`**: `kebab-case.ts` or `camelCase.ts` — pick one. `db.ts`, `auth.ts`, `format-date.ts`. Multiple named exports are fine.
 - **API routes**: `app/api/foo/route.ts` (the file is *named* `route.ts`; the URL segment is the parent folder). Export `GET`, `POST`, etc. as named functions.
 
+## Worked example
+
+A Pages Router app mixes API routes and UI logic; the team wants server components and cleaner data loading.
+
+1. Create `app/` with a root `layout.tsx` and `page.tsx`; migrate route by route (both routers can coexist during migration).
+2. Turn each page into a server component that fetches data directly, and mark only interactive leaves with `"use client"`.
+3. Move endpoints from `pages/api/*` to `app/api/<name>/route.ts`.
+4. Put data access and auth helpers in `lib/`, and import them only from server code (`import "server-only"`).
+5. Group routes without changing URLs using route groups: `app/(marketing)/about/page.tsx`.
+6. Add `loading.tsx` and `error.tsx` beside routes that fetch.
+7. Check the client bundle with `next build` output and remove any accidental server imports.
+
+Most components ship no client JavaScript and data loading sits next to the route that uses it.
+
 ## Anti-patterns
 
 - **Sprinkling `"use client"` everywhere.** Defeats the App Router's main benefit. Default to server; opt into client only when you need hooks or browser APIs.
@@ -78,6 +92,13 @@ my-app/
 - **Using `next.config.js` `experimental.appDir`.** That flag was for Next 13's beta period; on Next 14+, App Router is on by default and the flag is gone. Old tutorials may still mention it.
 - **Forgetting `export const dynamic = "force-dynamic"`** when a route reads cookies/headers and needs to opt out of static rendering. Next will sometimes silently statically render and your page goes stale.
 
+## Scaling & failure modes
+
+- **`"use client"` creep**: one client boundary too high pulls a whole subtree into the bundle. Push it down to the smallest interactive component.
+- **`components/` sprawl**: split `ui/` primitives from feature components, or use `feature-based-frontend` colocation inside `app/`.
+- **Caching semantics** change between Next releases; pin the version and read the release notes when upgrading.
+- **Environment variables**: only `NEXT_PUBLIC_*` reach the browser; review any variable you add for secrets.
+
 ## Variants
 
 - **App Router (this guide)** — Next 13+, default for new projects. Server components, server actions, file-system routing.
@@ -85,6 +106,14 @@ my-app/
 - **Pages Router** — legacy (still supported, not deprecated). `pages/` instead of `app/`. `pages/api/` for API routes. `getServerSideProps`/`getStaticProps` for data fetching. Older docs assume this layout.
 - **Turbopack-built** — Next's new bundler (vs. webpack). Same file layout; difference is build performance. Enable with `next dev --turbo`. Stable for dev; experimental for prod builds as of Next 14.
 - **Hybrid** — Pages Router and App Router coexisting on different routes during migration. Common during transition periods. Eventually consolidate to App Router.
+
+## Adoption checklist
+
+- [ ] Only components that need interactivity have `"use client"`.
+- [ ] Server-only modules import `server-only`.
+- [ ] Each data-fetching route has `loading.tsx` and `error.tsx`.
+- [ ] No secret is exposed via `NEXT_PUBLIC_` variables.
+- [ ] `next build` output has been checked for unexpected large client bundles.
 
 ## Real-world projects using this
 

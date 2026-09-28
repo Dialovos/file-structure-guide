@@ -71,6 +71,20 @@ myapi/
 - **Tests**: `tests/test_users.py` mirrors `app/api/v1/routers/users.py`. Same names, same plurality.
 - **Settings class**: `app/core/config.py` exports `class Settings(BaseSettings)` and a module-level `settings = Settings()`. Every other module imports the *instance*, not the class.
 
+## Worked example
+
+`main.py` has 900 lines: endpoints, SQL, and Pydantic models.
+
+1. Create `app/{api,schemas,models,services,db,core}/`.
+2. Move Pydantic models to `schemas/`, ORM tables to `models/`, and database engine and session factory to `db/session.py`.
+3. Move business logic out of endpoints into `services/`; endpoints then validate, call a service, and return.
+4. Group endpoints per resource in `api/v1/routers/<resource>.py` and include them in `main.py` with `app.include_router(users.router, prefix="/v1")`.
+5. Put configuration in `core/config.py` using `pydantic-settings` reading from the environment.
+6. Add Alembic (`alembic init alembic`) and generate the first migration from the models.
+7. Test with `TestClient` and dependency overrides for the session (`app.dependency_overrides`).
+
+Routers are thin, services are testable without HTTP, and schema changes go through migrations.
+
 ## Anti-patterns
 
 - **Fat routers.** Endpoint functions doing 80 lines of DB queries and business rules. Push that into a service; routers should be 3–10 lines.
@@ -82,6 +96,13 @@ myapi/
 - **Routers importing other routers.** Routers compose at the app/v1 level, not at the resource level. If `users.py` needs something from `items.py`, that "something" is a service.
 - **`main.py` doing all the wiring inline.** Keep it minimal: create the `FastAPI` instance, include the v1 router, register lifespan events. Move config-heavy setup into helpers.
 
+## Scaling & failure modes
+
+- **Schema and model duplication**: keep separate `Create`, `Read`, and `Update` schemas and resist reusing ORM models as response models.
+- **Sync vs async**: mixing blocking database calls inside `async def` endpoints stalls the event loop; pick an async driver or use plain `def` endpoints.
+- **Dependency graph**: deep `Depends()` chains become hard to trace; keep them to auth, session, and settings.
+- **Versioning**: `api/v1/` should get a `v2/` only when a breaking change is unavoidable; share services underneath.
+
 ## Variants
 
 - **layered** (this guide) — the default: routers / services / schemas / models / db / core.
@@ -90,6 +111,14 @@ myapi/
 - **layered + Celery** — add `app/tasks/` for Celery tasks; tasks call the same services as routers do.
 - **layered + GraphQL** — replace or supplement `app/api/v1/routers/` with `app/api/graphql/` (Strawberry / Ariadne); services stay the same.
 - **One-file `main.py`** — the right size for demos and ≤5-endpoint services. Refactor to layered when growth is real, not anticipated.
+
+## Adoption checklist
+
+- [ ] Routers contain no SQL and no business rules.
+- [ ] Every schema change has an Alembic migration checked in.
+- [ ] Settings load from environment variables and `.env.example` lists them.
+- [ ] Tests override the database dependency and run without external services.
+- [ ] `/docs` shows accurate request and response models.
 
 ## Real-world projects using this
 

@@ -60,6 +60,19 @@ my-monorepo/
 - **Pipeline tasks** in `turbo.json`: short, lowercase verbs (`build`, `dev`, `lint`, `test`, `typecheck`). Multiple-word tasks use `:` (`db:migrate`, `test:e2e`).
 - **Cache outputs**: relative paths from each package (`dist/**`, `.next/**`, but never `.next/cache/**` — that's already cached by Turborepo's input layer).
 
+## Worked example
+
+Two apps and a shared UI library live in one repo; CI rebuilds everything and the UI package is copied via relative imports.
+
+1. Declare workspaces in `pnpm-workspace.yaml` (`apps/*`, `packages/*`).
+2. Create `packages/ui` with its own `package.json` (`"name": "@acme/ui"`) and consume it with `"@acme/ui": "workspace:*"` from the apps.
+3. Define the pipeline in `turbo.json`, for example `build` with `dependsOn: ["^build"]` and `outputs: ["dist/**"]`.
+4. Share configs as packages (`packages/eslint-config`, `packages/typescript-config`).
+5. Run `turbo run build test lint`; a second run should show `FULL TURBO` cache hits.
+6. Enable remote caching for CI so branches reuse each other's results.
+
+Changing one package only rebuilds that package and its dependents.
+
 ## Anti-patterns
 
 - **Putting one-off scripts in `packages/`.** A package is meant to be `import`ed by 2+ consumers. A throwaway script for one app belongs in that app's `scripts/` directory. Don't pollute `packages/` with single-use code.
@@ -71,6 +84,13 @@ my-monorepo/
 - **Running tasks with `pnpm <task>` instead of `turbo run <task>`.** You lose caching and topological ordering. Always go through Turbo for monorepo-wide tasks.
 - **Putting `node_modules` in the repo.** Each workspace gets its own `node_modules` (managed by pnpm); they're all gitignored at the root.
 
+## Scaling & failure modes
+
+- **Undeclared outputs or inputs** create wrong cache hits; declare `outputs` and `inputs` and watch for stale results.
+- **Dependency hoisting** issues appear with pnpm strictness; fix phantom dependencies by declaring what you import.
+- **Package proliferation**: a package needs an owner and a reason (shared by two consumers).
+- **Versioning** of internal packages is usually unnecessary (`workspace:*`); use changesets only for published ones.
+
 ## Variants
 
 - **Turborepo + pnpm (this guide)** — pnpm is the most efficient; uses `pnpm-workspace.yaml`. Default for new projects.
@@ -79,6 +99,14 @@ my-monorepo/
 - **Turborepo + bun** — bun-as-package-manager works; bun-as-runtime works for some apps. Newer, less battle-tested for monorepos as of 2025-2026.
 - **Turborepo + changesets** — for monorepos that publish packages to npm. Adds `.changeset/` directory and a release workflow. Common for component libraries with public packages.
 - **Turborepo with remote caching** — same layout; enable in the Turbo dashboard or self-host. The killer feature for large CI; same code locally.
+
+## Adoption checklist
+
+- [ ] `turbo run build` twice shows cache hits on the second run.
+- [ ] Every task declares `dependsOn` and `outputs` accurately.
+- [ ] Shared lint and TypeScript configs live in packages.
+- [ ] Each internal package declares all its imports.
+- [ ] CI uses caching and runs only affected tasks (`--filter=...[origin/main]`).
 
 ## Real-world projects using this
 

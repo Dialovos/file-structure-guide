@@ -66,6 +66,19 @@ mymodule/
 - **Interface names**: usually end in `-er` for single-method interfaces (`Reader`, `Writer`, `Stringer`). Multi-method interfaces are usually nouns (`Server`, `Client`).
 - **Avoid stuttering**: if your package is `auth`, name the type `Service`, not `AuthService`. Consumers write `auth.Service` already; `auth.AuthService` becomes "auth.AuthService" which reads as duplication.
 
+## Worked example
+
+A service keeps everything in `main.go` and other repos import its helper packages by accident.
+
+1. Create `cmd/myapp/main.go` and keep it to flag parsing, wiring, and `run()`.
+2. Move business code to `internal/<area>/` (`internal/auth`, `internal/store`). The compiler now prevents outside modules from importing it.
+3. Publish only what you intend to support under `pkg/` (or skip `pkg/` entirely and make the module root the public package).
+4. Add table-driven tests beside code: `internal/auth/auth_test.go`.
+5. Wire `go vet ./... && go test ./...` into CI and add `golangci-lint`.
+6. Use `go build -ldflags "-X main.version=..."` to inject the version.
+
+The public surface is explicit, and everything else can be refactored freely.
+
 ## Anti-patterns
 
 - **Putting `main.go` at the root** *and* trying to be a library. A module can't easily be both. Pick one: a library (no `main`) or an app (a `main` somewhere, ideally under `cmd/`).
@@ -78,6 +91,13 @@ mymodule/
 - **Skipping `go vet` and `staticcheck` in CI.** Both catch real bugs cheaply. They're part of "modern Go CI" the same way `mvn test` is part of Maven CI.
 - **Module path with uppercase letters or that doesn't match the repo URL.** `go get` will fail in confusing ways.
 
+## Scaling & failure modes
+
+- **`pkg/` debate**: it only adds a path segment. Use it if you have a clear split between public library and internal app; otherwise omit it.
+- **Package granularity**: many tiny packages create import cycles; group by what changes together.
+- **Multiple binaries** share `internal/`; keep each `cmd/<name>/main.go` thin.
+- **Growth to multiple release cadences** is the trigger to consider `go-multi-module`.
+
 ## Variants
 
 - **with-`pkg/`** (this guide) — explicit "this is public" prefix for shared packages.
@@ -86,6 +106,14 @@ mymodule/
 - **flat layout** — for libraries with no binaries: just `mymodule/foo.go`, `mymodule/bar.go` at the root. Trivial small libraries (e.g., `pkg.go.dev/github.com/google/uuid`) use this.
 - **with-`api/` and `deployments/`** (this guide) — `api/` for OpenAPI/proto/gRPC schemas, `deployments/` for Dockerfiles, Helm charts, Kustomize overlays. Common in production services.
 - **`golang-standards/project-layout` style** — adds `web/`, `assets/`, `scripts/`, `init/`, `configs/`, `test/`, `tools/`, `examples/`, `third_party/`, `githooks/`. Comprehensive but heavy. The repo is widely cited; it's not an official Go recommendation, despite the name.
+
+## Adoption checklist
+
+- [ ] `go vet ./... && go test ./...` pass from a clean clone.
+- [ ] `main.go` files contain wiring only.
+- [ ] Everything not meant for outside use is under `internal/`.
+- [ ] `go.mod` has the correct module path and Go version; `go mod tidy` yields no diff.
+- [ ] No package named `util`, `common`, or `helpers`.
 
 ## Real-world projects using this
 

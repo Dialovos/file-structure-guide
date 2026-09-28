@@ -67,6 +67,19 @@ my-workspace/
 - **Targets** (in `project.json`): conventional names — `build`, `serve`, `test`, `lint`, `e2e`, `typecheck`. Custom targets are fine but match the `dash-case` convention.
 - **Tags**: `<dimension>:<value>` (`scope:web`, `type:feature`, `platform:browser`). Documented in `nx.json` or per-project; consumed by `@nx/enforce-module-boundaries`.
 
+## Worked example
+
+CI runs every test on every change and takes 40 minutes; features import each other freely.
+
+1. Give each project tags in `project.json`, for example `"tags": ["type:feature", "scope:billing"]`.
+2. Add the module-boundary lint rule to ESLint (`@nx/enforce-module-boundaries`) with `depConstraints` such as "`type:feature` may depend on `type:ui` and `type:util` only".
+3. Fix the violations the rule reports by moving shared code into `libs/shared/`.
+4. Replace the CI test step with `npx nx affected -t lint test build --base=origin/main`.
+5. Turn on remote caching (Nx Cloud or a self-hosted cache) so unchanged targets are replayed.
+6. Inspect the graph with `npx nx graph` and delete edges that shouldn't exist.
+
+CI now runs only affected projects, and architecture rules are checked on every pull request.
+
 ## Anti-patterns
 
 - **Putting business logic in `apps/`.** Apps should be thin shells that compose libs. If `apps/web/src/services/users.ts` exists, it almost certainly belongs in `libs/web/data-access-users` (or shared, if reused).
@@ -78,6 +91,13 @@ my-workspace/
 - **Committing the `.nx/` cache directory.** It's machine-local cache; it must be gitignored. The cache key portability comes from Nx Cloud, not from committing the cache.
 - **Mixing `apps/` and `libs/` content.** A lib that mounts to a port is an app; an app that's importable as a TypeScript module is a lib. The `project.json` `targets` make the distinction concrete (an app has `serve`/`build`; a lib has `build`/`lint`/`test`).
 
+## Scaling & failure modes
+
+- **Tag taxonomies** grow unmanageable; keep two dimensions (type and scope) at most.
+- **Library proliferation**: a lib per component adds overhead; create libs for units that have their own owner or release cadence.
+- **Cache poisoning and drift**: inputs not declared in `nx.json` `namedInputs` can cause stale cache hits; review them when adding tools.
+- **Generators** keep new projects consistent; maintain them under `tools/generators` or the workspace will diverge.
+
 ## Variants
 
 - **Nx-classic (apps/libs, this guide)** — the integrated workspace; everything is Nx-aware. Default for new workspaces.
@@ -86,6 +106,14 @@ my-workspace/
 - **Nx + standalone apps** — `npx create-nx-workspace --preset=react-standalone` skips the `apps/`/`libs/` split for a single-app project. Useful as an on-ramp; promote to a full workspace later by `nx g lib` and `nx g app`.
 - **Nx Cloud (remote cache + distributed task execution)** — same layout; activate via `nx connect-to-nx-cloud`. Distributed task execution splits the test suite across CI runners and shares cache hits. The premium feature on top of OSS Nx.
 - **Nx + non-JS plugins** — `@nx/expo`, `@nx/react-native`, `@nrwl/nx-go`, third-party Python/Java plugins. Same `apps/`/`libs/` shape, plugin-specific executors.
+
+## Adoption checklist
+
+- [ ] Every project has type and scope tags.
+- [ ] The module-boundary lint rule is enabled and passing.
+- [ ] CI uses `nx affected` with a correct base ref.
+- [ ] Remote or local cache hit rates are checked periodically.
+- [ ] `nx graph` shows no cycles.
 
 ## Real-world projects using this
 

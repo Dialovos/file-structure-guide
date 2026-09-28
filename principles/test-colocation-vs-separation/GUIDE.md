@@ -71,6 +71,18 @@ co-located (JS/Go-style)/
 5. **Test fixtures / helpers** go alongside the tests they support: `tests/fixtures/`, `tests/helpers/`, or in co-located projects, `__fixtures__/`, `test-utils.ts`. Don't scatter them into `src/`.
 6. **Pick one and document it.** Write the choice into `CONTRIBUTING.md` (or the project README) so newcomers know the convention before they add a test in the wrong shape.
 
+## Worked example
+
+A TypeScript service has `src/` with `*.test.ts` files mixed in, plus a legacy `tests/` directory with 30 more.
+
+1. Choose by ecosystem idiom: for TS, co-located `foo.ts` and `foo.test.ts`.
+2. Move each file in `tests/` next to its subject with `git mv`, renaming to `<subject>.test.ts`.
+3. Update the test runner glob (`vitest` or `jest` `include`) to `src/**/*.test.ts` and confirm the count of discovered tests matches before and after.
+4. Exclude test files from the build: `"exclude": ["src/**/*.test.ts"]` in the build tsconfig.
+5. Keep cross-module integration tests in a top-level `tests/integration/` and say so in the README.
+
+One rule remains: unit tests sit beside code, integration tests sit at the top.
+
 ## Anti-patterns
 
 - **Mixed layout.** Some files have a sibling `*.test.ts`; others have a parallel `tests/` entry. Every grep needs both queries; every refactor risks orphaning the wrong copy. Pick one, migrate the rest.
@@ -80,6 +92,13 @@ co-located (JS/Go-style)/
 - **Fighting the language convention.** Forcing Go tests into a top-level `tests/` directory means losing access to package-private symbols and bending `go test`. Forcing Python tests next to source means most CI templates and `pyproject.toml` setups don't find them.
 - **`src/test/`** *inside* the source tree as a co-located substitute. This is a Maven-ism that confuses Python or JS readers. If you want co-located, name it `__tests__/` or use `*.test.*` suffixes.
 
+## Scaling & failure modes
+
+- **Published packages** must not ship tests unless intended; verify with `npm pack --dry-run` or `unzip -l` of the wheel.
+- **Large integration or end-to-end suites** need fixtures and data that don't belong beside source, so a top-level `tests/` is normal even in co-located repos.
+- **Renames** of source files must carry their tests; co-location makes this automatic, separation needs a mirror-structure check.
+- **Mixed conventions** across languages in a monorepo are fine if each package is consistent.
+
 ## Variants
 
 - **Strict-separated.** All tests live in `tests/`; nothing test-related in `src/`. Cleanest packaging story.
@@ -87,6 +106,13 @@ co-located (JS/Go-style)/
 - **Hybrid: unit co-located, integration separated.** Unit tests live next to source (`*.test.ts`); integration tests, e2e tests, and benchmarks live in a top-level `tests/integration/`, `tests/e2e/`, `bench/`. Common in Rust (unit inline, integration in `tests/`) and many JS projects.
 - **`__tests__/` grouping.** Co-located but each source directory has a `__tests__/` subfolder rather than peer `*.test.js` files. Reduces visual noise in directory listings; loses the "test sits literally next to source" payoff. A reasonable middle ground.
 - **Doc-test variant.** Languages with doctest support (Rust, Python) put small tests *inside* docstrings or doc comments. Doesn't replace a unit-test policy; complements it.
+
+## Adoption checklist
+
+- [ ] The test runner discovers the same number of tests before and after any move.
+- [ ] Build and package steps exclude test files.
+- [ ] Unit vs integration test locations are documented.
+- [ ] Each package uses a single convention.
 
 ## Real-world projects using this
 

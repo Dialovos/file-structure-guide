@@ -58,6 +58,20 @@ The trade-off versus bare git: chezmoi is a Go binary you must install, and its 
 8. **`.chezmoidata.<format>`** holds chezmoi data variables (`name`, `email`, custom keys) accessible inside templates via `{{ .name }}`.
 9. The conventional source root is `~/.local/share/chezmoi/`. Override with `--source` or `~/.config/chezmoi/chezmoi.toml`.
 
+## Worked example
+
+Two machines share a git config, but one has a different email and the other needs an extra SSH host.
+
+1. `chezmoi init` creates the source tree at `~/.local/share/chezmoi/`.
+2. Add files: `chezmoi add ~/.bashrc ~/.config/nvim/init.lua`. They appear as `dot_bashrc` and `dot_config/nvim/init.lua`.
+3. Make the git config a template: `chezmoi add --template ~/.config/git/config`, then use data: `email = {{ .email }}` and a per-machine value in `~/.config/chezmoi/chezmoi.toml` under `[data]`.
+4. Handle machine differences inline with `{{ if eq .chezmoi.hostname "workstation" }}...{{ end }}`.
+5. Preview before writing: `chezmoi diff`, then `chezmoi apply`.
+6. Commit from `chezmoi cd` and push. On the new machine: `chezmoi init --apply <user>/dotfiles`.
+7. For secrets, use a password-manager integration (or `age` encryption), never plaintext in the repo.
+
+One repo produces the right config on each machine.
+
 ## Anti-patterns
 
 - **Editing files at the target (`~/.bashrc`) instead of the source.** Changes will be reverted on the next `chezmoi apply`. Always edit via `chezmoi edit ~/.bashrc` or directly in the source tree.
@@ -68,6 +82,13 @@ The trade-off versus bare git: chezmoi is a Go binary you must install, and its 
 - **Encrypting everything by default** — encryption adds friction (you need the decryption key on every machine). Encrypt only what's secret; templating with secret-manager calls is often cleaner than committing encrypted blobs.
 - **Letting `chezmoi diff` accumulate** — run `chezmoi apply` regularly. A growing diff means your machine has drifted from the source of truth.
 
+## Scaling & failure modes
+
+- **Learning curve**: source names (`dot_`, `private_`, `executable_`, `.tmpl`) are unfamiliar, and editing in the source tree versus the target is a common confusion; use `chezmoi edit`.
+- **Drift**: files edited directly in `$HOME` diverge from source; `chezmoi diff` shows it and `chezmoi re-add` accepts it.
+- **Large repos**: use `.chezmoiignore` (templated) to skip files on some machines.
+- **Bootstrap**: a new machine needs chezmoi installed first; keep a one-line install snippet in the repo README.
+
 ## Variants
 
 - **chezmoi-only** — pure templates and chezmoi data, no secret manager. Sufficient if you only need per-host variation.
@@ -77,6 +98,14 @@ The trade-off versus bare git: chezmoi is a Go binary you must install, and its 
 - **chezmoi-with-keepass** — desktop password manager via the `keepassxc-cli` integration.
 - **chezmoi-with-pass** — Unix `pass` (gpg-backed) for users already on the GPG path.
 - **chezmoi-only-on-managed-machines** — bare git on personal machines, chezmoi on managed/multi-host. Splits the surface area.
+
+## Adoption checklist
+
+- [ ] `chezmoi diff` is empty on every machine after `chezmoi apply`.
+- [ ] Machine-specific values live in `chezmoi.toml` data, not in duplicated files.
+- [ ] Secrets come from a password manager or encrypted files, not the plain repo.
+- [ ] `.chezmoiignore` handles files that shouldn't exist on some machines.
+- [ ] A bootstrap command is documented and tested on a fresh account.
 
 ## Real-world projects using this
 

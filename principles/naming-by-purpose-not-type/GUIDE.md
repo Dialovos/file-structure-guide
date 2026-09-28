@@ -69,6 +69,18 @@ type-driven (bad)/
 5. Two purposes that share files should either merge or extract a shared subset (`shared/auth-tokens/`), but never grow a `common/` junk drawer.
 6. If a project has both purpose dirs and type dirs at the same level (`customer-onboarding/` and `forms/`), pick one and refactor — mixed shells are the worst case.
 
+## Worked example
+
+A React app has `components/`, `api/`, `types/`, and onboarding code is spread across all three.
+
+1. Pick one feature and list every file that changes when it does: `git log --name-only --since=3.months -- '*onboarding*' | sort | uniq -c | sort -rn`.
+2. Create `customer-onboarding/` and move that feature's files: `form.tsx`, `api.ts`, `types.ts`.
+3. Rewrite imports with your editor's rename support and run the type checker.
+4. Leave genuinely shared building blocks (design-system buttons) in a small `shared/` named by role, not by type.
+5. Repeat for the next feature, one PR per feature.
+
+Deleting the feature now means deleting one directory, and a code review for it touches one folder.
+
 ## Anti-patterns
 
 - **Top-level `controllers/` `models/` `views/`** — classic MVC type-driven layout. Every feature is split across three directories. Migrate to feature folders.
@@ -78,6 +90,13 @@ type-driven (bad)/
 - **`tests/` mirror at the top level** — tests live next to what they test, in the same purpose dir. A separate top-level `tests/` mirror creates two parallel trees you must keep in sync.
 - **Per-language dirs (`ts/`, `tsx/`, `css/`)** — type-driven by file extension. The compiler doesn't care; readers are punished.
 
+## Scaling & failure modes
+
+- **Shared code** is where the rule strains. Promote code to `shared/` only after a second feature needs it, and name it for what it does (`date-formatting/`), not what it is (`utils/`).
+- **Framework conventions** (Rails `models/`, Django apps) impose type-first structure at the top; apply purpose grouping inside your own layer.
+- **Cross-cutting concerns** (logging, auth middleware) don't belong to one feature; give each its own purpose-named directory.
+- **Team ownership** maps naturally to purpose directories, which makes CODEOWNERS entries short.
+
 ## Variants
 
 - **Pure-purpose** (this repo's bias) — every directory names a purpose; types live only at the leaf as filenames.
@@ -85,6 +104,13 @@ type-driven (bad)/
 - **Strict-by-type (legacy MVC)** — `controllers/`, `models/`, `views/`. Common in older Rails / Django / ASP.NET. Recognise it; only adopt it when the framework forces you.
 - **Layered (Hexagonal / Clean / Onion)** — `domain/`, `application/`, `infrastructure/`, with purpose nested inside each layer. Layer is "type-of-architecture-role"; purpose is the leaf concern. Heavyweight but explicit about dependency direction.
 - **Slice-and-layer combo (Vertical Slice Architecture)** — top-level by feature (purpose), each feature internally has its own layers. Co-location wins; layered discipline preserved.
+
+## Adoption checklist
+
+- [ ] Removing one feature is possible by deleting one directory (plus registry entries).
+- [ ] No top-level `utils/`, `helpers/`, `misc/`, or `common/`.
+- [ ] Shared modules were extracted after their second consumer, not before.
+- [ ] Directory names describe a capability a product person would recognize.
 
 ## Real-world projects using this
 

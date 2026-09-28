@@ -50,6 +50,19 @@ The filesystem stays flat — Roam doesn't introduce subfolders. All structure l
 - **Tags vs page-links**: Roam's `#tag` and `[[link]]` are equivalent (`#deep-work` ≡ `[[deep-work]]`). The convention is hashtag for ad-hoc taxonomies, brackets for navigation-worthy topics. Both end up creating or linking to the same page.
 - **Aliases**: pages can have multiple titles via aliases in the page properties block. The on-disk filename is the canonical title; aliases are metadata.
 
+## Worked example
+
+You use a Roam graph and want a portable, readable export.
+
+1. Export the graph as markdown (or JSON) and unpack it into a flat folder.
+2. Keep daily pages under their ISO names (`2026-04-30.md`) and topical pages with their titles.
+3. Decide how to treat block references: expand them into text in the export, or keep UUID references and accept loss outside Roam.
+4. Add a `README.md` explaining that structure lives in links and that block refs and queries won't function without Roam.
+5. Choose a landing path: import into Logseq (`Import` option), or drop into Obsidian and accept plain-text degradation.
+6. Verify by opening five pages with the heaviest block-reference and query use and comparing them to the original.
+
+You end up with a readable archive and know which features were lost.
+
 ## Anti-patterns
 
 - **Replicating folder hierarchy in titles.** Writing `[[productivity/deep work]]` to mimic folders works but loses the wiki-link affordance — Roam doesn't treat the `/` as a hierarchy. Use either flat titles or pure tagging; don't fake folders.
@@ -59,6 +72,13 @@ The filesystem stays flat — Roam doesn't introduce subfolders. All structure l
 - **Treating Roam exports as the source of truth.** Roam's value is the runtime. Markdown export is for archival / portability; round-tripping back into Roam can be lossy (especially for queries, embeds, attribute pairs).
 - **Using `((block-ref))` for what should be a permanent reference.** A block ref tracks the source; if the source is deleted, the ref breaks. For things you want to *quote permanently*, copy the text or convert the ref to text.
 
+## Scaling & failure modes
+
+- **Large exports** (10k+ pages) make one flat folder unwieldy in file managers; that's fine for tools that read by name but poor for browsing.
+- **Case variants** (`Deep Work` vs `deep work`) create duplicates on case-sensitive filesystems.
+- **Runtime dependence**: queries, embeds, and attributes are the parts that degrade; inventory them before migrating.
+- **Cloud dependence** is the core trade-off; export regularly if the graph matters.
+
 ## Variants
 
 - **Roam-classic** (this guide). Daily-page-first, flat directory, links and block refs as the primary structuring tools.
@@ -66,6 +86,14 @@ The filesystem stays flat — Roam doesn't introduce subfolders. All structure l
 - **Roam-with-MOC-pages.** Hand-curated index pages (e.g., `[[MOC: Productivity]]`) sit alongside dailies, providing reading paths into the graph. Useful when sharing a graph or onboarding.
 - **Logseq** — local-first Roam-alike. Same daily-page model, same block refs, your data on your filesystem. See `notes/logseq-outliner/`.
 - **Athens / RemNote / Capacities.** Other Roam-influenced products with their own takes on the model.
+
+## Adoption checklist
+
+- [ ] A dated export exists outside Roam and opens in a text editor.
+- [ ] Block references in the export were checked (expanded or preserved).
+- [ ] Case-variant duplicate pages have been merged or aliased.
+- [ ] A list of used queries/embeds exists, with their replacement in the target tool.
+- [ ] The README explains what is lost outside Roam.
 
 ## Real-world projects using this
 

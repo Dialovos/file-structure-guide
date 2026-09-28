@@ -57,6 +57,19 @@ The `MOCs/` folder is parallel to `notes/`. The `+ ` prefix sorts MOCs to the to
 6. **No date or ID prefix on MOCs.** A MOC is identified by its topic, not by when it was written.
 7. **Refinement marks aren't in the filename.** Don't append `-v2` or `-2026-04`. The MOC's refinement lives in its content history.
 
+## Worked example
+
+Five notes on attention exist, but nothing connects them and you keep rediscovering them.
+
+1. Create `MOCs/+ attention-and-focus.md`.
+2. Write a two-sentence orientation at the top: what the topic covers and what you currently believe.
+3. List the notes in a reading order with one line each, such as `- [[attention-residue]] — why switching costs more than it seems`.
+4. Add links to adjacent MOCs (`+ writing-process`) under a "See also" heading.
+5. Link the MOC from your home note, and add a backlink from each listed note to the MOC.
+6. Add new notes to the MOC when you write them.
+
+The MOC gives the topic a front door and shows gaps (topics with one note, or three notes that say the same thing).
+
 ## Anti-patterns
 
 - **MOC as flat index.** A MOC that's just `- [[note1]]` `- [[note2]]` `- [[note3]]` for 200 notes is a tag — useful for completeness, useless for orientation. Group into sections.
@@ -67,6 +80,13 @@ The `MOCs/` folder is parallel to `notes/`. The `+ ` prefix sorts MOCs to the to
 - **MOCs in random folders.** A MOC in `notes/health/` plus another in `notes/career/` plus a third at vault root is hard to discover. Centralise in `MOCs/` or use the marker rigorously.
 - **Auto-generated MOCs that replace human-written ones.** Dataview can generate flat lists, but a generated list isn't a MOC — the human curation is the value.
 
+## Scaling & failure modes
+
+- **Automated lists** (Dataview queries) stay current but lack judgment; combine a hand-written orientation with a generated list.
+- **Hub proliferation**: more MOCs than notes means you've made indexes of one; wait for a real cluster.
+- **Hierarchy of MOCs** (MOC of MOCs) is fine to about two levels; deeper indicates a folder tree in disguise.
+- **Ownership**: a shared MOC without an owner falls behind.
+
 ## Variants
 
 - **dedicated-folder (this guide).** `MOCs/` parallel to `notes/`. Cleanest separation; recommended.
@@ -75,6 +95,14 @@ The `MOCs/` folder is parallel to `notes/`. The `+ ` prefix sorts MOCs to the to
 - **MOC-per-folder.** Each top-level folder has its own MOC at the folder root (`notes/health/+ Health.md`). Marries folder structure and MOC structure; works in PARA-style vaults.
 - **dataview-augmented.** A human-written MOC plus a Dataview query at the bottom that lists "all notes tagged X" or "all notes recently edited in topic Y". Combines curation with auto-completeness.
 - **publish-ready MOCs.** Some MOCs are explicitly written to be the front door for external readers — formatted as essays with embedded links. Common in digital gardens.
+
+## Adoption checklist
+
+- [ ] Each MOC opens with an orientation, not just links.
+- [ ] Links have one-line descriptions.
+- [ ] MOCs are reachable from a home note.
+- [ ] New notes get added to their MOC as they're written.
+- [ ] MOCs with fewer than five links are reconsidered.
 
 ## Real-world projects using this
 

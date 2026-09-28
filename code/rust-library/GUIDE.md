@@ -59,6 +59,19 @@ mylib/
 - **Test file naming**: `tests/<feature>.rs`. Each top-level `.rs` is a separate test crate. `tests/public_api.rs` is a common name for "smoke test of the documented surface".
 - **Bench naming**: must match `[[bench]] name = "..."` in `Cargo.toml`. Convention: `<thing>_bench.rs` (criterion uses this).
 
+## Worked example
+
+A crate is about to be published for the first time.
+
+1. Fill `Cargo.toml` metadata: `description`, `license = "MIT OR Apache-2.0"`, `repository`, `readme`, `keywords`, `categories`, `rust-version`.
+2. Add both license files (`LICENSE-MIT`, `LICENSE-APACHE`) and gitignore `Cargo.lock`.
+3. Expose the public API from `lib.rs` with `pub use`, and keep everything else private; add `#![deny(missing_docs)]`.
+4. Put doc tests in item docs and integration tests in `tests/` (they only see the public API).
+5. Run `cargo publish --dry-run` and `cargo package --list` to check what will ship.
+6. Check semver with `cargo semver-checks` before every release.
+
+Docs on docs.rs compile from the doc comments, and accidental API breakage is caught before release.
+
 ## Anti-patterns
 
 - **Committing `Cargo.lock`.** The single most common mistake. Adds it to `.gitignore` and remove from index: `git rm --cached Cargo.lock`. Confusion source: `cargo new --lib` *does not* generate a `.gitignore` rule for `Cargo.lock`, but it's the convention nonetheless.
@@ -70,6 +83,13 @@ mylib/
 - **Wide `pub use` re-exports of internals.** Each item re-exported from `lib.rs` becomes part of your stable API. Be deliberate. Typed errors, traits, and one or two top-level types — not the entire module tree.
 - **Forgetting `[package.metadata.docs.rs]` for non-default features.** If your crate has feature flags, docs.rs builds with default features only unless you opt in. Add `all-features = true` or pick the right set.
 
+## Scaling & failure modes
+
+- **Public API drift**: every `pub` item is a promise; prefer `pub(crate)` and re-export deliberately.
+- **Feature flags** multiply test combinations; test with `--all-features` and `--no-default-features` in CI.
+- **MSRV** (minimum supported Rust version) should be declared and tested.
+- **Breaking changes** in 0.x versions still require care; document them in the changelog.
+
 ## Variants
 
 - **crates-io-published, dual-licensed** (this guide) — the strong default. MIT OR Apache-2.0, lockfile gitignored, full `Cargo.toml` metadata, `examples/` and `benches/` populated.
@@ -77,6 +97,14 @@ mylib/
 - **no_std-friendly** — adds `#![no_std]` at the top of `lib.rs`, gates `std`-using code behind a `#[cfg(feature = "std")]`, declares `default-features = false` on deps. Layout unchanged; CI must build with `--no-default-features` for embedded targets.
 - **proc-macro-only** — `crate-type = ["proc-macro"]`, paired with a sibling `*-macros` crate in a workspace. No `examples/`, limited `tests/`.
 - **FFI / cdylib** — `crate-type = ["cdylib", "rlib"]` for a library that produces both a shared library (for non-Rust consumers) and a Rust-importable rlib.
+
+## Adoption checklist
+
+- [ ] `cargo publish --dry-run` succeeds and `cargo package --list` shows the expected files.
+- [ ] `Cargo.lock` is ignored, both license files exist.
+- [ ] `#![deny(missing_docs)]` is on and doc tests pass.
+- [ ] CI tests default, all, and no default features.
+- [ ] `cargo semver-checks` runs before release.
 
 ## Real-world projects using this
 

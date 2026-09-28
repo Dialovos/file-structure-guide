@@ -51,6 +51,19 @@ $HOME/
 5. Runtime files (sockets, pid files, lock files) go under `$XDG_RUNTIME_DIR` (typically `/run/user/$UID/`); these are wiped at logout.
 6. When a single tool produces both user-edited and tool-managed files, split them: editable in `config/`, tool-managed in `data/` or `state/`.
 
+## Worked example
+
+`ls -A ~` shows 60 dot entries, and you don't know which are configuration and which are cache.
+
+1. Export the variables (most systems set them already; defaults are `~/.config`, `~/.local/share`, `~/.cache`, `~/.local/state`).
+2. Find offenders: `ls -A ~ | grep '^\.'`, or run `xdg-ninja` for tool-specific advice.
+3. Move what the tool supports: set env vars in your shell profile, for example `export HISTFILE="$XDG_STATE_HOME/bash/history"`, `export CARGO_HOME="$XDG_DATA_HOME/cargo"`, `export npm_config_userconfig="$XDG_CONFIG_HOME/npm/npmrc"`.
+4. Move the existing data before the change, or the tool starts from scratch.
+5. Delete `~/.cache` safely as a test; if something breaks, that tool stored state in the wrong place.
+6. Scope backups: back up `~/.config` and `~/.local/share`, skip `~/.cache`, and decide about `~/.local/state`.
+
+The home directory shrinks, and backups know what matters.
+
 ## Anti-patterns
 
 - **Conflating cache and data** — putting search indexes in `~/.local/share/` means restoring a backup also restores stale indexes; putting your songs in `~/.cache/` means a `rm -rf ~/.cache` deletes irreplaceable content.
@@ -60,6 +73,13 @@ $HOME/
 - **Tracking `~/.cache/` in dotfiles** — by definition cache is regenerable, so versioning it is churn for no benefit.
 - **Symlinking `~/.config/` from a synced cloud drive** — file-watch APIs and atomic-rename behaviour break across many sync layers; link individual subtrees instead.
 
+## Scaling & failure modes
+
+- **Tools that ignore XDG** need env vars, symlinks (use sparingly), or acceptance; don't fight tools that offer no option.
+- **State vs data**: logs, history, and last-known-state go in `$XDG_STATE_HOME`; treat it as semi-disposable.
+- **Multiple users and containers**: variables may be unset in cron or minimal environments; use defaults in scripts (`${XDG_CONFIG_HOME:-$HOME/.config}`).
+- **Portability**: on Windows and macOS the same tools use different native locations.
+
 ## Variants
 
 - **Strict XDG** — every tool moved, including legacy holdouts via wrappers (`alias git='git -c …'`, `GNUPGHOME=$XDG_DATA_HOME/gnupg`). Maximal hygiene; highest maintenance.
@@ -67,6 +87,14 @@ $HOME/
 - **XDG with legacy shims** — keep legacy paths but symlink them into XDG roots so backup policy is unified (`ln -s ~/.aws ~/.local/share/aws`). Useful when a backup tool only walks `~/.local/`.
 - **Per-host XDG roots** — set `XDG_CONFIG_HOME=~/.config/$(hostname)` for cross-host config divergence; less common, but powerful for fleet-managed laptops.
 - **Container-local XDG** — set all four roots to `/workspace/.xdg/` inside a container so state lives with the project, not the user.
+
+## Adoption checklist
+
+- [ ] Shell profile sets the four variables (or relies on documented defaults).
+- [ ] Scripts use `${XDG_...:-default}` fallbacks.
+- [ ] `~/.cache` can be deleted without data loss.
+- [ ] Backups include config and data, exclude cache.
+- [ ] Remaining `$HOME` dotfiles are known exceptions.
 
 ## Real-world projects using this
 

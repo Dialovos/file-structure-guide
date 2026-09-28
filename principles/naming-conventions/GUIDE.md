@@ -54,6 +54,18 @@ bad/
 5. Singular vs plural is by *content shape*: a directory holding many of one kind is plural (`invoices/`), a directory holding one logical thing is singular (`auth/`).
 6. Date-prefixed directories use ISO `YYYY-MM-DD` or `YYYY-MM` first, then a kebab-case slug (`2026-04-meeting-notes/`).
 
+## Worked example
+
+A repo mixes `Customer Onboarding/`, `api_clients/`, `finalReport.md`, and `2026-04 Meeting Notes/`.
+
+1. Pick the default (kebab-case) and list the ecosystem exceptions actually in use (Python package dirs are `snake_case`).
+2. Generate a rename plan: `find . -depth -name '* *' -o -name '*[A-Z_]*' | head -50`. Review by hand; don't bulk-rename package directories.
+3. Rename with `git mv` in small commits (one directory per commit) so history stays traceable.
+4. Fix references: `grep -rn "Customer Onboarding" .`.
+5. Record the rule and its exceptions in `CONTRIBUTING.md`, and add a pre-commit hook that rejects spaces and uppercase in new paths.
+
+Result: `customer-onboarding/`, `api-clients/`, `final-report.md`, `2026-04-meeting-notes/`, with `src/my_package/` as the one documented exception.
+
 ## Anti-patterns
 
 - **`Customer Onboarding/`** — spaces and capitals. Forces every shell command to quote it; breaks tab completion in the worst way (silent partial match).
@@ -62,12 +74,26 @@ bad/
 - **Abbreviations nobody else uses** — `cust-onb/` instead of `customer-onboarding/`. The four characters you save cost every future reader a lookup.
 - **Trailing date when a date prefix would sort better** — `meeting-notes-2026-04/` does not sort chronologically; `2026-04-meeting-notes/` does.
 
+## Scaling & failure modes
+
+- **Renames break links**: URLs, docs, CI paths, and import statements. Budget time for a link check.
+- **Multi-language repos** carry several conventions. Scope each rule to a subtree and write it next to that subtree.
+- **Generated names** (code generators, exports) may not be under your control; ignore or wrap them.
+- **Case-insensitive filesystems** make rename-by-case fiddly; use the two-step `git mv` trick.
+
 ## Variants
 
 - **Strict kebab** — no exceptions, ever. Forces ecosystem-deviating subtrees out of the main repo. Clean but rarely realistic.
 - **Snake-only-where-mandated** (this repo's policy) — kebab everywhere, document each ecosystem exception in `CONTRIBUTING.md` of the affected subtree.
 - **Lower-with-hyphens-or-underscores** — allow either, but pick one per repo and stick to it. Common in older Python/Ruby monorepos.
 - **Type-suffix variant** — `customer-onboarding.feature/`, `customer-onboarding.docs/`. Adds machine-grepability at the cost of human readability; use only with tooling that depends on the suffix.
+
+## Adoption checklist
+
+- [ ] A pre-commit or CI check rejects spaces and unexpected uppercase in new paths.
+- [ ] Every ecosystem exception is listed with the subtree it applies to.
+- [ ] Links, imports, and CI paths were grepped after each rename.
+- [ ] The rule is written in `CONTRIBUTING.md` and not only in reviewers' heads.
 
 ## Real-world projects using this
 

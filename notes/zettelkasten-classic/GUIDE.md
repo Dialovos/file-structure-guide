@@ -57,6 +57,19 @@ zettelkasten/
 6. **Links** prefer `[[short-slug]]` over `[[202604301421 attention-as-currency]]`. Most tools resolve the short form to the full filename. The full ID is the durable address; the slug is the human handle.
 7. **MOC notes** in `INDEX.md` (and any sub-MOCs) are themselves permanent notes — they have IDs and live in `permanent/`. `INDEX.md` is the entry list of the most useful MOCs.
 
+## Worked example
+
+You read a book and want its ideas to become part of your thinking, not a pile of highlights.
+
+1. Capture: jot fleeting thoughts in `inbox/` as they come, with the date.
+2. Literature note: write `literature/newport-deep-work.md` in your own words, with page references and a BibTeX key from `references.bib`.
+3. Permanent notes: from that literature note, write atomic notes in `permanent/` with a timestamp ID: `202604301421 attention-as-currency.md`. One idea each.
+4. Link each permanent note to at least one existing note, and say why in a sentence.
+5. Add entry points to `INDEX.md` (a few well-linked starting notes per topic).
+6. Process the inbox daily or weekly; anything not processed in a month gets deleted.
+
+The book leaves a small number of linked notes in your own words that connect to what you already know.
+
 ## Anti-patterns
 
 - **Skipping inbox processing.** A `inbox/` with 800 items isn't a Zettelkasten, it's a graveyard. Either schedule weekly processing or change your capture habits.
@@ -67,6 +80,13 @@ zettelkasten/
 - **Mixing daily journaling into `permanent/`.** Daily entries are time-bound, not atomic-claim notes. Run a separate `daily/` folder or use a different system entirely.
 - **Treating MOCs as folders.** A MOC is a *note*, not a directory. Linking from a folder name forces tool-specific magic; linking from a note works in any wiki.
 
+## Scaling & failure modes
+
+- **Inbox rot**: unprocessed captures become guilt; delete freely after a deadline.
+- **Timestamp IDs** are simple but carry no structure; hubs and links provide the structure. If you want position in the ID, consider `folgezettel`.
+- **Literature notes vs highlights**: copying passages isn't note-making; write in your own words.
+- **Vault size**: a few thousand notes work with search and index notes; don't expect folders to help.
+
 ## Variants
 
 - **classic-3-folder (this guide).** `inbox/`, `permanent/`, `literature/`. Faithful to Ahrens' presentation.
@@ -75,6 +95,14 @@ zettelkasten/
 - **with-fleeting.** Adds a `fleeting/` folder for *very* raw capture, with `inbox/` reserved for items already worth processing. Two-stage triage.
 - **single-folder.** Drops the folder split and uses tags (`#permanent`, `#literature`, `#inbox`) instead. Common in Logseq and tag-first tools; loses some clarity but reduces moves.
 - **academic.** Adds `projects/` for in-progress papers, each cross-linking to permanent and literature notes. Bridges Zettelkasten with project-based organisation.
+
+## Adoption checklist
+
+- [ ] Every permanent note has a unique timestamp ID and one idea.
+- [ ] Every permanent note links to at least one other note, with a reason.
+- [ ] Literature notes cite a key in `references.bib`.
+- [ ] The inbox is emptied on a schedule.
+- [ ] `INDEX.md` lists entry points per topic.
 
 ## Real-world projects using this
 

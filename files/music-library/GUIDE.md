@@ -56,6 +56,19 @@ Music/
 6. Album-art lives in the album directory as `cover.jpg` or `folder.jpg` (Windows convention). Most players check both. Embedded art in the audio tag still wins for portability.
 7. Spaces in directory and file names are intentional and match human-readable metadata. Quote paths in shell scripts; never substitute hyphens or underscores for spaces.
 
+## Worked example
+
+A folder of MP3s is named `track01.mp3` with wrong tags and duplicated albums.
+
+1. Install `beets` and set the layout in its config: `paths: default: $albumartist/$year - $album%aunique{}/$track $title`. Keep `library: ~/.config/beets/library.db` and `directory: ~/Music`.
+2. Import: `beet import ~/incoming-music` and confirm matches against MusicBrainz for each album.
+3. Let beets write tags and move files; run `beet ls` to check, and `beet dup -f` for duplicates.
+4. Add cover art with the `fetchart` plugin and embed with `embedart` if your player needs it.
+5. Point Plex/Jellyfin/Navidrome at `~/Music`. They read tags first and paths second, so the layout is consistent for humans and servers.
+6. Back up the library database and the music folder.
+
+The collection is consistent enough that any player or server indexes it correctly.
+
 ## Anti-patterns
 
 - **One-digit track numbers** — `1 Airbag.flac, 2 Paranoid Android.flac, ..., 10 Lucky.flac` sorts as `1, 10, 2, 3, ...`, scrambling the album.
@@ -66,6 +79,13 @@ Music/
 - **Storing playlists inside album directories** — `.m3u` files belong in a sibling `Playlists/` directory, not inside `OK Computer/`.
 - **Letting cloud sync rewrite filenames** — some sync clients normalise Unicode forms (NFC vs NFD) and cause duplicates; pick a consistent form on import.
 
+## Scaling & failure modes
+
+- **Compilations** (`Various Artists`) and multi-disc sets need explicit rules (`Disc 1/`, or `1-01 Track.flac`); decide once and put it in the beets config.
+- **Formats**: lossless (FLAC) and lossy (MP3, Opus) copies of the same album need separate roots or a naming difference so servers don't merge them.
+- **Renaming after import** breaks playlists that use paths; prefer playlists that reference tags or are regenerated.
+- **Storage**: FLAC libraries grow quickly; plan capacity and backups accordingly.
+
 ## Variants
 
 - **With disc numbers** — `D-NN Track.flac` (e.g. `1-01 Track.flac`, `2-05 Track.flac`) for multi-disc releases. Beets emits this when the album has more than one disc.
@@ -74,6 +94,14 @@ Music/
 - **Catalogue-rooted** — `Catalogue/<label>/<release>/` for collectors who think in label catalogue numbers (Blue Note, ECM). Niche but well-defined.
 - **MusicBrainz-rooted** — uses MusicBrainz release IDs in the path for unambiguous identity. Beets supports this with `albumtype:%aunique{}` placeholders.
 - **Year-first** — `2026/Radiohead - Album/...`. Useful for chronological listening parties; useless for daily artist-based browsing.
+
+## Adoption checklist
+
+- [ ] Tag correctness was checked before files were moved (MusicBrainz match).
+- [ ] The path template lives in a tracked config, not in memory.
+- [ ] Compilation and multi-disc rules are written down.
+- [ ] The player or server library scanned without duplicates.
+- [ ] The library database and the media are both backed up.
 
 ## Real-world projects using this
 
